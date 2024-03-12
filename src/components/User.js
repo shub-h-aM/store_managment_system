@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import '../index.css';
 
-const UserPage = () => {
+const User = () => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -27,46 +28,49 @@ const UserPage = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input
-                type="text"
-                name="name"
-                placeholder="Name"
-                value={formData.name}
-                onChange={handleChange}
-            />
-            <input
-                type="text"
-                name="username"
-                placeholder="User Name"
-                value={formData.username}
-                onChange={handleChange}
-            />
+        <div className="form-container">
+            <h1>Sign up</h1>
+            <form onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Name"
+                    value={formData.name}
+                    onChange={handleChange}
+                />
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="User Name"
+                    value={formData.username}
+                    onChange={handleChange}
+                />
 
-            <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                value={formData.email}
-                onChange={handleChange}
-            />
-            <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-            />
-            <input
-                type="text"
-                name="contactNumber"
-                placeholder="Contact Number"
-                value={formData.contactNumber}
-                onChange={handleChange}
-            />
-            <button type="submit">Submit</button>
-        </form>
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    value={formData.email}
+                    onChange={handleChange}
+                />
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    value={formData.password}
+                    onChange={handleChange}
+                />
+                <input
+                    type="text"
+                    name="contactNumber"
+                    placeholder="Contact Number"
+                    value={formData.contactNumber}
+                    onChange={handleChange}
+                />
+                <button type="submit">Submit</button>
+            </form>
+        </div>
     );
 };
 
-export default UserPage;
+export default User;
