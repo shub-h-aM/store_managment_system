@@ -10,9 +10,18 @@ const app = express();
 const port = 5000;
 
 // Multer storage configuration
+// const storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//         cb(null, 'uploads/');
+//     },
+//     filename: function (req, file, cb) {
+//         cb(null, file.originalname);
+//     }
+// });
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/');
+        const destinationPath = path.resolve(__dirname, '../upload_doc/uploads/');
+        cb(null, destinationPath);
     },
     filename: function (req, file, cb) {
         cb(null, file.originalname);
