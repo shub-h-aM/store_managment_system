@@ -5,19 +5,12 @@ const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const cors = require('cors');
 const path = require("path");
+const fs = require('fs');
 
 const app = express();
 const port = 5000;
 
-// Multer storage configuration
-// const storage = multer.diskStorage({
-//     destination: function (req, file, cb) {
-//         cb(null, 'uploads/');
-//     },
-//     filename: function (req, file, cb) {
-//         cb(null, file.originalname);
-//     }
-// });
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         const destinationPath = path.resolve(__dirname, '../upload_doc/uploads/');
@@ -78,33 +71,91 @@ app.get('/api/inventory', (req, res) => {
         res.status(200).json(result);
     });
 });
+//
+// // API endpoint for uploading Excel file
+// app.post('/api/upload', upload.single('file'), (req, res) => {
+//     const workbook = new exceljs.Workbook();
+//     const filePath = path.join(__dirname, 'uploads', req.file.filename); // Correct file path using path.join
+//
+//     if (!fs.existsSync(filePath)) {
+//         console.error('File not found:', filePath);
+//         return res.status(404).json({ message: 'File not found' });
+//     }
+//
+//     workbook.xlsx.readFile(filePath)
+//         .then((worksheet) => {
+//             const sheet = worksheet.getWorksheet(1);
+//             const dataRows = [];
+//
+//             // Iterate over each row starting from the second row (excluding the header row)
+//             for (let i = 2; i <= sheet.rowCount; i++) {
+//                 const rowValues = sheet.getRow(i).values;
+//                 dataRows.push(rowValues);
+//             }
+//
+//             console.log('Data Rows:', dataRows);
+//
+//             // Insert rows into MySQL database
+//             const query = 'INSERT INTO item (item, itemname, brand, itemcategory, supplier) VALUES (?, ?, ?, ?, ?)';
+//             dataRows.forEach(row => {
+//                 db.query(query, row, (error, results) => {
+//                     if (error) {
+//                         console.error(error);
+//                         return res.status(500).json({ message: 'Internal server error' });
+//                     }
+//                     console.log('Inserted row:', row);
+//                 });
+//             });
+//
+//             res.json({ message: 'Data uploaded successfully' });
+//         })
+//         .catch((error) => {
+//             console.error('Error reading Excel file:', error);
+//             res.status(400).json({ message: 'Error parsing Excel file' });
+//         });
+// });
+
+
 // API endpoint for uploading Excel file
 app.post('/api/upload', upload.single('file'), (req, res) => {
     const workbook = new exceljs.Workbook();
-    const filePath = path.resolve(__dirname, req.file.path); // Convert to absolute file path
+    const filePath = path.join(__dirname, 'uploads', req.file.filename); // Correct file path using path.join
+
+    if (!fs.existsSync(filePath)) {
+        console.error('File not found:', filePath);
+        return res.status(404).json({ message: 'File not found' });
+    }
 
     workbook.xlsx.readFile(filePath)
         .then((worksheet) => {
-            const rows = worksheet.getWorksheet(1).getSheetValues();
-            console.log('Rows:', rows); // Log rows to verify the data
+            const sheet = worksheet.getWorksheet(1);
+            const dataRows = [];
 
-            // Iterate over each row and insert into the database
-            rows.forEach(row => {
-                const [item, itemname, brand, itemcategory, supplier] = row;
-                const query = 'INSERT INTO item (item, itemname, brand, itemcategory, supplier) VALUES (?, ?, ?, ?, ?)';
-                db.query(query, [item, itemname, brand, itemcategory, supplier], (error, results) => {
+            // Iterate over each row starting from the second row (excluding the header row)
+            for (let i = 2; i <= sheet.rowCount; i++) {
+                const rowValues = sheet.getRow(i).values;
+                const trimmedRow = rowValues.slice(1); // Skip the first element
+                dataRows.push(trimmedRow);
+            }
+
+            console.log('Data Rows:', dataRows);
+
+            // Insert rows into MySQL database
+            const query = 'INSERT INTO item (item, itemname, brand, itemcategory, supplier) VALUES (?, ?, ?, ?, ?)';
+            dataRows.forEach(row => {
+                db.query(query, row, (error, results) => {
                     if (error) {
                         console.error(error);
-                    } else {
-                        console.log('Inserted row:', row);
+                        return res.status(500).json({ message: 'Internal server error' });
                     }
+                    console.log('Inserted row:', row);
                 });
             });
 
             res.json({ message: 'Data uploaded successfully' });
         })
         .catch((error) => {
-            console.error(error);
+            console.error('Error reading Excel file:', error);
             res.status(400).json({ message: 'Error parsing Excel file' });
         });
 });
