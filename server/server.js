@@ -44,7 +44,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // API Endpoint to handle form submission
-app.post('/api/user', (req, res) => {
+app.post('/api/signup', (req, res) => {
     const { name, username, email, password, contactNumber } = req.body;
     const sql = 'INSERT INTO user (name, username, email, password, contactNumber) VALUES (?, ?, ?, ?, ?)';
     db.query(sql, [name, username, email, password, contactNumber], (err, result) => {
@@ -69,6 +69,26 @@ app.get('/api/inventory', (req, res) => {
         }
         console.log('Form data retrieved successfully');
         res.status(200).json(result);
+    });
+});
+
+// Login endpoint
+app.post('/api/login', (req, res) => {
+    const { username, password } = req.body;
+    const sql = 'SELECT * FROM user WHERE username = ? AND password = ?';
+    db.query(sql, [username, password], (err, result) => {
+        if (err) {
+            console.error('Error executing query:', err);
+            res.status(500).json({ error: 'Error logging in' });
+            return;
+        }
+        if (result.length > 0) {
+            // User found, login successful
+            res.status(200).json({ message: 'Login successful' });
+        } else {
+            // User not found or invalid credentials
+            res.status(401).json({ error: 'Invalid username or password' });
+        }
     });
 });
 
