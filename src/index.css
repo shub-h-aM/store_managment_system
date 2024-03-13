@@ -1,3 +1,4 @@
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -14,51 +15,67 @@ code {
 
 /*navbar menu css start*/
 
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
 .navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
   background-color: #333;
   color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 1rem;
 }
 
 .menu-toggle {
+  display: block;
   cursor: pointer;
-  font-size: 1.5rem;
+  padding: 0.5rem;
+  margin-right: 1rem;
+}
+
+.menu-toggle span {
+  display: block;
+  width: 30px;
+  height: 3px;
+  background-color: #fff;
+  margin-bottom: 5px;
 }
 
 .nav-links {
   list-style: none;
   display: flex;
+  align-items: center;
+  margin-left: auto;
 }
 
 .nav-links li {
   margin-right: 1rem;
 }
 
-.nav-links li a {
+.nav-links a {
   color: #fff;
   text-decoration: none;
 }
 
 @media (max-width: 768px) {
   .nav-links {
+    display: none;
     flex-direction: column;
-    align-items: flex-start;
-    position: absolute;
-    top: 70px;
-    left: 0;
+    position: fixed;
+    top: 0;
+    left: -100%;
     width: 100%;
+    height: 100%;
     background-color: #333;
-    padding: 0;
-    margin: 0;
-    transform: scaleY(0);
-    transition: transform 0.3s ease-in-out;
+    padding: 2rem;
+    transition: left 0.3s ease;
   }
 
   .nav-links.open {
-    transform: scaleY(1);
+    left: 0;
   }
 
   .nav-links li {
@@ -67,46 +84,43 @@ code {
   }
 }
 
-
 /*navbar menu css end*/
 
 /*inventory page css start*/
+
 .container {
-  margin: 20px auto;
+  width: 100%;
+  height: 100vh; /* Use full viewport height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   padding: 20px;
-  max-width: 800px;
+  box-sizing: border-box;
 }
 
-.search-bar {
-  display: flex;
-  align-items: center;
+h2 {
   margin-bottom: 20px;
 }
 
-.search-bar input[type="text"] {
-  flex: 1;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
+.search-bar {
+  width: 100%;
+  max-width: 500px; /* Limit the width to prevent stretching too wide */
+  margin-bottom: 20px;
+}
+
+.search-bar input {
+  width: calc(100% - 90px); /* Adjust width for search button */
 }
 
 .search-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
+  width: 80px;
   margin-left: 10px;
-  padding: 8px 12px;
-  cursor: pointer;
-}
-
-.search-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
 }
 
 .table-container {
+  width: 100%;
+  max-width: 1000px; /* Limit the width of the table */
   overflow-x: auto;
 }
 
@@ -116,32 +130,39 @@ table {
 }
 
 th, td {
-  border: 1px solid #ddd;
-  padding: 8px;
+  padding: 12px 15px;
   text-align: left;
+  border-bottom: 1px solid #ddd;
 }
 
 th {
+  background-color: #007bff;
+  color: white;
+}
+
+tbody tr:nth-child(even) {
   background-color: #f2f2f2;
 }
 
 .pagination {
   margin-top: 20px;
+  text-align: center;
 }
 
 .pagination button {
+  padding: 8px 16px;
   background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 4px;
-  padding: 8px 12px;
-  margin-right: 5px;
+  border-radius: 5px;
   cursor: pointer;
+  margin: 0 5px;
 }
 
 .pagination button:hover {
   background-color: #0056b3;
 }
+
 
 /*inventory page css end*/
 
@@ -221,3 +242,102 @@ th {
 /*  display: none;*/
 /*}*/
 /*upload and download  of user page css end*/
+
+
+/*Item Details page css start*/
+
+.container {
+  max-width: 100%;
+  padding: 20px;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.search-bar {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.search-bar input[type="text"] {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  flex: 1;
+}
+
+.search-button {
+  padding: 10px 15px;
+  font-size: 16px;
+  border: none;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 5px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th,
+table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+table th {
+  background-color: #7ecde29c;
+}
+
+table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.table-pagination {
+  margin-top: 20px;
+}
+
+
+/*Item details page ccs end*/
+
+/*Item upload css start*/
+
+.container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+input[type="file"] {
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/*Item upload css ends*/

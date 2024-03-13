@@ -71,55 +71,11 @@ app.get('/api/inventory', (req, res) => {
         res.status(200).json(result);
     });
 });
-//
-// // API endpoint for uploading Excel file
-// app.post('/api/upload', upload.single('file'), (req, res) => {
-//     const workbook = new exceljs.Workbook();
-//     const filePath = path.join(__dirname, 'uploads', req.file.filename); // Correct file path using path.join
-//
-//     if (!fs.existsSync(filePath)) {
-//         console.error('File not found:', filePath);
-//         return res.status(404).json({ message: 'File not found' });
-//     }
-//
-//     workbook.xlsx.readFile(filePath)
-//         .then((worksheet) => {
-//             const sheet = worksheet.getWorksheet(1);
-//             const dataRows = [];
-//
-//             // Iterate over each row starting from the second row (excluding the header row)
-//             for (let i = 2; i <= sheet.rowCount; i++) {
-//                 const rowValues = sheet.getRow(i).values;
-//                 dataRows.push(rowValues);
-//             }
-//
-//             console.log('Data Rows:', dataRows);
-//
-//             // Insert rows into MySQL database
-//             const query = 'INSERT INTO item (item, itemname, brand, itemcategory, supplier) VALUES (?, ?, ?, ?, ?)';
-//             dataRows.forEach(row => {
-//                 db.query(query, row, (error, results) => {
-//                     if (error) {
-//                         console.error(error);
-//                         return res.status(500).json({ message: 'Internal server error' });
-//                     }
-//                     console.log('Inserted row:', row);
-//                 });
-//             });
-//
-//             res.json({ message: 'Data uploaded successfully' });
-//         })
-//         .catch((error) => {
-//             console.error('Error reading Excel file:', error);
-//             res.status(400).json({ message: 'Error parsing Excel file' });
-//         });
-// });
-
 
 // API endpoint for uploading Excel file
 app.post('/api/upload', upload.single('file'), (req, res) => {
     const workbook = new exceljs.Workbook();
-    const filePath = path.join(__dirname, 'uploads', req.file.filename); // Correct file path using path.join
+    const filePath = path.join(__dirname, 'uploads', req.file.filename);
 
     if (!fs.existsSync(filePath)) {
         console.error('File not found:', filePath);
@@ -134,7 +90,7 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
             // Iterate over each row starting from the second row (excluding the header row)
             for (let i = 2; i <= sheet.rowCount; i++) {
                 const rowValues = sheet.getRow(i).values;
-                const trimmedRow = rowValues.slice(1); // Skip the first element
+                const trimmedRow = rowValues.slice(1);
                 dataRows.push(trimmedRow);
             }
 
@@ -158,6 +114,20 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
             console.error('Error reading Excel file:', error);
             res.status(400).json({ message: 'Error parsing Excel file' });
         });
+});
+
+// API Endpoint to retrieve item data
+app.get('/api/itemDetails', (req, res) => {
+    const sql = 'SELECT * FROM item';
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error('Error retrieving form data:', err);
+            res.status(500).json({ error: 'Error retrieving form data' });
+            return;
+        }
+        console.log('Form data retrieved successfully');
+        res.status(200).json(result);
+    });
 });
 
 
