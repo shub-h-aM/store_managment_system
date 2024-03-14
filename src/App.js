@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import SignupPage from './components/SignupPage';
-import Inventory from './components/Inventory';
+import UserDetails from './components/UserDetails';
 import UploadFile from './components/UploadFile';
-import LoginPage from './components/LoginPage'; // Import LoginPage component
-import { FaBars, FaWarehouse, FaUpload } from 'react-icons/fa';
+import LoginPage from './components/LoginPage';
+import PieChartWithCustomizedLabel from './components/PieChart';
 import ItemDetails from "./components/ItemDetails";
-import {Home} from "@mui/icons-material";
+import {FaBars, FaWarehouse, FaUpload, FaChartPie} from 'react-icons/fa';
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [isMenuOpen, setIsMenuOpen] = useState(false); // Define isMenuOpen state
-    const toggleMenu = () => { // Define toggleMenu function
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
 
@@ -25,6 +25,7 @@ const App = () => {
         setIsLoggedIn(false);
     };
 
+
     return (
         <Router>
             <div>
@@ -36,13 +37,24 @@ const App = () => {
                         {!isLoggedIn ? (
                             <>
                                 <li>
-                                    <Link to="/signup" onClick={toggleMenu}>
-                                        SignUp
+                                    <Link to="/login" onClick={toggleMenu}>
+                                        Sign In
                                     </Link>
                                 </li>
+                                <li>
+                                    <Link to="/signup" onClick={toggleMenu}>
+                                        Sign Up
+                                    </Link>
+                                </li>
+
                             </>
                         ) : (
                             <>
+                                <li>
+                                    <Link to="/pie-chart" onClick={toggleMenu}>
+                                     <FaChartPie/>Pie Chart
+                                    </Link>
+                                </li>
                                 <li>
                                     <Link to="/inventory" onClick={toggleMenu}>
                                         <FaWarehouse/> Inventory
@@ -59,24 +71,35 @@ const App = () => {
                                     </Link>
                                 </li>
                                 <li>
-                                    <button onClick={handleLogout}>Logout</button>
+                                    <button  onClick={handleLogout}>Logout</button>
                                 </li>
                             </>
                         )}
                     </ul>
                 </nav>
                 <Routes>
-                    {/*<Route path="/" element={<Home />} />*/}
-                    <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
-                    <Route path="/signup" element={<SignupPage />} />
-                    <Route path="/inventory" element={<Inventory />} />
-                    <Route path="/upload" element={<UploadFile />} />
-                    <Route path="/itemDetails" element={<ItemDetails />} />
+                    {!isLoggedIn ? (
+                        <>
+                            <Route path="/" element={<LoginPage onLogin={handleLogin} />} />
+                            <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+                            <Route path="/signup" element={<SignupPage />} />
+                        </>
+                    ) : (
+                        <>
+                            <Route path="/" element={isLoggedIn ? <PieChartWithCustomizedLabel /> : <LoginPage onLogin={handleLogin} />} />
+                            <Route path="/pie-chart" element={<PieChartWithCustomizedLabel />} />
+                            {/* Add other routes for authenticated users */}
+                            <Route path="/inventory" element={<UserDetails />} />
+                            <Route path="/upload" element={<UploadFile />} />
+                            <Route path="/itemDetails" element={<ItemDetails />} />
+                        </>
+                    )}
                 </Routes>
+
             </div>
         </Router>
     );
 };
 
-export default App;
 
+export default App;

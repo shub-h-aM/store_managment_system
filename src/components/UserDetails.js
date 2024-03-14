@@ -12,7 +12,7 @@ const columns = [
     { id: 'ContactNumber', label: 'Contact Number', minWidth: 170 }
 ];
 
-const Inventory = () => {
+const UserDetails = () => {
     const [formData, setFormData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(false);
@@ -106,4 +106,4 @@ const Inventory = () => {
     );
 };
 
-export default Inventory;
+export default UserDetails;
