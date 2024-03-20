@@ -11,15 +11,18 @@ const app = express();
 const port = 5000;
 
 
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         const destinationPath = path.resolve(__dirname, '../upload_doc/uploads/');
+        console.log('Destination Path:', destinationPath);
         cb(null, destinationPath);
     },
     filename: function (req, file, cb) {
         cb(null, file.originalname);
     }
 });
+
 
 const upload = multer({ storage: storage });
 
@@ -58,8 +61,24 @@ app.post('/api/signup', (req, res) => {
     });
 });
 
+
+
+app.post('/api/items', (req, res) => {
+    const { date_of_purchase, item, item_type, brand, item_category, qty, total_amount, total_gst, location, supplier } = req.body;
+    const sql = 'INSERT INTO item (date_of_purchase, item, item_type, brand, item_category, qty, total_amount, total_gst, location, supplier) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?)';
+    db.query(sql, [date_of_purchase, item, item_type, brand, item_category, qty, total_amount, total_gst, location, supplier], (err, result) => {
+        if (err) {
+            console.error('Error inserting form data:', err);
+            res.status(500).json({ error: 'Error submitting form' });
+            return;
+        }
+        console.log('Form data inserted successfully');
+        res.status(200).json({ message: 'Form submitted successfully' });
+    });
+});
+
 // API Endpoint to retrieve form data
-app.get('/api/inventory', (req, res) => {
+app.get('/api/userDetails', (req, res) => {
     const sql = 'SELECT * FROM user';
     db.query(sql, (err, result) => {
         if (err) {
@@ -84,7 +103,9 @@ app.post('/api/login', (req, res) => {
         }
         if (result.length > 0) {
             // User found, login successful
-            res.status(200).json({ message: 'Login successful' });
+            const loggedInUser = result[0]; // Assuming username is unique, so we take the first user from the result
+            res.status(200).json({ message: 'Login successful', username: loggedInUser.username });
+
         } else {
             // User not found or invalid credentials
             res.status(401).json({ error: 'Invalid username or password' });
@@ -117,7 +138,8 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
             console.log('Data Rows:', dataRows);
 
             // Insert rows into MySQL database
-            const query = 'INSERT INTO item (item, itemname, brand, itemcategory, supplier) VALUES (?, ?, ?, ?, ?)';
+
+            const query = 'INSERT INTO item (date_of_purchase, item, item_type, brand, item_category, qty, total_amount, total_gst, location, supplier) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
             dataRows.forEach(row => {
                 db.query(query, row, (error, results) => {
                     if (error) {
@@ -136,6 +158,8 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
         });
 });
 
+
+
 // API Endpoint to retrieve item data
 app.get('/api/itemDetails', (req, res) => {
     const sql = 'SELECT * FROM item';
@@ -149,6 +173,7 @@ app.get('/api/itemDetails', (req, res) => {
         res.status(200).json(result);
     });
 });
+
 
 
 

@@ -4,7 +4,7 @@ import '../index.css';
 import TablePagination from '@mui/material/TablePagination';
 import { FaSearch } from 'react-icons/fa';
 
-// Assuming you still want to use the same column configuration as in ColumnGroupingTable
+
 const columns = [
     { id: 'Name', label: 'Name', minWidth: 170 },
     { id: 'Email', label: 'Email', minWidth: 170 },
@@ -26,7 +26,7 @@ const UserDetails = () => {
     const fetchData = async () => {
         try {
             setLoading(true); // Set loading state to true
-            const response = await axios.get('http://localhost:5000/api/inventory');
+            const response = await axios.get('http://localhost:5000/api/userDetails');
             setFormData(response.data); // Update formData state with fetched data
         } catch (error) {
             console.error('Error fetching form data:', error);
@@ -61,7 +61,7 @@ const UserDetails = () => {
 
     return (
         <div className="container">
-            <h2>Inventory</h2>
+            <h2>User Details</h2>
             <div className="search-bar">
                 <input
                     type="text"
