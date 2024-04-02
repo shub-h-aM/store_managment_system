@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import {BrowserRouter as Router, Route, Routes, Link, Navigate, useNavigate} from 'react-router-dom';
 import SignupPage from './components/SignupPage';
 import UserDetails from './components/UserDetails';
 import UploadFile from './components/UploadFile';
@@ -21,6 +21,7 @@ const App = () => {
         // Perform authentication, set isLoggedIn to true if successful
         setIsLoggedIn(true);
         setActiveUser(user); // Set active user details
+
     };
 
     const handleLogout = () => {
@@ -52,12 +53,13 @@ const App = () => {
                             </>
                         ) : (
                             <>
-                                {activeUser && ( // Check if active user exists
+                                {activeUser && (
                                     <li className="user-info">
-                                        <img src={activeUser.avatar} alt="User Avatar" className="avatar" />
+                                        <img src={activeUser.avatar} alt={activeUser.username} className="avatar" />
                                         <span className="username">{activeUser.name}</span>
                                     </li>
                                 )}
+
                                 <li>
                                     <Link to="/pie-chart" onClick={toggleMenu}>
                                         <FaChartPie /> Pie Chart
@@ -65,7 +67,7 @@ const App = () => {
                                 </li>
                                 <li>
                                     <Link to="/userDetails" onClick={toggleMenu}>
-                                        <FaWarehouse /> User
+                                        <FaWarehouse /> User Details
                                     </Link>
                                 </li>
                                 <li>
@@ -74,8 +76,8 @@ const App = () => {
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/itemDetails" onClick={toggleMenu}>
-                                        <FaWarehouse /> Item Inventory
+                                    <Link to="/item-details" onClick={toggleMenu}>
+                                        <FaWarehouse /> Item Details
                                     </Link>
                                 </li>
                                 <li>
@@ -88,18 +90,19 @@ const App = () => {
                 <Routes>
                     {!isLoggedIn ? (
                         <>
-                            <Route path="/" element={<LoginPage onLogin={handleLogin} />} />
                             <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
                             <Route path="/signup" element={<SignupPage />} />
+                            <Route path="*" element={<Navigate to={"/login"} />} />
                         </>
                     ) : (
                         <>
-                            <Route path="/" element={isLoggedIn ? <PieChartWithCustomizedLabel /> : <LoginPage onLogin={handleLogin} />} />
+                            <Route path="/" element={ <PieChartWithCustomizedLabel />} />
                             <Route path="/pie-chart" element={<PieChartWithCustomizedLabel />} />
                             {/* Add other routes for authenticated users */}
-                            <Route path="/inventory" element={<UserDetails />} />
-                            <Route path="/upload-item" element={<UploadFile />} />
-                            <Route path="/item-inventory" element={<ItemDetails />} />
+                            <Route path="/userDetails" element={<UserDetails />} />
+                            <Route path="/upload" element={<UploadFile />} />
+                            <Route path="/item-details" element={<ItemDetails />} />
+                            <Route path="*" element={<Navigate to={"/"} />} />
                         </>
                     )}
                 </Routes>

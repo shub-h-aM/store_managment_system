@@ -63,7 +63,7 @@ app.post('/api/signup', (req, res) => {
 
 
 
-app.post('/api/items', (req, res) => {
+app.post('/api/item', (req, res) => {
     const { date_of_purchase, item, item_type, brand, item_category, qty, total_amount, total_gst, location, supplier } = req.body;
     const sql = 'INSERT INTO item (date_of_purchase, item, item_type, brand, item_category, qty, total_amount, total_gst, location, supplier) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?)';
     db.query(sql, [date_of_purchase, item, item_type, brand, item_category, qty, total_amount, total_gst, location, supplier], (err, result) => {

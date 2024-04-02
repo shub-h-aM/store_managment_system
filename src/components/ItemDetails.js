@@ -17,10 +17,10 @@ const ItemDetails = () => {
         fetchData();
     }, []);
 
-    const fetchData = async () => {
+    const fetchData =  async () => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:5000/api/itemDetails');
+            const response = await  axios.get('http://localhost:5000/api/itemDetails');
             setFormData(response.data);
         } catch (error) {
             console.error('Error fetching item data:', error);

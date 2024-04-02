@@ -41,7 +41,7 @@ const UploadFile = () => {
     };
 
     const handleSubmit = () => {
-        axios.post('http://localhost:5000/api/items', formData)
+        axios.post('http://localhost:5000/api/upload', formData)
             .then((response) => {
                 console.log(response.data.message);
             })

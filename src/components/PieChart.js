@@ -13,7 +13,7 @@ const PieChartWithCustomizedLabel = () => {
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await fetch('http://localhost:5000/api/item');
+                const response = await fetch('http://localhost:5000/api/pie-chart');
                 if (!response.ok) {
                     throw new Error('Failed to fetch data');
                 }
