@@ -8,7 +8,6 @@ import UploadFile from './components/UploadFile';
 import ItemDetails from './components/ItemDetails';
 import { FaBars, FaWarehouse, FaUpload, FaChartPie } from 'react-icons/fa';
 import PieChartWithCustomizedLabel from "./components/PieChart";
-import InvoicePage from "./components/InvoicePage";
 import InvoiceForm from "./components/Invoice/InvoiceForm";
 
 const App = () => {
@@ -46,7 +45,7 @@ const App = () => {
 
         const resetTimeout = () => {
             clearTimeout(timeout); // Clear the existing timeout
-            timeout = setTimeout(logout, 5 * 60 * 1000); // 5 minutes timeout
+            timeout = setTimeout(logout, 15 * 60 * 1000); // 5 minutes timeout
         };
 
         resetTimeout(); // Reset timeout on component mount
@@ -146,7 +145,6 @@ const App = () => {
                             <Route path="/userDetails" element={<UserDetails />} />
                             <Route path="/upload" element={<UploadFile />} />
                             <Route path="/item-details" element={<ItemDetails />} />
-                            {/*<Route path="/invoice" element={<InvoicePage />} />*/}
                             <Route path="/invoice" element={<InvoiceForm />} />
                             <Route path="*" element={<Navigate to="/" />} />
                         </>

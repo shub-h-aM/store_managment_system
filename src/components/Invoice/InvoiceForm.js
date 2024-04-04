@@ -89,6 +89,34 @@ class InvoiceForm extends React.Component {
         });
     };
 
+    handleSave = async () => {
+        const { billTo, billToEmail, billToAddress, billFrom, billFromEmail, billFromAddress, notes, total, subTotal, taxAmount, discountAmount, items } = this.state;
+
+        try {
+            const response = await fetch('/api/invoices', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    customerName: billTo,
+                    items: items
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to save invoice');
+            }
+
+            // Assuming the response contains a success message
+            const data = await response.json();
+            alert(data.message); // Display success message
+        } catch (error) {
+            console.error('Error saving invoice:', error);
+            alert('Failed to save invoice. Please try again later.');
+        }
+    };
+
     onItemizedItemEdit(evt) {
         var item = {
             id: evt.target.id,

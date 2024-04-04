@@ -8,6 +8,8 @@ import Modal from 'react-bootstrap/Modal';
 import { BiPaperPlane, BiCloudDownload } from "react-icons/bi";
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf'
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 
 function GenerateInvoice() {
     html2canvas(document.querySelector("#invoiceCapture")).then((canvas) => {
@@ -27,9 +29,41 @@ function GenerateInvoice() {
 }
 
 class InvoiceModal extends React.Component {
-    constructor(props) {
-        super(props);
+
+    handleSave = () => {
+        // Send a POST request to save the invoice data
+        fetch('http://localhost:5000/api/invoices', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                customerName: this.props.info.billTo, // Assuming billTo is the customer name
+                items: this.props.items,
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Invoice saved successfully:', data);
+                // Optionally, you can handle success feedback here
+            })
+            .catch(error => {
+                console.error('Error saving invoice:', error);
+                // Optionally, you can handle error feedback here
+            });
+    };
+
+    handleEmailShare = () => {
+        const emailSubject = encodeURIComponent('Invoice');
+        const emailBody = encodeURIComponent('Please find the attached invoice.');
+        window.location.href = `mailto:?subject=${emailSubject}&body=${emailBody}`;
     }
+
+    handleWhatsAppShare = () => {
+        const message = encodeURIComponent('Please find the attached invoice.');
+        window.location.href = `https://wa.me/?text=${message}`;
+    }
+
     render() {
         return(
             <div>
@@ -104,14 +138,14 @@ class InvoiceModal extends React.Component {
                                     <td className="fw-bold" style={{width: '100px'}}>SUBTOTAL</td>
                                     <td className="text-end" style={{width: '100px'}}>{this.props.currency} {this.props.subTotal}</td>
                                 </tr>
-                                {this.props.taxAmmount != 0.00 &&
+                                {this.props.taxAmmount !== 0.00 &&
                                     <tr className="text-end">
                                         <td></td>
                                         <td className="fw-bold" style={{width: '100px'}}>TAX</td>
                                         <td className="text-end" style={{width: '100px'}}>{this.props.currency} {this.props.taxAmmount}</td>
                                     </tr>
                                 }
-                                {this.props.discountAmmount != 0.00 &&
+                                {this.props.discountAmmount !== 0.00 &&
                                     <tr className="text-end">
                                         <td></td>
                                         <td className="fw-bold" style={{width: '100px'}}>DISCOUNT</td>
@@ -133,14 +167,37 @@ class InvoiceModal extends React.Component {
                     </div>
                     <div className="pb-4 px-4">
                         <Row>
-                            <Col md={6}>
+                            <Col md={2}>
+                                <Button variant="primary" className="d-block w-100 mt-3 mt-md-0" onClick={this.handleSave}>
+                                    <BiPaperPlane style={{width: '16px', height: '16px', marginTop: '-3px'}} className="me-2"/>
+                                    Save
+                                </Button>
                             </Col>
-                            <Col md={6}>
+                            <Col md={3}>
                                 <Button variant="outline-primary" className="d-block w-100 mt-3 mt-md-0" onClick={GenerateInvoice}>
                                     <BiCloudDownload style={{width: '16px', height: '16px', marginTop: '-3px'}} className="me-2"/>
                                     Download Copy
                                 </Button>
                             </Col>
+                            <Col md={2}>
+                                <Button variant="secondary" className="d-block w-100 mt-3 mt-md-0" style={{ "--bs-btn-bg": "#c95955" }} onClick={this.props.closeModal}>
+                                    Close
+                                </Button>
+
+                            </Col>
+                            <Col md={2}>
+                                <Button variant="info" className="d-block w-100 mt-3 mt-md-0" onClick={this.handleEmailShare}>
+                                    <BiPaperPlane style={{width: '16px', height: '16px', marginTop: '-3px'}} className="me-2"/>
+                                    Email
+                                </Button>
+                            </Col>
+                            <Col md={2}>
+                                <Button variant="success" className="d-block w-100 mt-3 mt-md-0" onClick={this.handleWhatsAppShare}>
+                                    <BiPaperPlane style={{width: '16px', height: '16px', marginTop: '-3px'}} className="me-2"/>
+                                    <FontAwesomeIcon icon={faWhatsapp} />
+                                </Button>
+                            </Col>
+
                         </Row>
                     </div>
                 </Modal>
