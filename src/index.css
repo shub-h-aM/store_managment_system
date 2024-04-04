@@ -464,3 +464,106 @@ input[type="password"] {
 }
 
 /*upload page css end*/
+
+
+/*Home page css start*/
+
+.featured-products {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.product {
+
+  display: inline-block;
+  margin: 20px;
+  text-align: center;
+}
+
+.product img {
+  width: 200px;
+  height: 200px;
+}
+
+.promotion {
+  /* Add styling for special promotion section */
+}
+
+.categories {
+  /* Add styling for categories section */
+}
+
+/*Home page css end*/
+
+/*Invoice page css start*/
+
+/* components/InvoicePage.css */
+
+.invoice-page {
+  font-family: Arial, sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.header p {
+  margin: 0;
+}
+
+.customer-details input {
+  width: 100%;
+}
+
+.items {
+  margin-top: 20px;
+}
+
+.items table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.items th, .items td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+
+.items button {
+  margin-top: 10px;
+}
+
+.totals p {
+  margin: 5px 0;
+}
+
+.footer {
+  margin-top: 20px;
+}
+
+.footer p {
+  margin: 5px 0;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+
+/*Invoice page css end*/

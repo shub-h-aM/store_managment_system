@@ -1,41 +1,81 @@
-import React, { useState } from 'react';
-import {BrowserRouter as Router, Route, Routes, Link, Navigate, useNavigate} from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes, Link, Navigate } from 'react-router-dom';
+import HomePage from './components/HomePage';
+import LoginPage from './components/LoginPage';
 import SignupPage from './components/SignupPage';
 import UserDetails from './components/UserDetails';
 import UploadFile from './components/UploadFile';
-import LoginPage from './components/LoginPage';
-import PieChartWithCustomizedLabel from './components/PieChart';
-import ItemDetails from "./components/ItemDetails";
+import ItemDetails from './components/ItemDetails';
 import { FaBars, FaWarehouse, FaUpload, FaChartPie } from 'react-icons/fa';
+import PieChartWithCustomizedLabel from "./components/PieChart";
+import InvoicePage from "./components/InvoicePage";
+import InvoiceForm from "./components/Invoice/InvoiceForm";
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [activeUser, setActiveUser] = useState(null); // State to hold active user details
+    const [activeUser, setActiveUser] = useState(null);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
-
     const handleLogin = (user) => {
-        // Perform authentication, set isLoggedIn to true if successful
         setIsLoggedIn(true);
-        setActiveUser(user); // Set active user details
-
+        setActiveUser(user);
+        localStorage.setItem('isLoggedIn', true); // Store login state in local storage
+        // Close the menu after successful login
+        setIsMenuOpen(false);
     };
 
     const handleLogout = () => {
-        // Perform logout action, set isLoggedIn to false
         setIsLoggedIn(false);
-        setActiveUser(null); // Clear active user details
+        setActiveUser(null);
+        localStorage.removeItem('isLoggedIn'); // Remove login state from local storage
     };
+
+    useEffect(() => {
+        let timeout;
+        const logout = () => {
+            localStorage.removeItem('token'); // Remove token from local storage
+            // Perform any other logout actions
+            console.log('User logged out due to inactivity');
+            // Optionally, show a warning to the user before logging them out
+            // window.alert('You will be logged out due to inactivity.');
+            handleLogout(); // Logout the user
+        };
+
+        const resetTimeout = () => {
+            clearTimeout(timeout); // Clear the existing timeout
+            timeout = setTimeout(logout, 5 * 60 * 1000); // 5 minutes timeout
+        };
+
+        resetTimeout(); // Reset timeout on component mount
+
+        // Event listeners to reset timeout on user activity
+        window.addEventListener('mousemove', resetTimeout);
+        window.addEventListener('keydown', resetTimeout);
+
+        // Check for login state in local storage and set initial state
+        const isLoggedInStored = localStorage.getItem('isLoggedIn');
+        if (isLoggedInStored) {
+            setIsLoggedIn(true);
+        }
+
+        return () => {
+            window.removeEventListener('mousemove', resetTimeout); // Cleanup event listeners
+            window.removeEventListener('keydown', resetTimeout);
+        };
+    }, []);
+
+
+
 
     return (
         <Router>
             <div>
                 <nav className="navbar">
                     <div className="menu-toggle" onClick={toggleMenu}>
-                        <FaBars />
+                        <FaBars/>
                     </div>
                     <ul className={`nav-links ${isMenuOpen ? 'open' : ''}`}>
                         {!isLoggedIn ? (
@@ -55,29 +95,34 @@ const App = () => {
                             <>
                                 {activeUser && (
                                     <li className="user-info">
-                                        <img src={activeUser.avatar} alt={activeUser.username} className="avatar" />
+                                        <img src={activeUser.avatar} alt={activeUser.username} className="avatar"/>
                                         <span className="username">{activeUser.name}</span>
                                     </li>
                                 )}
 
                                 <li>
                                     <Link to="/pie-chart" onClick={toggleMenu}>
-                                        <FaChartPie /> Pie Chart
+                                        <FaChartPie/> Pie Chart
                                     </Link>
                                 </li>
                                 <li>
                                     <Link to="/userDetails" onClick={toggleMenu}>
-                                        <FaWarehouse /> User Details
+                                        <FaWarehouse/> User Details
                                     </Link>
                                 </li>
                                 <li>
                                     <Link to="/upload" onClick={toggleMenu}>
-                                        <FaUpload /> Add Item
+                                        <FaUpload/> Add Item
                                     </Link>
                                 </li>
                                 <li>
                                     <Link to="/item-details" onClick={toggleMenu}>
-                                        <FaWarehouse /> Item Details
+                                        <FaWarehouse/> Item Details
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link to="/invoice" onClick={toggleMenu}>
+                                        <FaWarehouse/> Invoice
                                     </Link>
                                 </li>
                                 <li>
@@ -90,19 +135,20 @@ const App = () => {
                 <Routes>
                     {!isLoggedIn ? (
                         <>
-                            <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
-                            <Route path="/signup" element={<SignupPage />} />
-                            <Route path="*" element={<Navigate to={"/login"} />} />
+                            <Route path="/login" element={<LoginPage onLogin={handleLogin}/>}/>
+                            <Route path="/signup" element={<SignupPage/>}/>
+                            <Route path="*" element={<Navigate to="/login"/>}/>
                         </>
                     ) : (
                         <>
-                            <Route path="/" element={ <PieChartWithCustomizedLabel />} />
+                            <Route path="/" element={<HomePage/>}/>
                             <Route path="/pie-chart" element={<PieChartWithCustomizedLabel />} />
-                            {/* Add other routes for authenticated users */}
                             <Route path="/userDetails" element={<UserDetails />} />
                             <Route path="/upload" element={<UploadFile />} />
                             <Route path="/item-details" element={<ItemDetails />} />
-                            <Route path="*" element={<Navigate to={"/"} />} />
+                            {/*<Route path="/invoice" element={<InvoicePage />} />*/}
+                            <Route path="/invoice" element={<InvoiceForm />} />
+                            <Route path="*" element={<Navigate to="/" />} />
                         </>
                     )}
                 </Routes>

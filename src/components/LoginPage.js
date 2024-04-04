@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const LoginPage = ({ onLogin }) => {
@@ -6,15 +6,24 @@ const LoginPage = ({ onLogin }) => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    // Effect to check if user is logged in already
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            // If token exists, user is already logged in
+            // You can redirect the user to another page or do any necessary action here
+            console.log('User already logged in');
+        }
+    }, []);
 
+    // Function to handle user login
+    const handleLogin = async () => {
         try {
             const response = await axios.post('http://localhost:5000/api/login', { username, password });
             if (response.status === 200) {
-                const user = response.data; // Extract user details from the response
-                setError('');
-                onLogin(user); // Pass the user details to the onLogin function
+                const { token, user } = response.data;
+                localStorage.setItem('token', token); // Store token in local storage
+                onLogin(user); // Pass user details to onLogin function
             } else {
                 setError('Invalid username or password. Please try again.');
             }
@@ -22,6 +31,12 @@ const LoginPage = ({ onLogin }) => {
             console.error('Error logging in:', error);
             setError('Error logging in. Please try again later.');
         }
+    };
+
+    // Function to handle form submission
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        handleLogin();
     };
 
     return (

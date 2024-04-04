@@ -174,6 +174,23 @@ app.get('/api/itemDetails', (req, res) => {
     });
 });
 
+// New endpoint for creating invoices
+app.post('/api/invoices', (req, res) => {
+    const { customerName, items } = req.body;
+    const itemsJSON = JSON.stringify(items);
+    const sql = 'INSERT INTO invoices (customer_name, items) VALUES (?, ?)';
+    db.query(sql, [customerName, itemsJSON], (err, result) => {
+        if (err) {
+            console.error('Error inserting invoice data:', err);
+            res.status(500).json({ error: 'Error creating invoice' });
+            return;
+        }
+        console.log('Invoice created successfully');
+        res.status(200).json({ message: 'Invoice created successfully' });
+    });
+});
+
+
 
 
 
