@@ -56,23 +56,24 @@ class InvoiceForm extends React.Component {
         var items = {
             id: id,
             name: '',
-            price: '0.00',
+            price: '1.00',
             description: '',
-            quantity:0
+            quantity: 1
         }
         this.state.items.push(items);
         this.setState(this.state.items);
     }
+
     handleCalculateTotal() {
         var items = this.state.items;
         var subTotal = 0;
 
-        items.map(function(items) {
-            subTotal = parseFloat(subTotal + (parseFloat(items.price).toFixed(2) * parseInt(items.quantity))).toFixed(2)
+        items.forEach(item => {
+            subTotal += parseFloat((parseFloat(item.price) * parseInt(item.quantity)).toFixed(2));
         });
 
         this.setState({
-            subTotal: parseFloat(subTotal).toFixed(2)
+            subTotal: subTotal.toFixed(2)
         }, () => {
             this.setState({
                 taxAmount: parseFloat(parseFloat(subTotal) * (this.state.taxRate / 100)).toFixed(2)
@@ -81,13 +82,13 @@ class InvoiceForm extends React.Component {
                     discountAmount: parseFloat(parseFloat(subTotal) * (this.state.discountRate / 100)).toFixed(2)
                 }, () => {
                     this.setState({
-                        total: ((subTotal - this.state.discountAmount) + parseFloat(this.state.taxAmount))
+                        total: (subTotal - this.state.discountAmount) + parseFloat(this.state.taxAmount)
                     });
                 });
             });
         });
-
     };
+
     onItemizedItemEdit(evt) {
         var item = {
             id: evt.target.id,
@@ -97,7 +98,7 @@ class InvoiceForm extends React.Component {
         var items = this.state.items.slice();
         var newItems = items.map(function(items) {
             for (var key in items) {
-                if (key === item.name && items.id === item.id) {
+                if (key == item.name && items.id == item.id) {
                     items[key] = item.value;
                 }
             }
@@ -207,14 +208,12 @@ class InvoiceForm extends React.Component {
                     <div className="sticky-top pt-md-3 pt-xl-4">
                         <Button variant="primary" type="submit" className="d-block w-100 btn-secondary">Review Invoice</Button>
                         <InvoiceModal showModal={this.state.isOpen} closeModal={this.closeModal} info={this.state} items={this.state.items} currency={this.state.currency} subTotal={this.state.subTotal} taxAmount={this.state.taxAmount} discountAmount={this.state.discountAmount} total={this.state.total}/>
-                        <Form.Group className="mb-3">
-                            <Form.Label className="fw-bold">Currency:</Form.Label>
-                            <Form.Select onChange={event => this.onCurrencyChange({currency: event.target.value})}
-                                         className="btn btn-light my-1" aria-label="Change Currency">
-                                <option value="₹">INR (Indian Rupee)</option>
-                                <option value="$">USD (United States Dollar)</option>
-                            </Form.Select>
-                        </Form.Group>
+                        {/*<Form.Group className="mb-3">*/}
+                        {/*    <Form.Label className="fw-bold">Currency:</Form.Label>*/}
+                        {/*    <Form.Select onChange={event => this.onCurrencyChange({currency: event.target.value})} className="btn btn-light my-1" aria-label="Change Currency">*/}
+                        {/*        <option value="₹">INR (Indian Rupee)</option>*/}
+                        {/*    </Form.Select>*/}
+                        {/*</Form.Group>*/}
                         <Form.Group className="my-3">
                             <Form.Label className="fw-bold">Tax rate:</Form.Label>
                             <InputGroup className="my-1 flex-nowrap">
