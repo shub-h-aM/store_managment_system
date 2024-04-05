@@ -8,10 +8,10 @@ import {IoIosAddCircle} from "react-icons/io";
 
 class InvoiceItem extends React.Component {
     render() {
-        var onItemizedItemEdit = this.props.onItemizedItemEdit;
-        var currency = this.props.currency;
-        var rowDel = this.props.onRowDel;
-        var itemTable = this.props.items.map(function(item, index) {
+        const onItemizedItemEdit = this.props.onItemizedItemEdit;
+        const currency = this.props.currency;
+        const rowDel = this.props.onRowDel;
+        const itemTable = this.props.items.map(function (item, index) {
             return (
                 <ItemRow
                     onItemizedItemEdit={onItemizedItemEdit}
@@ -86,7 +86,7 @@ class ItemRow extends React.Component {
                             name: "price",
                             min: 1,
                             step: "0.01",
-                            presicion: 2,
+                            precision: 2,
                             textAlign: "text-end",
                             value: this.props.item.price,
                             id: this.props.item.id,

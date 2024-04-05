@@ -10,6 +10,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
+import {cilJustifyCenter} from "@coreui/icons";
 
 function GenerateInvoice() {
     html2canvas(document.querySelector("#invoiceCapture")).then((canvas) => {
@@ -31,25 +32,22 @@ function GenerateInvoice() {
 class InvoiceModal extends React.Component {
 
     handleSave = () => {
-        // Send a POST request to save the invoice data
         fetch('http://localhost:5000/api/invoices', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                customerName: this.props.info.billTo, // Assuming billTo is the customer name
+                customerName: this.props.info.billTo,
                 items: this.props.items,
             }),
         })
             .then(response => response.json())
             .then(data => {
                 console.log('Invoice saved successfully:', data);
-                // Optionally, you can handle success feedback here
             })
             .catch(error => {
                 console.error('Error saving invoice:', error);
-                // Optionally, you can handle error feedback here
             });
     };
 
@@ -71,10 +69,11 @@ class InvoiceModal extends React.Component {
                     <div id="invoiceCapture">
                         <div className="d-flex flex-row justify-content-between align-items-start bg-light w-100 p-4">
                             <div className="w-100">
-                                <h4 className="fw-bold my-2">{this.props.info.billFrom||'Shubham'}</h4>
+                                <h6 className="fw-bold text-secondary mb-1">GST #: 345trf656ytf6</h6>
                                 <h6 className="fw-bold text-secondary mb-1">
                                     Invoice #: {this.props.info.invoiceNumber||''}
                                 </h6>
+                                {/*<h4 className="fw-bold my-2" style={{textAlign: 'center'}}>{this.props.info.billFrom||'Shubham'}</h4>*/}
                             </div>
                             <div className="text-end ms-4">
                                 <h6 className="fw-bold mt-1 mb-2">Amount&nbsp;Due:</h6>
@@ -85,9 +84,9 @@ class InvoiceModal extends React.Component {
                             <Row className="mb-4">
                                 <Col md={4}>
                                     <div className="fw-bold">Billed From:</div>
-                                    <div>{this.props.info.billFrom||''}</div>
-                                    <div>{this.props.info.billFromAddress||''}</div>
-                                    <div>{this.props.info.billFromEmail||''}</div>
+                                    <div>{"Shubham Tripathi"}</div>
+                                    <div>{"Delhi, 122022"}</div>
+                                    <div>{"9090909090"}</div>
                                 </Col>
                                 <Col md={4}>
                                     <div className="fw-bold">Billed to:</div>
