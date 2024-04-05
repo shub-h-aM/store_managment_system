@@ -10,9 +10,16 @@ class InvoiceItem extends React.Component {
         var onItemizedItemEdit = this.props.onItemizedItemEdit;
         var currency = this.props.currency;
         var rowDel = this.props.onRowDel;
-        var itemTable = this.props.items.map(function(item) {
+        var itemTable = this.props.items.map(function(item, index) {
             return (
-                <ItemRow onItemizedItemEdit={onItemizedItemEdit} item={item} onDelEvent={rowDel.bind(this)} key={item.id} currency={currency}/>
+                <ItemRow
+                    onItemizedItemEdit={onItemizedItemEdit}
+                    item={item}
+                    onDelEvent={rowDel.bind(this)}
+                    key={item.id}
+                    currency={currency}
+                    serialNumber={index + 1}
+                />
             )
         });
         return (
@@ -20,6 +27,7 @@ class InvoiceItem extends React.Component {
                 <Table>
                     <thead>
                     <tr>
+                        <th>S.No.</th> {/* Add Serial Number column */}
                         <th>ITEM</th>
                         <th>QTY</th>
                         <th>PRICE/RATE</th>
@@ -35,8 +43,8 @@ class InvoiceItem extends React.Component {
         );
 
     }
-
 }
+
 class ItemRow extends React.Component {
     onDelEvent() {
         this.props.onDelEvent(this.props.item);
@@ -44,6 +52,7 @@ class ItemRow extends React.Component {
     render() {
         return (
             <tr>
+                <td>{this.props.serialNumber}</td> {/* Render Serial Number */}
                 <td style={{width: '100%'}}>
                     <EditableField
                         onItemizedItemEdit={this.props.onItemizedItemEdit}
@@ -53,15 +62,6 @@ class ItemRow extends React.Component {
                             placeholder: "Item name",
                             value: this.props.item.name,
                             id: this.props.item.id,
-                        }}/>
-                    <EditableField
-                        onItemizedItemEdit={this.props.onItemizedItemEdit}
-                        cellData={{
-                            type: "text",
-                            name: "description",
-                            placeholder: "Item description",
-                            value: this.props.item.description,
-                            id: this.props.item.id
                         }}/>
                 </td>
                 <td style={{minWidth: '70px'}}>

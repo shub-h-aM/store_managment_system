@@ -35,8 +35,8 @@ class InvoiceForm extends React.Component {
         this.state.items = [
             {
                 id: 0,
+                sno:1,
                 name: '',
-                description: '',
                 price: '1.00',
                 quantity: 1
             }
@@ -55,9 +55,9 @@ class InvoiceForm extends React.Component {
         var id = (+ new Date() + Math.floor(Math.random() * 999999)).toString(36);
         var items = {
             id: id,
+            sno:1,
             name: '',
             price: '1.00',
-            description: '',
             quantity: 1
         }
         this.state.items.push(items);

@@ -103,8 +103,9 @@ class InvoiceModal extends React.Component {
                             <Table className="mb-0">
                                 <thead>
                                 <tr>
+                                    <th>S.No</th>
+                                    <th>ITEM DESCRIPTION</th>
                                     <th>QTY</th>
-                                    <th>DESCRIPTION</th>
                                     <th className="text-end">PRICE</th>
                                     <th className="text-end">AMOUNT</th>
                                 </tr>
@@ -113,14 +114,19 @@ class InvoiceModal extends React.Component {
                                 {this.props.items.map((item, i) => {
                                     return (
                                         <tr id={i} key={i}>
-                                            <td style={{width: '70px'}}>
-                                                {item.quantity}
+                                            <td style={{width: '50px'}}>
+                                                {item.sno}
                                             </td>
                                             <td>
-                                                {item.name} - {item.description}
+                                                {item.name}
                                             </td>
-                                            <td className="text-end" style={{width: '100px'}}>{this.props.currency} {item.price}</td>
-                                            <td className="text-end" style={{width: '100px'}}>{this.props.currency} {item.price * item.quantity}</td>
+                                            <td style={{width: '60px'}}>
+                                                {item.quantity}
+                                            </td>
+                                            <td className="text-end"
+                                                style={{width: '100px'}}>{this.props.currency} {item.price}</td>
+                                            <td className="text-end"
+                                                style={{width: '100px'}}>{this.props.currency} {item.price * item.quantity}</td>
                                         </tr>
                                     );
                                 })}
