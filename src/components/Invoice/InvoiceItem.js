@@ -4,6 +4,7 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import { BiTrash } from "react-icons/bi";
 import EditableField from './EditableField';
+import {IoIosAddCircle} from "react-icons/io";
 
 class InvoiceItem extends React.Component {
     render() {
@@ -27,7 +28,7 @@ class InvoiceItem extends React.Component {
                 <Table>
                     <thead>
                     <tr>
-                        <th>S.No.</th> {/* Add Serial Number column */}
+                        <th>S.No.</th>
                         <th>ITEM</th>
                         <th>QTY</th>
                         <th>PRICE/RATE</th>
@@ -38,7 +39,7 @@ class InvoiceItem extends React.Component {
                     {itemTable}
                     </tbody>
                 </Table>
-                <Button className="fw-bold btn-secondary" onClick={this.props.onRowAdd}>Add Item</Button>
+                <Button className="fw-bold btn-secondary" onClick={this.props.onRowAdd}><IoIosAddCircle style={{paddingBottom :"-4px",marginBottom : "3px"}}/> Item</Button>
             </div>
         );
 
@@ -52,7 +53,7 @@ class ItemRow extends React.Component {
     render() {
         return (
             <tr>
-                <td>{this.props.serialNumber}</td> {/* Render Serial Number */}
+                <td>{this.props.serialNumber}</td>
                 <td style={{width: '100%'}}>
                     <EditableField
                         onItemizedItemEdit={this.props.onItemizedItemEdit}

@@ -8,14 +8,15 @@ import Card from 'react-bootstrap/Card';
 import InvoiceItem from './InvoiceItem';
 import InvoiceModal from './InvoiceModal';
 import InputGroup from 'react-bootstrap/InputGroup';
+import {FaRupeeSign} from "react-icons/fa";
 
 class InvoiceForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             isOpen: false,
-            currency: '₹',
             currentDate: '',
+            currency:"₹",
             invoiceNumber: 1,
             dateOfIssue: '',
             billTo: '',
@@ -30,7 +31,8 @@ class InvoiceForm extends React.Component {
             taxRate: '',
             taxAmount: '0.00',
             discountRate: '',
-            discountAmount: '0.00'
+            discountAmount: '0.00',
+            discountType: '%'
         };
         this.state.items = [
             {
@@ -78,8 +80,14 @@ class InvoiceForm extends React.Component {
             this.setState({
                 taxAmount: parseFloat(parseFloat(subTotal) * (this.state.taxRate / 100)).toFixed(2)
             }, () => {
+                let discountAmmount;
+                if (this.state.discountType === '%') {
+                    discountAmmount = parseFloat(parseFloat(subTotal) * (this.state.discountRate / 100)).toFixed(2);
+                } else {
+                    discountAmmount = parseFloat(this.state.discountRate).toFixed(2);
+                }
                 this.setState({
-                    discountAmount: parseFloat(parseFloat(subTotal) * (this.state.discountRate / 100)).toFixed(2)
+                    discountAmount: discountAmmount
                 }, () => {
                     this.setState({
                         total: (subTotal - this.state.discountAmount) + parseFloat(this.state.taxAmount)
@@ -87,34 +95,6 @@ class InvoiceForm extends React.Component {
                 });
             });
         });
-    };
-
-    handleSave = async () => {
-        const { billTo, billToEmail, billToAddress, billFrom, billFromEmail, billFromAddress, notes, total, subTotal, taxAmount, discountAmount, items } = this.state;
-
-        try {
-            const response = await fetch('/api/invoices', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    customerName: billTo,
-                    items: items
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to save invoice');
-            }
-
-            // Assuming the response contains a success message
-            const data = await response.json();
-            alert(data.message); // Display success message
-        } catch (error) {
-            console.error('Error saving invoice:', error);
-            alert('Failed to save invoice. Please try again later.');
-        }
     };
 
     onItemizedItemEdit(evt) {
@@ -136,13 +116,19 @@ class InvoiceForm extends React.Component {
         this.handleCalculateTotal();
     };
     editField = (event) => {
-        this.setState({
-            [event.target.name]: event.target.value
-        });
-        this.handleCalculateTotal();
-    };
-    onCurrencyChange = (selectedOption) => {
-        this.setState(selectedOption);
+        if (event.target.name === 'discountType') {
+            this.setState({
+                [event.target.name]: event.target.value
+            }, () => {
+                this.handleCalculateTotal();
+            });
+        } else {
+            this.setState({
+                [event.target.name]: event.target.value
+            }, () => {
+                this.handleCalculateTotal();
+            });
+        }
     };
     openModal = (event) => {
         event.preventDefault()
@@ -196,32 +182,30 @@ class InvoiceForm extends React.Component {
                         <Row className="mt-4 justify-content-end">
                             <Col lg={6}>
                                 <div className="d-flex flex-row align-items-start justify-content-between">
-                  <span className="fw-bold">Subtotal:
-                  </span>
-                                    <span>{this.state.currency}
-                                        {this.state.subTotal}</span>
+                                    <span className="fw-bold">Subtotal:</span>
+                                    <span>{this.state.subTotal}</span>
                                 </div>
                                 <div className="d-flex flex-row align-items-start justify-content-between mt-2">
                                     <span className="fw-bold">Discount:</span>
                                     <span>
-                    <span className="small ">({this.state.discountRate || 0}%)</span>
+                                        <span className="small">({this.state.discountRate || 0}{this.state.discountType})
+                                        </span>
                                         {this.state.currency}
-                                        {this.state.discountAmount || 0}</span>
+                                        {this.state.discountAmount || 0}
+                                    </span>
                                 </div>
                                 <div className="d-flex flex-row align-items-start justify-content-between mt-2">
-                  <span className="fw-bold">Tax:
-                  </span>
+                                    <span className="fw-bold">Tax:</span>
                                     <span>
-                    <span className="small ">({this.state.taxRate || 0}%)</span>
+                                        <span className="small ">({this.state.taxRate || 0}%)</span>
                                         {this.state.currency}
-                                        {this.state.taxAmount || 0}</span>
+                                        {this.state.taxAmount || 0}
+                                    </span>
                                 </div>
                                 <hr/>
                                 <div className="d-flex flex-row align-items-start justify-content-between" style={{
-                                    fontSize: '1.125rem'
-                                }}>
-                  <span className="fw-bold">Total:
-                  </span>
+                                    fontSize: '1.125rem'}}>
+                                    <span className="fw-bold">Total:</span>
                                     <span className="fw-bold">{this.state.currency}
                                         {this.state.total || 0}</span>
                                 </div>
@@ -229,19 +213,14 @@ class InvoiceForm extends React.Component {
                         </Row>
                         <hr className="my-4"/>
                         <Form.Label className="fw-bold">Notes:</Form.Label>
-                        <Form.Control placeholder="Thank you for doing business with us!" name="notes" value={this.state.notes} onChange={(event) => this.editField(event)} as="textarea" className="my-2" rows={1}/>
+                        <Form.Control placeholder="Thank you for doing business with us!" name="notes"
+                                      value={this.state.notes} onChange={(event) => this.editField(event)} as="textarea" className="my-2" rows={1}/>
                     </Card>
                 </Col>
                 <Col md={4} lg={3}>
                     <div className="sticky-top pt-md-3 pt-xl-4">
                         <Button variant="primary" type="submit" className="d-block w-100 btn-secondary">Review Invoice</Button>
                         <InvoiceModal showModal={this.state.isOpen} closeModal={this.closeModal} info={this.state} items={this.state.items} currency={this.state.currency} subTotal={this.state.subTotal} taxAmount={this.state.taxAmount} discountAmount={this.state.discountAmount} total={this.state.total}/>
-                        {/*<Form.Group className="mb-3">*/}
-                        {/*    <Form.Label className="fw-bold">Currency:</Form.Label>*/}
-                        {/*    <Form.Select onChange={event => this.onCurrencyChange({currency: event.target.value})} className="btn btn-light my-1" aria-label="Change Currency">*/}
-                        {/*        <option value="₹">INR (Indian Rupee)</option>*/}
-                        {/*    </Form.Select>*/}
-                        {/*</Form.Group>*/}
                         <Form.Group className="my-3">
                             <Form.Label className="fw-bold">Tax rate:</Form.Label>
                             <InputGroup className="my-1 flex-nowrap">
@@ -254,10 +233,11 @@ class InvoiceForm extends React.Component {
                         <Form.Group className="my-3">
                             <Form.Label className="fw-bold">Discount rate:</Form.Label>
                             <InputGroup className="my-1 flex-nowrap">
+                                <Form.Control as="select" name="discountType" value={this.state.discountType} onChange={(event) => this.editField(event)} className="bg-white border">
+                                    <option value="%">%</option>
+                                    <option value="₹">₹</option>
+                                </Form.Control>
                                 <Form.Control name="discountRate" type="number" value={this.state.discountRate} onChange={(event) => this.editField(event)} className="bg-white border" placeholder="0.0" min="0.00" step="0.01" max="100.00"/>
-                                <InputGroup.Text className="bg-light fw-bold text-secondary small">
-                                    %
-                                </InputGroup.Text>
                             </InputGroup>
                         </Form.Group>
                     </div>
