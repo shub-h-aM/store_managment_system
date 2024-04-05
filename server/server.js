@@ -190,7 +190,19 @@ app.post('/api/invoices', (req, res) => {
     });
 });
 
-
+// Endpoint to insert customer data
+app.post('/api/customer', (req, res) => {
+    const { customerName, customerAddress, contactNumber } = req.body;
+    const sql = `INSERT INTO customers (customerName, customerAddress, contactNumber) VALUES (?, ?, ?)`;
+    db.query(sql, [customerName, customerAddress, contactNumber], (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send('Error inserting customer data');
+        } else {
+            res.status(200).send('Customer data inserted successfully');
+        }
+    });
+});
 
 
 

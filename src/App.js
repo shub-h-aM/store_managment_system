@@ -9,6 +9,7 @@ import ItemDetails from './components/ItemDetails';
 import { FaBars, FaWarehouse, FaUpload, FaChartPie } from 'react-icons/fa';
 import PieChartWithCustomizedLabel from "./components/PieChart";
 import InvoiceForm from "./components/Invoice/InvoiceForm";
+import CustomerOnboard from "./components/CustomerOnboard";
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -125,6 +126,11 @@ const App = () => {
                                     </Link>
                                 </li>
                                 <li>
+                                    <Link to="/customer" onClick={toggleMenu}>
+                                        <FaWarehouse/> Customer
+                                    </Link>
+                                </li>
+                                <li>
                                     <button onClick={handleLogout}>Logout</button>
                                 </li>
                             </>
@@ -146,6 +152,7 @@ const App = () => {
                             <Route path="/upload" element={<UploadFile />} />
                             <Route path="/item-details" element={<ItemDetails />} />
                             <Route path="/invoice" element={<InvoiceForm />} />
+                            <Route path="/customer" element={<CustomerOnboard />} />
                             <Route path="*" element={<Navigate to="/" />} />
                         </>
                     )}
