@@ -196,12 +196,36 @@ app.post('/api/customer', (req, res) => {
     const sql = `INSERT INTO customers (customerName, customerAddress, contactNumber) VALUES (?, ?, ?)`;
     db.query(sql, [customerName, customerAddress, contactNumber], (err, result) => {
         if (err) {
-            console.log(err);
-            res.status(500).send('Error inserting customer data');
-        } else {
-            res.status(200).send('Customer data inserted successfully');
+            console.error('Error inserting invoice data:', err);
+            res.status(500).json({ error: 'Error creating invoice' });
+            return;
         }
+        console.log('Invoice created successfully');
+        res.status(200).json({ message: 'Invoice created successfully' });
     });
+});
+
+// Endpoint to get customer data
+
+app.get('/api/customers', async (req, res) => {
+    try {
+        const customers = await new Promise((resolve, reject) => {
+            const query = 'SELECT * FROM customers';
+            db.query(query, (err, result) => {
+                if (err) {
+                    console.error('Error retrieving customer data:', err);
+                    reject(err);
+                } else {
+                    console.log('Customer data retrieved successfully');
+                    resolve(result);
+                }
+            });
+        });
+        res.status(200).json(customers);
+    } catch (error) {
+        console.error('Error retrieving customer data:', error);
+        res.status(500).json({ error: 'Error retrieving customer data' });
+    }
 });
 
 

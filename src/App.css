@@ -48,7 +48,6 @@ hr {
 .table th {
     border-top: 1px solid #0000001a;
     border-bottom: 1px solid #0000001a;
-    border-bottom-color: #0000001a !important
 }
 .table td {
     text-align: left;

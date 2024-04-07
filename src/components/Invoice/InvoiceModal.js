@@ -10,7 +10,6 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
-import {cilJustifyCenter} from "@coreui/icons";
 
 function GenerateInvoice() {
     html2canvas(document.querySelector("#invoiceCapture")).then((canvas) => {
@@ -30,7 +29,6 @@ function GenerateInvoice() {
 }
 
 class InvoiceModal extends React.Component {
-
     handleSave = () => {
         fetch('http://localhost:5000/api/invoices', {
             method: 'POST',
@@ -45,9 +43,11 @@ class InvoiceModal extends React.Component {
             .then(response => response.json())
             .then(data => {
                 console.log('Invoice saved successfully:', data);
+                alert("Invoice saved successfully:");
             })
             .catch(error => {
                 console.error('Error saving invoice:', error);
+                alert("Failed to Save Invoice Data!")
             });
     };
 
@@ -114,7 +114,7 @@ class InvoiceModal extends React.Component {
                                     return (
                                         <tr id={i} key={i}>
                                             <td style={{width: '50px'}}>
-                                                {item.sno}
+                                                {item.sno}]
                                             </td>
                                             <td>
                                                 {item.name}

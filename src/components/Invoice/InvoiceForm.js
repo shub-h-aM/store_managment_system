@@ -8,22 +8,22 @@ import Card from 'react-bootstrap/Card';
 import InvoiceItem from './InvoiceItem';
 import InvoiceModal from './InvoiceModal';
 import InputGroup from 'react-bootstrap/InputGroup';
-
+import axios from 'axios';
 class InvoiceForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             isOpen: false,
             currentDate: '',
-            currency:"₹",
+            currency: "₹",
             invoiceNumber: 1,
             dateOfIssue: '',
             billTo: '',
-            billToEmail: '',
+            billToContact: '',
             billToAddress: '',
-            billFrom: '',
-            billFromContact: '',
-            billFromAddress: '',
+            billFrom: 'Shubham Tripathi',
+            billFromContact: '9090909090',
+            billFromAddress: 'Delhi, 122022',
             notes: '',
             total: '0.00',
             subTotal: '0.00',
@@ -31,27 +31,32 @@ class InvoiceForm extends React.Component {
             taxAmount: '0.00',
             discountRate: '',
             discountAmount: '0.00',
-            discountType: '%'
+            discountType: '%',
+            customers: []
         };
         this.state.items = [
             {
                 id: 0,
-                sno:1,
+                sno: 1,
                 name: '',
                 price: '1.00',
                 quantity: 1
             }
         ];
         this.editField = this.editField.bind(this);
+        this.handleCustomerSelect = this.handleCustomerSelect.bind(this);
     }
-    componentDidMount () {
-        this.handleCalculateTotal()
+
+    componentDidMount() {
+        this.handleCalculateTotal();
     }
+
     handleRowDel(items) {
         const index = this.state.items.indexOf(items);
         this.state.items.splice(index, 1);
         this.setState(this.state.items);
     };
+
     handleAddEvent() {
         const id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
         const items = {
@@ -111,9 +116,10 @@ class InvoiceForm extends React.Component {
             }
             return items;
         });
-        this.setState({items: newItems});
+        this.setState({ items: newItems });
         this.handleCalculateTotal();
-    };
+    }
+
     editField = (event) => {
         if (event.target.name === 'discountType') {
             this.setState({
@@ -129,12 +135,41 @@ class InvoiceForm extends React.Component {
             });
         }
     };
+
     openModal = (event) => {
-        event.preventDefault()
-        this.handleCalculateTotal()
-        this.setState({isOpen: true})
+        event.preventDefault();
+        this.handleCalculateTotal();
+        this.setState({ isOpen: true });
     };
-    closeModal = () => this.setState({isOpen: false});
+
+    closeModal = () => this.setState({ isOpen: false });
+
+    // Function to fetch customer data when "Bill to" section is clicked
+    handleBillToClick = () => {
+        axios.get('http://localhost:5000/api/customers')
+            .then(response => {
+                if (response.status === 200) {
+                    this.setState({ customers: response.data });
+                } else {
+                    alert('Failed to fetch customer data');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching customers:', error);
+                alert('Failed to fetch customer data');
+            });
+    };
+
+    handleCustomerSelect(customerId) {
+        const selectedCustomer = this.state.customers.find(customer => customer.id === customerId);
+        if (selectedCustomer) {
+            this.setState({
+                billTo: selectedCustomer.name,
+                billToContact: selectedCustomer.contactNumber,
+                billToAddress: selectedCustomer.customerAddress
+            });
+        }
+    }
     render() {
         return (<Form onSubmit={this.openModal}>
             <Row>
@@ -168,13 +203,20 @@ class InvoiceForm extends React.Component {
                                 <Form.Label className="fw-bold">Bill from:</Form.Label>
                                 <Form.Control placeholder={"Who is this invoice from?"} rows={3} value={"Shubham Tripathi"} type="text" name="billFrom" className="my-2" onChange={(event) => this.editField(event)} autoComplete="name" />
                                 <Form.Control placeholder={"Billing address"} value={"Delhi, 122022"} type="text" name="billFromAddress" className="my-2" autoComplete="address" onChange={(event) => this.editField(event)} />
-                                <Form.Control placeholder={"Email address"} value={"9090909090"} type="tel" name="billFromContact" className="my-2" onChange={(event) => this.editField(event)} autoComplete="tel" />
+                                <Form.Control placeholder={"Contact Number"} value={"9090909090"} type="tel" max={10} name="billFromContact" className="my-2" onChange={(event) => this.editField(event)} autoComplete="contact" />
                             </Col>
                             <Col>
                                 <Form.Label className="fw-bold">Bill to:</Form.Label>
-                                <Form.Control placeholder={"Who is this invoice to?"} rows={3} value={this.state.billTo} type="text" name="billTo" className="my-2" onChange={(event) => this.editField(event)} autoComplete="name" required="required"/>
-                                <Form.Control placeholder={"Email address"} value={this.state.billToEmail} type="email" name="billToEmail" className="my-2" onChange={(event) => this.editField(event)} autoComplete="email" required="required"/>
-                                <Form.Control placeholder={"Billing address"} value={this.state.billToAddress} type="text" name="billToAddress" className="my-2" autoComplete="address" onChange={(event) => this.editField(event)} required="required"/>
+                                <Form.Control as="select" onClick={this.handleBillToClick} className="my-2" rows={3} onChange={(event) => this.handleCustomerSelect(parseInt(event.target.value))}>
+                                    <option>Select a customer</option>
+                                    {this.state.customers && this.state.customers.map(customer => (
+                                        <option key={customer.id} value={customer.id}>
+                                            {customer.customerName}
+                                        </option>
+                                    ))}
+                                </Form.Control>
+                                <Form.Control placeholder="Billing address" value={this.state.billToAddress} type="text" name="billToAddress" className="my-2" autoComplete="address" required />
+                                <Form.Control placeholder="Contact Number" value={this.state.billToContact} type="text" name="billToContact" className="my-2" autoComplete="contactNumber" required />
                             </Col>
                         </Row>
                         <InvoiceItem onItemizedItemEdit={this.onItemizedItemEdit.bind(this)} onRowAdd={this.handleAddEvent.bind(this)} onRowDel={this.handleRowDel.bind(this)} currency={this.state.currency} items={this.state.items}/>
