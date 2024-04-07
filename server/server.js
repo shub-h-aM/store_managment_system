@@ -201,7 +201,7 @@ app.post('/api/customer', (req, res) => {
             return;
         }
         console.log('Invoice created successfully');
-        res.status(200).json({ message: 'Invoice created successfully' });
+        res.status(200).json({ message: 'Customer created successfully' });
     });
 });
 
