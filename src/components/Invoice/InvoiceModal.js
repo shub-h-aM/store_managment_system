@@ -6,27 +6,77 @@ import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import Modal from 'react-bootstrap/Modal';
 import { BiPaperPlane, BiCloudDownload } from "react-icons/bi";
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
+import { toPng } from 'html-to-image';
+import { jsPDF } from 'jspdf';
 
-function GenerateInvoice() {
-    html2canvas(document.querySelector("#invoiceCapture")).then((canvas) => {
-        const imgData = canvas.toDataURL('image/png', 1.0);
-        const pdf = new jsPDF({
-            orientation: 'portrait',
-            unit: 'pt',
-            format: [612, 792]
+
+const GenerateInvoice = () => {
+    const dom = document.getElementById('print');
+    if (!dom) {
+        console.error("Element with ID 'print' not found");
+        return;
+    }
+    toPng(dom)
+        .then((dataUrl) => {
+            const img = new Image();
+            img.crossOrigin = 'anonymous'; // Fixed typo
+            img.src = dataUrl;
+            img.onload = () => {
+                // Initialize the PDF.
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'in',
+                    format: [5.5, 8.5],
+                });
+
+                // Define reused data
+                const imgProps = pdf.getImageProperties(img);
+                const imageType = imgProps.fileType;
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+
+                // Calculate the number of pages.
+                const pxFullHeight = imgProps.height;
+                const pxPageHeight = Math.floor((imgProps.width * 8.5) / 5.5);
+                const nPages = Math.ceil(pxFullHeight / pxPageHeight);
+
+                // Define pageHeight separately, so it can be trimmed on the final page.
+                let pageHeight = pdf.internal.pageSize.getHeight();
+
+                // Create a one-page canvas to split up the full image.
+                const pageCanvas = document.createElement('canvas');
+                const pageCtx = pageCanvas.getContext('2d');
+                pageCanvas.width = imgProps.width;
+                pageCanvas.height = pxPageHeight;
+
+                for (let page = 0; page < nPages; page++) {
+                    // Trim the final page to reduce file size.
+                    if (page === nPages - 1 && pxFullHeight % pxPageHeight !== 0) {
+                        pageCanvas.height = pxFullHeight % pxPageHeight;
+                        pageHeight = (pageCanvas.height * pdfWidth) / pageCanvas.width;
+                    }
+                    const imgYPosition = page === 0 ? 0 : -30;
+                    // Display the page.
+                    const w = pageCanvas.width;
+                    const h = pageCanvas.height;
+                    pageCtx.fillStyle = 'white';
+                    pageCtx.fillRect(0, 0, w, h);
+                    pageCtx.drawImage(img, 0, page * pxPageHeight + imgYPosition, w, h, 0, 0, w, h);
+
+                    if (page) pdf.addPage();
+
+                    const imgData = pageCanvas.toDataURL(`image/${imageType}`, 1);
+                    pdf.addImage(imgData, imageType, 0, 0, pdfWidth, pageHeight);
+                }
+                pdf.save(`invoice-0001.pdf`);
+            };
+        })
+        .catch((error) => {
+            console.error('Oops, something went wrong!', error);
         });
-        pdf.internal.scaleFactor = 1;
-        const imgProps= pdf.getImageProperties(imgData);
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        pdf.save('invoice-001.pdf');
-    });
-}
+};
+
 
 class InvoiceModal extends React.Component {
     handleSave = () => {
@@ -66,15 +116,14 @@ class InvoiceModal extends React.Component {
         return(
             <div>
                 <Modal show={this.props.showModal} onHide={this.props.closeModal} size="lg" centered>
-                    <div id="invoiceCapture">
+                    <div id="print">
                         <div className="d-flex flex-row justify-content-between align-items-start bg-light w-100 p-4">
                             <div className="w-100">
                                 <h6 className="fw-bold text-secondary mb-1">GST #: 345trf656ytf6</h6>
                                 <h6 className="fw-bold text-secondary mb-1">
                                     Invoice #: {this.props.info.invoiceNumber||''}
                                 </h6>
-                                {/*<h4 className="fw-bold my-2" style={{textAlign: 'center'}}>{this.props.info.billFrom||'Shubham'}</h4>*/}
-                            </div>
+                                </div>
                             <div className="text-end ms-4">
                                 <h6 className="fw-bold mt-1 mb-2">Amount&nbsp;Due:</h6>
                                 <h5 className="fw-bold text-secondary"> {this.props.currency} {this.props.total}</h5>
@@ -92,7 +141,7 @@ class InvoiceModal extends React.Component {
                                     <div className="fw-bold">Billed to:</div>
                                     <div>{this.props.info.billTo||''}</div>
                                     <div>{this.props.info.billToAddress||''}</div>
-                                    <div>{this.props.info.billToEmail||''}</div>
+                                    <div>{this.props.info.billToContact||''}</div>
                                 </Col>
                                 <Col md={4}>
                                     <div className="fw-bold mt-2">Date Of Issue:</div>
@@ -111,17 +160,14 @@ class InvoiceModal extends React.Component {
                                 </thead>
                                 <tbody>
                                 {this.props.items.map((item, i) => {
+                                    const serialNumber = i + 1;
                                     return (
-                                        <tr id={i} key={i}>
+                                        <tr key={i}>
                                             <td style={{width: '50px'}}>
-                                                {item.sno}]
+                                                {serialNumber}
                                             </td>
-                                            <td>
-                                                {item.name}
-                                            </td>
-                                            <td style={{width: '60px'}}>
-                                                {item.quantity}
-                                            </td>
+                                            <td>{item.name}</td>
+                                            <td style={{width: '60px'}}>{item.quantity}</td>
                                             <td className="text-end"
                                                 style={{width: '100px'}}>{this.props.currency} {item.price}</td>
                                             <td className="text-end"
@@ -141,7 +187,8 @@ class InvoiceModal extends React.Component {
                                 <tr className="text-end">
                                     <td></td>
                                     <td className="fw-bold" style={{width: '100px'}}>SUBTOTAL</td>
-                                    <td className="text-end" style={{width: '100px'}}>{this.props.currency} {this.props.subTotal}</td>
+                                    <td className="text-end"
+                                        style={{width: '100px'}}>{this.props.currency} {this.props.subTotal}</td>
                                 </tr>
                                 {this.props.taxAmount !== 0.00 &&
                                     <tr className="text-end">
@@ -179,10 +226,11 @@ class InvoiceModal extends React.Component {
                                 </Button>
                             </Col>
                             <Col md={3}>
-                                <Button variant="outline-primary" className="d-block w-100 mt-3 mt-md-0" onClick={GenerateInvoice}>
+                                <Button id="downloadButton" variant="outline-primary" className="d-block w-100 mt-3 mt-md-0" onClick={GenerateInvoice}>
                                     <BiCloudDownload style={{width: '16px', height: '16px', marginTop: '-3px'}} className="me-2"/>
-                                    Download Copy
+                                    Download
                                 </Button>
+
                             </Col>
                             <Col md={2}>
                                 <Button variant="secondary" className="d-block w-100 mt-3 mt-md-0" style={{ "--bs-btn-bg": "#c95955" }} onClick={this.props.closeModal}>
