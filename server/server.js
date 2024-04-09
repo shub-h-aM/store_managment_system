@@ -175,20 +175,71 @@ app.get('/api/itemDetails', (req, res) => {
 });
 
 // New endpoint for creating invoices
+// app.post('/api/invoices', (req, res) => {
+//     const { invoice_number, customerName, itemName, rate, quantity, amount } = req.body;
+//     const sql = 'INSERT INTO invoices (invoice_number, customer_name, item_name, rate, quantity, amount) VALUES (?, ?, ?, ?, ?, ?)';
+//     db.query(sql, [invoice_number, customerName, item.itemName, item.rate, item.quantity, item.amount], (err, result) => {
+//         if (err) {
+//             console.error('Error inserting invoice data:', err);
+//             res.status(500).json({ error: 'Error creating invoice' });
+//             return;
+//         }
+//         console.log('Invoice created successfully');
+//         res.status(200).json({ message: 'Invoice created successfully' });
+//     });
+// });
+
 app.post('/api/invoices', (req, res) => {
-    const { customerName, items } = req.body;
-    const itemsJSON = JSON.stringify(items);
-    const sql = 'INSERT INTO invoices (customer_name, items) VALUES (?, ?)';
-    db.query(sql, [customerName, itemsJSON], (err, result) => {
-        if (err) {
-            console.error('Error inserting invoice data:', err);
+    const { customer_name, invoice_number, items } = req.body;
+
+    const sql = 'INSERT INTO invoices (customer_name, invoice_number, item_name, rate, quantity, amount) VALUES (?, ?, ?, ?, ?, ?)';
+
+    const promises = [];
+
+    items.forEach(item => {
+        const promise = new Promise((resolve, reject) => {
+            db.query(sql, [customer_name, invoice_number, item.itemName, item.rate, item.quantity, item.amount], (err, result) => {
+                if (err) {
+                    console.error('Error inserting invoice data:', err);
+                    reject(err);
+                    return;
+                }
+                console.log('Invoice item inserted successfully');
+                resolve();
+            });
+        });
+        promises.push(promise);
+    });
+
+    Promise.all(promises)
+        .then(() => {
+            console.log('All invoice items inserted successfully');
+            res.status(200).json({ message: 'All invoice items inserted successfully' });
+        })
+        .catch(error => {
+            console.error('Error inserting invoice data:', error);
             res.status(500).json({ error: 'Error creating invoice' });
+        });
+});
+
+app.post('/api/invoice_transaction', (req, res) => {
+    const { customer_name, invoice_number, sub_total, discount_amount, tax_amount, total } = req.body;
+
+    const sql = 'INSERT INTO invoice_transaction (customer_name, invoice_number, sub_total, discount_amount, tax_amount, total) VALUES (?, ?, ?, ?, ?, ?)';
+
+    db.query(sql, [customer_name, invoice_number, sub_total, discount_amount, tax_amount, total], (err, result) => {
+        if (err) {
+            console.error('Error inserting transaction data:', err);
+            res.status(500).json({ error: 'Error creating transaction' });
             return;
         }
-        console.log('Invoice created successfully');
-        res.status(200).json({ message: 'Invoice created successfully' });
+        console.log('Invoice transaction inserted successfully');
+        res.status(200).json({ message: 'Invoice transaction inserted successfully' });
     });
 });
+
+
+
 
 // Endpoint to insert customer data
 app.post('/api/customer', (req, res) => {
