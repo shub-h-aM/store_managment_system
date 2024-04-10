@@ -164,7 +164,7 @@ class InvoiceForm extends React.Component {
         const selectedCustomer = this.state.customers.find(customer => customer.id === customerId);
         if (selectedCustomer) {
             this.setState({
-                billTo: selectedCustomer.name,
+                billTo: selectedCustomer.customerName,
                 billToContact: selectedCustomer.contactNumber,
                 billToAddress: selectedCustomer.customerAddress
             });

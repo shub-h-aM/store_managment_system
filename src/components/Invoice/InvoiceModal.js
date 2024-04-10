@@ -79,31 +79,7 @@ const GenerateInvoice = () => {
 
 
 class InvoiceModal extends React.Component {
-    // handleSave = () => {
-    //     fetch('http://localhost:5000/api/invoices', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify({
-    //             customerName: this.props.info.billTo,
-    //             items: this.props.items,
-    //         }),
-    //     })
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             console.log('Invoice saved successfully:', data);
-    //             alert("Invoice saved successfully:");
-    //         })
-    //         .catch(error => {
-    //             console.error('Error saving invoice:', error);
-    //             alert("Failed to Save Invoice Data!")
-    //         });
-    // };
-
-    // Updated handleSave function
     handleSave = () => {
-        // Extract necessary data from props
         const { billTo, invoiceNumber, subTotal, discountAmount, taxAmount, total } = this.props.info;
         const items = this.props.items.map(item => ({
             itemName: item.name,
@@ -111,8 +87,6 @@ class InvoiceModal extends React.Component {
             quantity: item.quantity,
             amount: parseFloat((item.price * item.quantity).toFixed(2))
         }));
-
-        // Save invoice details to both tables
         Promise.all([
             fetch('http://localhost:5000/api/invoices', {
                 method: 'POST',
@@ -120,9 +94,9 @@ class InvoiceModal extends React.Component {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    customer_name: billTo, // Update key to customer_name
-                    invoice_number: invoiceNumber, // Update key to invoice_number
-                    items: items // Send all item details as an array
+                    customer_name: billTo,
+                    invoice_number: invoiceNumber,
+                    items: items
                 }),
             }),
             fetch('http://localhost:5000/api/invoice_transaction', {
@@ -133,9 +107,9 @@ class InvoiceModal extends React.Component {
                 body: JSON.stringify({
                     customer_name: billTo,
                     invoice_number: invoiceNumber,
-                    sub_total: subTotal, // Update key to sub_total
-                    discount_amount: discountAmount, // Update key to discount_amount
-                    tax_amount: taxAmount, // Update key to tax_amount
+                    sub_total: subTotal,
+                    discount_amount: discountAmount,
+                    tax_amount: taxAmount,
                     total: total
                 }),
             })
