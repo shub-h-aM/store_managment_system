@@ -12,7 +12,7 @@ import { toPng } from 'html-to-image';
 import { jsPDF } from 'jspdf';
 
 
-const GenerateInvoice = () => {
+const GenerateInvoice = (invoiceNumber) => {
     const dom = document.getElementById('print');
     if (!dom) {
         console.error("Element with ID 'print' not found");
@@ -69,7 +69,9 @@ const GenerateInvoice = () => {
                     const imgData = pageCanvas.toDataURL(`image/${imageType}`, 1);
                     pdf.addImage(imgData, imageType, 0, 0, pdfWidth, pageHeight);
                 }
-                pdf.save(`invoice-0001.pdf`);
+                // pdf.save(`invoice-0001.pdf`);
+                pdf.save(`invoice-${invoiceNumber}.pdf`);
+
             };
         })
         .catch((error) => {
@@ -79,6 +81,9 @@ const GenerateInvoice = () => {
 
 
 class InvoiceModal extends React.Component {
+    state = {
+        invoiceSaved: false
+    };
     handleSave = () => {
         const { billTo, invoiceNumber, subTotal, discountAmount, taxAmount, total } = this.props.info;
         const items = this.props.items.map(item => ({
@@ -119,6 +124,7 @@ class InvoiceModal extends React.Component {
                 console.log('Invoice saved successfully:', invoiceData);
                 console.log('Transaction saved successfully:', transactionData);
                 alert("Invoice and transaction saved successfully:");
+                this.setState({ invoiceSaved: true });
             })
             .catch(error => {
                 console.error('Error saving invoice and transaction:', error);
@@ -138,8 +144,12 @@ class InvoiceModal extends React.Component {
         window.location.href = `https://wa.me/?text=${message}`;
     }
     handleNext = () => {
-        this.props.closeModal();
-        window.location.reload();
+        if (this.state.invoiceSaved) {
+            this.props.closeModal();
+            window.location.reload();
+        } else {
+            alert("Please save the invoice before proceeding to the next step.");
+        }
     };
 
     render() {
@@ -256,11 +266,10 @@ class InvoiceModal extends React.Component {
                                 </Button>
                             </Col>
                             <Col md={3}>
-                                <Button id="downloadButton" variant="outline-primary" className="d-block w-100 mt-3 mt-md-0" onClick={GenerateInvoice}>
+                                <Button id="downloadButton" variant="outline-primary" className="d-block w-100 mt-3 mt-md-0" onClick={() => GenerateInvoice(this.props.info.invoiceNumber)}>
                                     <BiCloudDownload style={{width: '16px', height: '16px', marginTop: '-3px'}} className="me-2"/>
                                     Download
                                 </Button>
-
                             </Col>
                             <Col md={2}>
                                 <Button variant="secondary" className="d-block w-100 mt-3 mt-md-0" style={{ "--bs-btn-bg": "#c95955" }} onClick={this.props.closeModal}>

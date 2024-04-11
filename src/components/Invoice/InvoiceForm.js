@@ -268,7 +268,9 @@ class InvoiceForm extends React.Component {
                 <Col md={4} lg={3}>
                     <div className="sticky-top pt-md-3 pt-xl-4">
                         <Button variant="primary" type="submit" className="d-block w-100 btn-secondary">Review Invoice</Button>
-                        <InvoiceModal showModal={this.state.isOpen} closeModal={this.closeModal} info={this.state} items={this.state.items} currency={this.state.currency} subTotal={this.state.subTotal} taxAmount={this.state.taxAmount} discountAmount={this.state.discountAmount} total={this.state.total}/>
+                        <InvoiceModal showModal={this.state.isOpen} closeModal={this.closeModal} info={this.state} items={this.state.items}
+                                      currency={this.state.currency} subTotal={this.state.subTotal} taxAmount={this.state.taxAmount}
+                                      discountAmount={this.state.discountAmount} total={this.state.total}  />
                         <Form.Group className="my-3">
                             <Form.Label className="fw-bold">Tax rate:</Form.Label>
                             <InputGroup className="my-1 flex-nowrap">
