@@ -29,8 +29,8 @@ class InvoiceItem extends React.Component {
                     <thead>
                     <tr>
                         <th>S.No.</th>
-                        <th>ITEM</th>
-                        <th>QTY</th>
+                        <th> &nbsp; &nbsp; &nbsp;ITEM DESCRIPTION</th>
+                        <th>QUANTITY</th>
                         <th>PRICE/RATE</th>
                         <th className="text-center">ACTION</th>
                     </tr>

@@ -12,7 +12,11 @@ import { toPng } from 'html-to-image';
 import { jsPDF } from 'jspdf';
 
 
-const GenerateInvoice = (invoiceNumber) => {
+const GenerateInvoice = (invoiceNumber, invoiceSaved) => {
+    if (!invoiceSaved) {
+        alert("Please save the invoice before downloading.");
+        return;
+    }
     const dom = document.getElementById('print');
     if (!dom) {
         console.error("Element with ID 'print' not found");
@@ -85,7 +89,7 @@ class InvoiceModal extends React.Component {
         invoiceSaved: false
     };
     handleSave = () => {
-        const { billTo, invoiceNumber, subTotal, discountAmount, taxAmount, total } = this.props.info;
+        const { billTo, invoiceNumber, subTotal, discountAmount, taxAmount, total,dueAmount, paidAmount, dateOfDue } = this.props.info;
         const items = this.props.items.map(item => ({
             itemName: item.name,
             rate: item.price,
@@ -115,7 +119,10 @@ class InvoiceModal extends React.Component {
                     sub_total: subTotal,
                     discount_amount: discountAmount,
                     tax_amount: taxAmount,
-                    total: total
+                    total: total,
+                    paid_amount: paidAmount,
+                    due_amount: dueAmount,
+                    date_of_due: dateOfDue
                 }),
             })
         ])
@@ -132,17 +139,6 @@ class InvoiceModal extends React.Component {
             });
     };
 
-
-    handleEmailShare = () => {
-        const emailSubject = encodeURIComponent('Invoice');
-        const emailBody = encodeURIComponent('Please find the attached invoice.');
-        window.location.href = `mailto:?subject=${emailSubject}&body=${emailBody}`;
-    }
-
-    handleWhatsAppShare = () => {
-        const message = encodeURIComponent('Please find the attached invoice.');
-        window.location.href = `https://wa.me/?text=${message}`;
-    }
     handleNext = () => {
         if (this.state.invoiceSaved) {
             this.props.closeModal();
@@ -151,11 +147,16 @@ class InvoiceModal extends React.Component {
             alert("Please save the invoice before proceeding to the next step.");
         }
     };
+    handleDownload = () => {
+        // Pass invoiceSaved state to the GenerateInvoice function
+        GenerateInvoice(this.props.info.invoiceNumber, this.state.invoiceSaved);
+    };
+
 
     render() {
         return(
             <div>
-                <Modal show={this.props.showModal} onHide={this.props.closeModal} size="lg" centered>
+                <Modal show={this.props.showModal} onHide={this.props.closeModal}  size="lg" centered>
                     <div id="print">
                         <div className="d-flex flex-row justify-content-between align-items-start bg-light w-100 p-4">
                             <div className="w-100">
@@ -185,11 +186,28 @@ class InvoiceModal extends React.Component {
                                 </Col>
                                 <Col md={4}>
                                     <div className="fw-bold mt-2">Date Of Issue:</div>
-                                    <div>{this.props.info.dateOfIssue||''}</div>
+                                    <div>{new Date().toLocaleDateString()}</div>
+                                    {this.props.info.dateOfDue && (
+                                        <div>
+                                            <div className="fw-bold mt-2">Due Payment Date:</div>
+                                            <div>{this.props.info.dateOfDue||''}</div>
+                                        </div>
+                                    )}
                                 </Col>
+                                <Col md={4}>
+                                    <div className="fw-bold mt-2">Date Of Issue:</div>
+                                    <div>{new Date().toLocaleDateString()}</div>
+                                    {this.props.info.dateOfDue && (
+                                        <div>
+                                            <div className="fw-bold mt-2">Due Payment Date:</div>
+                                            <div>{this.props.info.dateOfDue}</div>
+                                        </div>
+                                    )}
+                                </Col>
+
                             </Row>
                             <Table className="mb-0">
-                                <thead>
+                            <thead>
                                 <tr>
                                     <th>S.No</th>
                                     <th>ITEM DESCRIPTION</th>
@@ -258,43 +276,43 @@ class InvoiceModal extends React.Component {
                         </div>
                     </div>
                     <div className="pb-4 px-4">
+                        <Row className="d-flex justify-content-between">
+                            <Col md={3} className="d-flex align-items-center">
+                                <div className="fw-bold">Paid Amount:</div>
+                                <div className="fw-bold text-secondary">&nbsp;{this.props.currency} {this.props.info.paidAmount}</div>
+                            </Col>
+                            <Col md={3} className="d-flex align-items-center">
+                                <div className="fw-bold">Due Amount:</div>
+                                <div className="fw-bold text-secondary">&nbsp; {this.props.currency} {this.props.info.dueAmount}</div>
+                            </Col>
+                        </Row>
+                    </div>
+                    <div className="pb-4 px-4">
                         <Row>
-                            <Col md={2}>
-                                <Button variant="primary" className="d-block w-100 mt-3 mt-md-0" onClick={this.handleSave}>
-                                    <BiPaperPlane style={{width: '16px', height: '16px', marginTop: '-3px'}} className="me-2"/>
+                            <Col md={3}>
+                                <Button variant="outline-primary" className="d-block w-100 mt-3 mt-md-0"
+                                        onClick={this.handleSave}>
+                                    <BiPaperPlane style={{width: '16px', height: '16px', marginTop: '-3px'}}
+                                                  className="me-2"/>
                                     Save
                                 </Button>
                             </Col>
                             <Col md={3}>
-                                <Button id="downloadButton" variant="outline-primary" className="d-block w-100 mt-3 mt-md-0" onClick={() => GenerateInvoice(this.props.info.invoiceNumber)}>
+                                <Button id="downloadButton" variant="outline-primary" className="d-block w-100 mt-3 mt-md-0" onClick={this.handleDownload}>
                                     <BiCloudDownload style={{width: '16px', height: '16px', marginTop: '-3px'}} className="me-2"/>
                                     Download
                                 </Button>
                             </Col>
-                            <Col md={2}>
+                            <Col md={3}>
                                 <Button variant="secondary" className="d-block w-100 mt-3 mt-md-0" style={{ "--bs-btn-bg": "#c95955" }} onClick={this.props.closeModal}>
                                     Close
                                 </Button>
-
                             </Col>
-                            <Col md={2}>
-                                <Button variant="info" className="d-block w-100 mt-3 mt-md-0" onClick={this.handleEmailShare}>
-                                    <BiPaperPlane style={{width: '16px', height: '16px', marginTop: '-3px'}} className="me-2"/>
-                                    Email
-                                </Button>
-                            </Col>
-                            <Col md={2}>
-                                <Button variant="success" className="d-block w-100 mt-3 mt-md-0" onClick={this.handleWhatsAppShare}>
-                                    <BiPaperPlane style={{width: '16px', height: '16px', marginTop: '-3px'}} className="me-2"/>
-                                    <FontAwesomeIcon icon={faWhatsapp} />
-                                </Button>
-                            </Col>
-                            <Col md={1}>
+                            <Col md={3}>
                                 <Button variant="primary" className="d-block w-100 mt-3 mt-md-0" onClick={this.handleNext}>
                                     Next
                                 </Button>
                             </Col>
-
                         </Row>
                     </div>
                 </Modal>

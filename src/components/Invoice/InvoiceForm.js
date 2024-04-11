@@ -18,7 +18,7 @@ class InvoiceForm extends React.Component {
             currentDate: '',
             currency: "₹",
             invoiceNumber: 1,
-            dateOfIssue: '',
+            dateOfDue: '',
             billTo: '',
             billToContact: '',
             billToAddress: '',
@@ -33,6 +33,8 @@ class InvoiceForm extends React.Component {
             discountRate: '',
             discountAmount: '0.00',
             discountType: '%',
+            paidAmount: '0.00',
+            dueAmount: '0.00',
             customers: []
         };
         this.state.items = [
@@ -82,7 +84,7 @@ class InvoiceForm extends React.Component {
     }
 
     handleCalculateTotal() {
-        const { items, taxRate, discountRate, discountType } = this.state;
+        const { items, taxRate, discountRate, discountType, paidAmount } = this.state;
         let subTotal = 0;
 
         items.forEach(item => {
@@ -99,12 +101,14 @@ class InvoiceForm extends React.Component {
         }
 
         const total = (subTotal - discountAmount) + parseFloat(taxAmount);
+        const dueAmount = parseFloat(total) - parseFloat(paidAmount);
 
         this.setState({
             subTotal: subTotal.toFixed(2),
             taxAmount,
             discountAmount,
-            total: total.toFixed(2)
+            total: total.toFixed(2),
+            dueAmount: dueAmount.toFixed(2)
         });
     }
 
@@ -127,8 +131,49 @@ class InvoiceForm extends React.Component {
         this.handleCalculateTotal();
     }
 
+    // editField = (event) => {
+    //     if (event.target.name === 'discountType') {
+    //         this.setState({
+    //             [event.target.name]: event.target.value
+    //         }, () => {
+    //             this.handleCalculateTotal();
+    //         });
+    //     } else if (event.target.name === 'paidAmount') {
+    //         this.setState({
+    //             [event.target.name]: event.target.value
+    //         }, () => {
+    //             this.handleCalculateTotal();
+    //         });
+    //     }else {
+    //         this.setState({
+    //             [event.target.name]: event.target.value
+    //         }, () => {
+    //             this.handleCalculateTotal();
+    //         });
+    //     }
+    // };
+
     editField = (event) => {
         if (event.target.name === 'discountType') {
+            this.setState({
+                [event.target.name]: event.target.value
+            }, () => {
+                this.handleCalculateTotal();
+            });
+        } else if (event.target.name === 'paidAmount') {
+            this.setState({
+                [event.target.name]: event.target.value
+            }, () => {
+                this.handleCalculateTotal();
+            });
+        } else if (event.target.name === 'dateOfDue') {
+            const currentDate = new Date();
+            const selectedDate = new Date(event.target.value);
+
+            if (selectedDate < currentDate) {
+                alert('Due date cannot be less than the current date');
+                return; // Prevent further execution
+            }
             this.setState({
                 [event.target.name]: event.target.value
             }, () => {
@@ -178,7 +223,7 @@ class InvoiceForm extends React.Component {
         }
     }
     render() {
-        return (<Form onSubmit={this.openModal}>
+        return (<Form onSubmit={this.openModal} >
             <Row>
                 <Col md={8} lg={9}>
                     <Card className="p-4 p-xl-5 my-3 my-xl-4">
@@ -191,11 +236,13 @@ class InvoiceForm extends React.Component {
                                     </div>
                                 </div>
                                 <div className="d-flex flex-row align-items-center">
-                                    <span className="fw-bold d-block me-2">Due&nbsp;Date:</span>
-                                    <Form.Control type="date" value={this.state.dateOfIssue} name={"dateOfIssue"}
-                                                  onChange={(event) => this.editField(event)} style={{
-                                        maxWidth: '150px'
-                                    }} required="required"/>
+                                    <span className="fw-bold me-2">Due&nbsp;Date: </span>
+                                    {parseFloat(this.state.dueAmount) > 0 ? (
+                                        <Form.Control
+                                            type="date" value={this.state.dateOfDue} name={"dateOfDue"}
+                                            onChange={(event) => this.editField(event)}
+                                            style={{maxWidth: '150px'}} required="required" />
+                                    ) : null}
                                 </div>
                             </div>
                             <div className="d-flex flex-row align-items-center">
@@ -207,7 +254,8 @@ class InvoiceForm extends React.Component {
                         <Row className="mb-5">
                             <Col>
                                 <Form.Label className="fw-bold">Bill from:</Form.Label>
-                                <Form.Control placeholder={"Who is this invoice from?"} rows={3} value={"Shubham Tripathi"} type="text" name="billFrom" className="my-2" onChange={(event) => this.editField(event)} autoComplete="name" />
+                                <Form.Control placeholder={"Who is this invoice from?"} rows={3}
+                                              value={"Shubham Tripathi"} type="text" name="billFrom" className="my-2" onChange={(event) => this.editField(event)} autoComplete="name" />
                                 <Form.Control placeholder={"Billing address"} value={"Delhi, 122022"} type="text" name="billFromAddress" className="my-2" autoComplete="address" onChange={(event) => this.editField(event)} />
                                 <Form.Control placeholder={"Contact Number"} value={"9090909090"} type="tel" max={10} name="billFromContact" className="my-2" onChange={(event) => this.editField(event)} autoComplete="contact" />
                             </Col>
@@ -268,9 +316,9 @@ class InvoiceForm extends React.Component {
                 <Col md={4} lg={3}>
                     <div className="sticky-top pt-md-3 pt-xl-4">
                         <Button variant="primary" type="submit" className="d-block w-100 btn-secondary">Review Invoice</Button>
-                        <InvoiceModal showModal={this.state.isOpen} closeModal={this.closeModal} info={this.state} items={this.state.items}
-                                      currency={this.state.currency} subTotal={this.state.subTotal} taxAmount={this.state.taxAmount}
-                                      discountAmount={this.state.discountAmount} total={this.state.total}  />
+                        <InvoiceModal showModal={this.state.isOpen} closeModal={this.closeModal} info={this.state} items={this.state.items} currency={this.state.currency}
+                                      subTotal={this.state.subTotal} taxAmount={this.state.taxAmount} discountAmount={this.state.discountAmount} total={this.state.total}
+                                      dueAmount={this.state.dueAmount} paidAmount={this.state.paidAmount} dateOfDue={this.state.dateOfDue}/>
                         <Form.Group className="my-3">
                             <Form.Label className="fw-bold">Tax rate:</Form.Label>
                             <InputGroup className="my-1 flex-nowrap">
@@ -287,7 +335,37 @@ class InvoiceForm extends React.Component {
                                     <option value="%">%</option>
                                     <option value="₹">₹</option>
                                 </Form.Control>
-                                <Form.Control name="discountRate" type="number" value={this.state.discountRate} onChange={(event) => this.editField(event)} className="bg-white border" placeholder="0.0" min="0.00" step="0.01" max="100.00"/>
+                                <Form.Control
+                                    name="discountRate"
+                                    type="number"
+                                    value={this.state.discountRate}
+                                    onChange={(event) => this.editField(event)}
+                                    className="bg-white border"
+                                    placeholder="0.0"
+                                    min="0.00"
+                                    max={this.state.discountType === '%' ? "100.00" : this.state.total} // Set max value based on discount type
+                                />
+                            </InputGroup>
+                        </Form.Group>
+
+                        <Form.Group className="my-3">
+                            <Form.Label className="fw-bold">Paid Amount:</Form.Label>
+                            <InputGroup className="my-1 flex-nowrap">
+                                <InputGroup.Text className="bg-light fw-bold text-secondary small">
+                                    {this.state.currency}
+                                </InputGroup.Text>
+                                <Form.Control
+                                    name="paidAmount" type="number" value={this.state.paidAmount} onChange={(event) => this.editField(event)}
+                                    className="bg-white border" placeholder="0.00" min="0.00" step="0.01" />
+                            </InputGroup>
+                        </Form.Group>
+                        <Form.Group className="my-3">
+                            <Form.Label className="fw-bold">Due Amount:</Form.Label>
+                            <InputGroup className="my-1 flex-nowrap">
+                                <InputGroup.Text className="bg-light fw-bold text-secondary small">
+                                    {this.state.currency}
+                                </InputGroup.Text>
+                                <Form.Control name="dueAmount" type="text" value={this.state.dueAmount} readOnly className="bg-white border"/>
                             </InputGroup>
                         </Form.Group>
                     </div>
