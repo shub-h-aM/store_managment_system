@@ -137,6 +137,10 @@ class InvoiceModal extends React.Component {
         const message = encodeURIComponent('Please find the attached invoice.');
         window.location.href = `https://wa.me/?text=${message}`;
     }
+    handleNext = () => {
+        this.props.closeModal();
+        window.location.reload();
+    };
 
     render() {
         return(
@@ -274,6 +278,11 @@ class InvoiceModal extends React.Component {
                                 <Button variant="success" className="d-block w-100 mt-3 mt-md-0" onClick={this.handleWhatsAppShare}>
                                     <BiPaperPlane style={{width: '16px', height: '16px', marginTop: '-3px'}} className="me-2"/>
                                     <FontAwesomeIcon icon={faWhatsapp} />
+                                </Button>
+                            </Col>
+                            <Col md={1}>
+                                <Button variant="primary" className="d-block w-100 mt-3 mt-md-0" onClick={this.handleNext}>
+                                    Next
                                 </Button>
                             </Col>
 

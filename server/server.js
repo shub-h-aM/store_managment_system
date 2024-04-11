@@ -223,6 +223,22 @@ app.post('/api/invoice_transaction', (req, res) => {
     });
 });
 
+//End point to get the details of invoice transaction
+// 1. Fetch last invoice number added
+app.get('/api/getLastInvoiceNumber', (req, res) => {
+    const sql = 'SELECT MAX(invoice_number) AS last_invoice_number FROM invoice_transaction';
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error('Error retrieving last invoice number:', err);
+            res.status(500).json({ error: 'Error retrieving last invoice number' });
+            return;
+        }
+        const lastInvoiceNumber = result[0].last_invoice_number || 0;
+        console.log('Last invoice number retrieved successfully:', lastInvoiceNumber);
+        res.status(200).json({ lastInvoiceNumber });
+    });
+});
+
 
 
 
