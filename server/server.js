@@ -239,7 +239,39 @@ app.get('/api/getLastInvoiceNumber', (req, res) => {
     });
 });
 
+// get all invoice transaction
+app.get('/api/invoice/transactions', (req, res) => {
+    const sql = 'SELECT * FROM invoice_transaction';
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error('Error retrieving form data:', err);
+            res.status(500).json({ error: 'Error retrieving form data' });
+            alert("Failed to Get Transaction Details!")
+            return;
+        }
+        console.log('Form data retrieved successfully');
+        res.status(200).json(result);
+    });
+});
 
+// update transaction Due amount details
+app.post('/api/invoice/transactions/update', (req, res) => {
+    const { transaction_id, newPaidAmount, newDueAmount, comments, updatedAt } = req.body;
+
+    console.log('Request Body:', req.body);
+    // Example code to update the transaction:
+    const sql = `UPDATE invoice_transaction SET paid_amount = ${newPaidAmount}, due_amount = ${newDueAmount}, comments = '${comments}', updated_at = '${updatedAt}' WHERE transaction_id = ${transaction_id}`;
+
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error('Error updating transaction:', err);
+            res.status(500).json({ error: 'Error updating transaction' });
+            return;
+        }
+        console.log('Transaction updated successfully');
+        res.status(200).json({ message: 'Transaction updated successfully' });
+    });
+});
 
 
 // Endpoint to insert customer data

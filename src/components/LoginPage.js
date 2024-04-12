@@ -5,6 +5,7 @@ const LoginPage = ({ onLogin }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [logoutTimer, setLogoutTimer] = useState(null);
 
     // Effect to check if user is logged in already
     useEffect(() => {
@@ -13,8 +14,25 @@ const LoginPage = ({ onLogin }) => {
             // If token exists, user is already logged in
             // You can redirect the user to another page or do any necessary action here
             console.log('User already logged in');
+            startLogoutTimer(); // Start the logout timer when the user is logged in
         }
     }, []);
+
+    // Function to start the logout timer
+    const startLogoutTimer = () => {
+        const timer = setTimeout(() => {
+            // Perform logout actions here, such as clearing local storage and redirecting to login page
+            localStorage.removeItem('token');
+            console.log('User logged out due to inactivity');
+        }, 15 * 60 * 1000); // 15 minutes in milliseconds
+        setLogoutTimer(timer);
+    };
+
+    // Function to reset the logout timer
+    const resetLogoutTimer = () => {
+        clearTimeout(logoutTimer); // Clear the existing timer
+        startLogoutTimer(); // Start a new timer
+    };
 
     // Function to handle user login
     const handleLogin = async () => {
@@ -24,6 +42,7 @@ const LoginPage = ({ onLogin }) => {
                 const { token, user } = response.data;
                 localStorage.setItem('token', token); // Store token in local storage
                 onLogin(user); // Pass user details to onLogin function
+                startLogoutTimer(); // Start the logout timer when the user is logged in
             } else {
                 setError('Invalid username or password. Please try again.');
             }
@@ -38,6 +57,21 @@ const LoginPage = ({ onLogin }) => {
         event.preventDefault();
         handleLogin();
     };
+
+    // Event listener to reset the logout timer on user activity
+    useEffect(() => {
+        const resetTimerOnActivity = () => {
+            window.addEventListener('mousemove', resetLogoutTimer);
+            window.addEventListener('keydown', resetLogoutTimer);
+        };
+        resetTimerOnActivity();
+
+        // Cleanup function to remove event listeners
+        return () => {
+            window.removeEventListener('mousemove', resetLogoutTimer);
+            window.removeEventListener('keydown', resetLogoutTimer);
+        };
+    }, [logoutTimer]);
 
     return (
         <div className="login-page">

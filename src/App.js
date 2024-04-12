@@ -11,6 +11,7 @@ import PieChartWithCustomizedLabel from "./components/PieChart";
 import InvoiceForm from "./components/Invoice/InvoiceForm";
 import CustomerOnboard from "./components/customer/CustomerOnboard";
 import CustomerDetails from "./components/customer/CustomerDetails";
+import LedgerPage from "./components/LedgerPage";
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -23,7 +24,7 @@ const App = () => {
     const handleLogin = (user) => {
         setIsLoggedIn(true);
         setActiveUser(user);
-        localStorage.setItem('isLoggedIn', true); // Store login state in local storage
+        localStorage.setItem('isLoggedIn', true);
         // Close the menu after successful login
         setIsMenuOpen(false);
     };
@@ -31,26 +32,25 @@ const App = () => {
     const handleLogout = () => {
         setIsLoggedIn(false);
         setActiveUser(null);
-        localStorage.removeItem('isLoggedIn'); // Remove login state from local storage
+        localStorage.removeItem('isLoggedIn');
     };
 
     useEffect(() => {
         let timeout;
         const logout = () => {
-            localStorage.removeItem('token'); // Remove token from local storage
+            localStorage.removeItem('token');
             // Perform any other logout actions
             console.log('User logged out due to inactivity');
-            // Optionally, show a warning to the user before logging them out
-            // window.alert('You will be logged out due to inactivity.');
+            window.alert('You will be logged out due to inactivity.');
             handleLogout(); // Logout the user
         };
 
         const resetTimeout = () => {
-            clearTimeout(timeout); // Clear the existing timeout
-            timeout = setTimeout(logout, 15 * 60 * 1000); // 5 minutes timeout
+            clearTimeout(timeout);
+            timeout = setTimeout(logout, 15 * 60 * 1000);
         };
 
-        resetTimeout(); // Reset timeout on component mount
+        resetTimeout();
 
         // Event listeners to reset timeout on user activity
         window.addEventListener('mousemove', resetTimeout);
@@ -63,7 +63,7 @@ const App = () => {
         }
 
         return () => {
-            window.removeEventListener('mousemove', resetTimeout); // Cleanup event listeners
+            window.removeEventListener('mousemove', resetTimeout);
             window.removeEventListener('keydown', resetTimeout);
         };
     }, []);
@@ -132,6 +132,11 @@ const App = () => {
                                     </Link>
                                 </li>
                                 <li>
+                                    <Link to="/ledger-transaction" onClick={toggleMenu}>
+                                        <FaWarehouse/>Ledger
+                                    </Link>
+                                </li>
+                                <li>
                                     <button onClick={handleLogout}>Logout</button>
                                 </li>
                             </>
@@ -155,6 +160,7 @@ const App = () => {
                             <Route path="/invoice" element={<InvoiceForm />} />
                             <Route path="/customer" element={<CustomerDetails />} />
                             <Route path="/create-customer" element={<CustomerOnboard />} />
+                            <Route path="/ledger-transaction" element={<LedgerPage />} />
                             <Route path="*" element={<Navigate to="/" />} />
                         </>
                     )}

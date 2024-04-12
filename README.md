@@ -70,5 +70,12 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 
 
-you will require to download whatsaap dependency
-use "npm install twilio"
+you will require to download 
+
+1. material ui
+2. Bootstrap
+
+material ui common link{
+
+1. npm install @mui/material @emotion/react @emotion/styled
+}

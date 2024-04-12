@@ -6,8 +6,6 @@ import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import Modal from 'react-bootstrap/Modal';
 import { BiPaperPlane, BiCloudDownload } from "react-icons/bi";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 import { toPng } from 'html-to-image';
 import { jsPDF } from 'jspdf';
 

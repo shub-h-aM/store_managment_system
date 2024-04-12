@@ -1,7 +1,9 @@
 import React from 'react';
 import axios from 'axios';
-import Button from 'react-bootstrap/Button';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
 
 class CustomerOnboard extends React.Component {
     constructor(props) {
@@ -49,27 +51,44 @@ class CustomerOnboard extends React.Component {
 
     render() {
         return (
-            <div className="container">
-                <div className="row">
-                    <div className="col s12">
-                        <form onSubmit={this.handleSubmit}>
-                            <div className="input-field">
-                                <label htmlFor="customerName">Customer Name</label>
-                                <input id="customerName" type="text" name="customerName" value={this.state.customerName} onChange={this.handleInputChange} />
-                            </div>
-                            <div className="input-field">
-                                <label htmlFor="customerAddress">Customer Address</label>
-                                <input id="customerAddress" type="text" name="customerAddress" value={this.state.customerAddress} onChange={this.handleInputChange} />
-                            </div>
-                            <div className="input-field">
-                                <label htmlFor="contactNumber">Contact Number</label>
-                                <input id="contactNumber" type="text" name="contactNumber" value={this.state.contactNumber} onChange={this.handleInputChange} />
-                            </div>
-                            <Button variant="#456b5a8a" type="submit" className="d-block w-100 btn-secondary ">Submit</Button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            <Container maxWidth="sm">
+                <form onSubmit={this.handleSubmit}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                label="Customer Name"
+                                name="customerName"
+                                value={this.state.customerName}
+                                onChange={this.handleInputChange}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                label="Customer Address"
+                                name="customerAddress"
+                                value={this.state.customerAddress}
+                                onChange={this.handleInputChange}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                label="Contact Number"
+                                name="contactNumber"
+                                value={this.state.contactNumber}
+                                onChange={this.handleInputChange}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button variant="contained" color="primary" type="submit" fullWidth>
+                                Submit
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </form>
+            </Container>
         );
     }
 }
