@@ -1,34 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 
-class CustomerOnboard extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            customerName: '',
-            customerAddress: '',
-            contactNumber: ''
-        };
-    }
+function CustomerOnboard() {
+    const [customerName, setCustomerName] = useState('');
+    const [customerAddress, setCustomerAddress] = useState('');
+    const [contactNumber, setContactNumber] = useState('');
 
-    handleInputChange = (event) => {
-        const target = event.target;
-        const value = target.value;
-        const name = target.name;
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        if (name === 'customerName') setCustomerName(value);
+        else if (name === 'customerAddress') setCustomerAddress(value);
+        else if (name === 'contactNumber') setContactNumber(value);
+    };
 
-        this.setState({
-            [name]: value
-        });
-    }
-
-    handleSubmit = (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
-        const { customerName, customerAddress, contactNumber } = this.state;
-
         axios.post('http://localhost:5000/api/customer', {
             customerName,
             customerAddress,
@@ -36,31 +26,32 @@ class CustomerOnboard extends React.Component {
         })
             .then(response => {
                 console.log(response.data);
-                this.setState({
-                    customerName: '',
-                    customerAddress: '',
-                    contactNumber: ''
-                });
+                setCustomerName('');
+                setCustomerAddress('');
+                setContactNumber('');
                 alert('Customer added successfully!');
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert("Failed to Create Customer Data.")
+                alert("Failed to Create Customer Data.");
             });
-    }
+    };
 
-    render() {
-        return (
+    return (
+        <div>
+            <header>
+                <h1>Create Customer</h1>
+            </header>
             <Container maxWidth="sm">
-                <form onSubmit={this.handleSubmit}>
+                <form onSubmit={handleSubmit}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
                                 label="Customer Name"
                                 name="customerName"
-                                value={this.state.customerName}
-                                onChange={this.handleInputChange}
+                                value={customerName}
+                                onChange={handleInputChange}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -68,8 +59,8 @@ class CustomerOnboard extends React.Component {
                                 fullWidth
                                 label="Customer Address"
                                 name="customerAddress"
-                                value={this.state.customerAddress}
-                                onChange={this.handleInputChange}
+                                value={customerAddress}
+                                onChange={handleInputChange}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -77,8 +68,8 @@ class CustomerOnboard extends React.Component {
                                 fullWidth
                                 label="Contact Number"
                                 name="contactNumber"
-                                value={this.state.contactNumber}
-                                onChange={this.handleInputChange}
+                                value={contactNumber}
+                                onChange={handleInputChange}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -89,8 +80,8 @@ class CustomerOnboard extends React.Component {
                     </Grid>
                 </form>
             </Container>
-        );
-    }
+        </div>
+    );
 }
 
 export default CustomerOnboard;

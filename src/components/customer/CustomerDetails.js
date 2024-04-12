@@ -1,63 +1,104 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Button from "react-bootstrap/Button";
-import {Link} from "react-router-dom";
+import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
+import { Typography, TextField, InputAdornment, Grid, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
+import Pagination from '@mui/material/Pagination';
 
 function CustomerDetails() {
     const [customers, setCustomers] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredCustomers, setFilteredCustomers] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(5);
 
     useEffect(() => {
         // Fetch customer details from the API
         axios.get('http://localhost:5000/api/customers')
             .then(response => {
                 setCustomers(response.data);
+                setFilteredCustomers(response.data); // Initially set filtered customers to all customers
             })
             .catch(error => {
                 console.error('Error fetching customer details:', error);
             });
     }, []);
+
+    // Function to handle search input change
+    const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value);
+        filterCustomers(event.target.value);
+    };
+
+    // Function to filter customers based on search term
+    const filterCustomers = (searchTerm) => {
+        const filtered = customers.filter(customer =>
+            customer.customerName.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setFilteredCustomers(filtered);
+        setCurrentPage(1); // Reset current page when search term changes
+    };
+
+    // Function to handle pagination
+    const handlePageChange = (event, page) => {
+        setCurrentPage(page);
+    };
+
+    // Calculate the index of the first and last item of the current page
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredCustomers.slice(indexOfFirstItem, indexOfLastItem);
+
     return (
         <div>
-            <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                <a className="navbar-brand" href="#">Customer</a>
-                <button className="navbar-toggler" type="button" data-toggle="collapse"
-                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                </button>
-                <div className="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
-                    <form className="form-inline my-2 my-lg-0">
-                        <input className="form-control mr-sm-2" type="search" placeholder="Search"/>
-                        <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                    </form>
-                    <ul className="navbar-nav">
-                        <li className="nav-item active">
-                            <Button variant="secondary">
-                                <Link to="/create-customer" className="nav-link">Create Customer</Link>
-                            </Button>
-                        </li>
-                    </ul>
+            <Typography variant="h3" gutterBottom>Customer</Typography>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <TextField
+                        label="Search"
+                        variant="outlined"
+                        size="small"
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <Button onClick={() => filterCustomers(searchTerm)} size="small">Search</Button>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
                 </div>
-            </nav>
-            <div className="container">
-                <table className="highlight">
-                    <thead>
-                    <tr>
-                        <th>Customer Name</th>
-                        <th>Customer Address</th>
-                        <th>Contact Number</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {customers.map(customer => (
-                        <tr key={customer.id}>
-                            <td>{customer.customerName}</td>
-                            <td>{customer.customerAddress}</td>
-                            <td>{customer.contactNumber}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
+                <Button component={Link} to="/create-customer" variant="contained" color="primary">Create Customer</Button>
+            </div>
+            <div style={{ marginTop: '20px' }}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Customer Name</TableCell>
+                            <TableCell>Customer Address</TableCell>
+                            <TableCell>Contact Number</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {currentItems.map(customer => (
+                            <TableRow key={customer.id}>
+                                <TableCell>{customer.customerName}</TableCell>
+                                <TableCell>{customer.customerAddress}</TableCell>
+                                <TableCell>{customer.contactNumber}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+                {/* Pagination */}
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                    <Pagination
+                        count={Math.ceil(filteredCustomers.length / itemsPerPage)}
+                        page={currentPage}
+                        onChange={handlePageChange}
+                        color="primary"
+                    />
+                </div>
             </div>
         </div>
     );

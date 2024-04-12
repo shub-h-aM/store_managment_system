@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import MenuPage from './MenuPage';
 import HomePage from './components/HomePage';
 import LoginPage from './components/LoginPage';
 import SignupPage from './components/SignupPage';
 import UserDetails from './components/UserDetails';
 import UploadFile from './components/UploadFile';
 import ItemDetails from './components/ItemDetails';
-import { FaBars, FaWarehouse, FaUpload, FaChartPie } from 'react-icons/fa';
 import PieChartWithCustomizedLabel from "./components/PieChart";
 import InvoiceForm from "./components/Invoice/InvoiceForm";
 import CustomerOnboard from "./components/customer/CustomerOnboard";
@@ -21,6 +21,7 @@ const App = () => {
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
+
     const handleLogin = (user) => {
         setIsLoggedIn(true);
         setActiveUser(user);
@@ -68,87 +69,28 @@ const App = () => {
         };
     }, []);
 
-
-
+    useEffect(() => {
+        // Store current URL in local storage before refreshing
+        localStorage.setItem('currentUrl', window.location.pathname);
+    }, []);
 
     return (
         <Router>
             <div>
-                <nav className="navbar">
-                    <div className="menu-toggle" onClick={toggleMenu}>
-                        <FaBars/>
-                    </div>
-                    <ul className={`nav-links ${isMenuOpen ? 'open' : ''}`}>
-                        {!isLoggedIn ? (
-                            <>
-                                <li>
-                                    <Link to="/login" onClick={toggleMenu}>
-                                        Sign In
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link to="/signup" onClick={toggleMenu}>
-                                        Sign Up
-                                    </Link>
-                                </li>
-                            </>
-                        ) : (
-                            <>
-                                {activeUser && (
-                                    <li className="user-info">
-                                        <img src={activeUser.avatar} alt={activeUser.username} className="avatar"/>
-                                        <span className="username">{activeUser.name}</span>
-                                    </li>
-                                )}
-
-                                <li>
-                                    <Link to="/pie-chart" onClick={toggleMenu}>
-                                        <FaChartPie/> Pie Chart
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link to="/userDetails" onClick={toggleMenu}>
-                                        <FaWarehouse/> User Details
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link to="/upload" onClick={toggleMenu}>
-                                        <FaUpload/> Add Item
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link to="/item-details" onClick={toggleMenu}>
-                                        <FaWarehouse/> Item Details
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link to="/invoice" onClick={toggleMenu}>
-                                        <FaWarehouse/> Invoice
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link to="/customer" onClick={toggleMenu}>
-                                        <FaWarehouse/> Customer
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link to="/ledger-transaction" onClick={toggleMenu}>
-                                        <FaWarehouse/>Ledger
-                                    </Link>
-                                </li>
-                                <li>
-                                    <button onClick={handleLogout}>Logout</button>
-                                </li>
-                            </>
-                        )}
-                    </ul>
-                </nav>
+                <MenuPage
+                    isLoggedIn={isLoggedIn}
+                    isMenuOpen={isMenuOpen}
+                    activeUser={activeUser}
+                    handleLogin={handleLogin}
+                    handleLogout={handleLogout}
+                    toggleMenu={toggleMenu}
+                />
                 <Routes>
                     {!isLoggedIn ? (
                         <>
                             <Route path="/login" element={<LoginPage onLogin={handleLogin}/>}/>
                             <Route path="/signup" element={<SignupPage/>}/>
-                            <Route path="*" element={<Navigate to="/login"/>}/>
+                            <Route path="/" element={<Navigate to="/login"/>}/>
                         </>
                     ) : (
                         <>
@@ -165,6 +107,7 @@ const App = () => {
                         </>
                     )}
                 </Routes>
+
             </div>
         </Router>
     );
