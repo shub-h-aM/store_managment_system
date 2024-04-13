@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../index.css';
-import TablePagination from '@mui/material/TablePagination';
 import { FaSearch } from 'react-icons/fa';
-
+import { Typography, TextField, Button, Table, TableHead, TableRow, TableCell, TableBody, TablePagination } from '@mui/material';
 
 const columns = [
     { id: 'Name', label: 'Name', minWidth: 170 },
@@ -17,7 +15,7 @@ const UserDetails = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(10); // Use useState instead of React.useState
+    const [itemsPerPage, setItemsPerPage] = useState(10);
 
     useEffect(() => {
         fetchData();
@@ -25,14 +23,14 @@ const UserDetails = () => {
 
     const fetchData = async () => {
         try {
-            setLoading(true); // Set loading state to true
+            setLoading(true);
             const response = await axios.get('http://localhost:5000/api/userDetails');
-            setFormData(response.data); // Update formData state with fetched data
+            setFormData(response.data);
         } catch (error) {
             console.error('Error fetching form data:', error);
             alert("Failed to get data.");
         } finally {
-            setLoading(false); // Set loading state to false regardless of success or failure
+            setLoading(false);
         }
     };
 
@@ -42,13 +40,12 @@ const UserDetails = () => {
 
     const handleChangeRowsPerPage = (event) => {
         setItemsPerPage(+event.target.value);
-        setCurrentPage(0); // Reset current page when changing rows per page
+        setCurrentPage(0);
     };
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-    // Filter the formData based on searchTerm
     const filteredItems = formData.filter(item =>
         item.Name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.Email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -56,47 +53,53 @@ const UserDetails = () => {
         item.ContactNumber.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Get the currentItems based on pagination and filteredItems
     const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
 
     return (
-        <div className="container">
-            <h2>User Details</h2>
-            <div className="search-bar">
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <button className="search-button" disabled={loading}>
-                    {loading ? 'Loading...' : <FaSearch />}
-                </button>
+        <div>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                <Typography variant="h3" gutterBottom>User Details</Typography>
+                <div style={{display: 'flex', alignItems: 'center'}}>
+                    <TextField
+                        label="Search"
+                        variant="outlined"
+                        size="small"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        InputProps={{
+                            endAdornment: (
+                                <Button onClick={fetchData} disabled={loading} size="small">
+                                    {loading ? 'Loading...' : <FaSearch />}
+                                </Button>
+                            ),
+                        }}
+                    />
+                </div>
             </div>
-            <div className="table-container">
-                <table>
-                    <thead>
-                    <tr>
-                        {columns.map((column) => (
-                            <th key={column.id}>{column.label}</th>
-                        ))}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {currentItems.map((data, index) => (
-                        <tr key={index}>
+            <div style={{marginTop: '20px'}}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
                             {columns.map((column) => (
-                                <td key={column.id}>{data[column.id]}</td>
+                                <TableCell key={column.id}>{column.label}</TableCell>
                             ))}
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {currentItems.map((data, index) => (
+                            <TableRow key={index}>
+                                {columns.map((column) => (
+                                    <TableCell key={column.id}>{data[column.id]}</TableCell>
+                                ))}
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
             </div>
             <TablePagination
                 rowsPerPageOptions={[10, 25, 100]}
                 component="div"
-                count={filteredItems.length} // Use filteredItems.length instead of formData.length
+                count={filteredItems.length}
                 rowsPerPage={itemsPerPage}
                 page={currentPage}
                 onPageChange={handleChangePage}

@@ -1,7 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Container, Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper, ThemeProvider, createTheme, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import {
+    TextField,
+    Button,
+    Container,
+    Table,
+    TableContainer,
+    TableHead,
+    TableBody,
+    TableRow,
+    TableCell,
+    Paper,
+    ThemeProvider,
+    createTheme,
+    Menu,
+    MenuItem,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Typography
+} from '@mui/material';
 import { styled } from '@mui/system';
 import axios from 'axios';
+import {FaSearch} from "react-icons/fa";
 
 const theme = createTheme();
 
@@ -129,17 +150,24 @@ const LedgerPage = () => {
     return (
         <ThemeProvider theme={theme}>
             <StyledContainer>
-                <StyledSearchContainer>
-                    <StyledTextField
-                        label="Search"
-                        variant="outlined"
-                        value={searchQuery}
-                        onChange={handleSearchChange}
-                    />
-                    <StyledButton variant="contained" color="primary" onClick={handleSearch}>
-                        Search
-                    </StyledButton>
-                </StyledSearchContainer>
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                    <Typography variant="h3" gutterBottom>Ledger</Typography>
+                    <div style={{display: 'flex', alignItems: 'center'}}>
+                        <TextField
+                            label="Search"
+                            variant="outlined"
+                            size="small"
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            InputProps={{
+                                endAdornment: (
+                                    <Button onClick={handleSearch}  color="primary"  ><FaSearch />
+                                    </Button>
+                                ),
+                            }}
+                        />
+                    </div>
+                </div>
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
@@ -169,7 +197,8 @@ const LedgerPage = () => {
                                     <TableCell>{transaction.due_amount}</TableCell>
                                     <TableCell>{transaction.date_of_due}</TableCell>
                                     <TableCell>
-                                        <StyledButton variant="contained" onClick={(event) => handleActionClick(event, transaction)}>
+                                        <StyledButton variant="contained"
+                                                      onClick={(event) => handleActionClick(event, transaction)}>
                                             Edit
                                         </StyledButton>
                                     </TableCell>
@@ -182,9 +211,10 @@ const LedgerPage = () => {
                 <Dialog open={openDialog} onClose={handleDialogClose}>
                     <DialogTitle>Edit Transaction</DialogTitle>
                     <DialogContent>
-                        <div className="fw-bold">Due Amount: ₹ {selectedTransaction ? selectedTransaction.due_amount : 0}</div>
-                    <TextField
-                        label="New Payment" type="number" min="0"
+                        <div className="fw-bold">Due Amount:
+                            ₹ {selectedTransaction ? selectedTransaction.due_amount : 0}</div>
+                        <TextField
+                            label="New Payment" type="number" min="0"
                             value={editedTransaction ? editedTransaction.new_payment : ''}
                             onChange={handleNewPaymentChange}
                         />
