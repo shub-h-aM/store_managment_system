@@ -65,7 +65,7 @@ app.post('/api/signup', (req, res) => {
 
 app.post('/api/item/details', (req, res) => {
     const { date_of_purchase, item, item_type, brand, item_category, qty, total_amount, total_gst, location, supplier } = req.body;
-    const sql = 'INSERT INTO item (date_of_purchase, item, item_type, brand, item_category, qty, total_amount, total_gst, location, supplier) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?)';
+    const sql = 'INSERT INTO item_details (date_of_purchase, item, item_type, brand, item_category, qty, total_amount, total_gst, location, supplier) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?)';
     db.query(sql, [date_of_purchase, item, item_type, brand, item_category, qty, total_amount, total_gst, location, supplier], (err, result) => {
         if (err) {
             console.error('Error inserting form data:', err);
@@ -114,48 +114,55 @@ app.post('/api/login', (req, res) => {
 });
 
 // API endpoint for uploading Excel file
-app.post('/api/upload', upload.single('file'), (req, res) => {
+app.post('/api/upload', upload.single('file'), async (req, res) => {
     const workbook = new exceljs.Workbook();
-    const filePath = path.join(__dirname, 'uploads', req.file.filename);
+    const filePath = path.join(__dirname, '../upload_doc/uploads/', req.file.filename);
 
     if (!fs.existsSync(filePath)) {
         console.error('File not found:', filePath);
         return res.status(404).json({ message: 'File not found' });
     }
 
-    workbook.xlsx.readFile(filePath)
-        .then((worksheet) => {
-            const sheet = worksheet.getWorksheet(1);
-            const dataRows = [];
+    try {
+        await workbook.xlsx.readFile(filePath);
+        const sheet = workbook.getWorksheet(1);
+        const dataRows = [];
 
-            // Iterate over each row starting from the second row (excluding the header row)
-            for (let i = 2; i <= sheet.rowCount; i++) {
-                const rowValues = sheet.getRow(i).values;
-                const trimmedRow = rowValues.slice(1);
+        // Iterate over each row starting from the second row (excluding the header row)
+        for (let i = 2; i <= sheet.rowCount; i++) {
+            const rowValues = sheet.getRow(i).values;
+            const trimmedRow = rowValues.slice(1);
+
+            // Check if the row is empty
+            if (!trimmedRow.every(value => value === null || value === '')) {
                 dataRows.push(trimmedRow);
             }
+        }
 
-            console.log('Data Rows:', dataRows);
+        console.log('Data Rows:', dataRows);
 
-            // Insert rows into MySQL database
-
-            const query = 'INSERT INTO item (date_of_purchase, item, item_type, brand, item_category, qty, total_amount, total_gst, location, supplier) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-            dataRows.forEach(row => {
+        // Insert rows into MySQL database
+        const query = 'INSERT INTO item_details (date_of_purchase, item, item_type, brand, item_category, qty, total_amount, total_gst, location, supplier) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        const promises = dataRows.map(row => {
+            return new Promise((resolve, reject) => {
                 db.query(query, row, (error, results) => {
                     if (error) {
                         console.error(error);
-                        return res.status(500).json({ message: 'Internal server error' });
+                        reject(error);
                     }
                     console.log('Inserted row:', row);
+                    resolve();
                 });
             });
-
-            res.json({ message: 'Data uploaded successfully' });
-        })
-        .catch((error) => {
-            console.error('Error reading Excel file:', error);
-            res.status(400).json({ message: 'Error parsing Excel file' });
         });
+
+        await Promise.all(promises);
+
+        res.json({ message: 'Data uploaded successfully' });
+    } catch (error) {
+        console.error('Error reading Excel file:', error);
+        res.status(400).json({ message: 'Error parsing Excel file' });
+    }
 });
 
 
@@ -163,7 +170,7 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 
 // API Endpoint to retrieve item data
 app.get('/api/itemDetails', (req, res) => {
-    const sql = 'SELECT * FROM item';
+    const sql = 'SELECT * FROM item_details';
     db.query(sql, (err, result) => {
         if (err) {
             console.error('Error retrieving form data:', err);
