@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaSearch } from 'react-icons/fa';
-import '../index.css';
+import { Typography, TextField, Button } from '@mui/material';
 import TablePagination from "@mui/material/TablePagination";
 
 const ItemDetails = () => {
     const [formData, setFormData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(false);
-    const [currentPage, setCurrentPage] = useState(0); // Changed initial page to 0
+    const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [indexOfFirstItem, setIndexOfFirstItem] = useState(0);
     const [indexOfLastItem, setIndexOfLastItem] = useState(itemsPerPage);
@@ -17,10 +17,10 @@ const ItemDetails = () => {
         fetchData();
     }, []);
 
-    const fetchData =  async () => {
+    const fetchData = async () => {
         try {
             setLoading(true);
-            const response = await  axios.get('http://localhost:5000/api/itemDetails');
+            const response = await axios.get('http://localhost:5000/api/itemDetails');
             setFormData(response.data);
         } catch (error) {
             console.error('Error fetching item data:', error);
@@ -40,9 +40,9 @@ const ItemDetails = () => {
 
     const handleChangeRowsPerPage = (event) => {
         setItemsPerPage(+event.target.value);
-        setCurrentPage(0); // Reset current page when changing rows per page
-        setIndexOfFirstItem(0); // Reset index of first item
-        setIndexOfLastItem(+event.target.value); // Reset index of last item
+        setCurrentPage(0);
+        setIndexOfFirstItem(0);
+        setIndexOfLastItem(+event.target.value);
     };
 
     const filteredItems = formData.filter(item =>
@@ -55,21 +55,24 @@ const ItemDetails = () => {
     const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
 
     return (
-        <div className="container">
-            <h2>Item Details</h2>
-            <div className="search-bar">
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <button className="search-button" onClick={fetchData} disabled={loading}>
-                    {loading ? 'Loading...' : <FaSearch />}
-                </button>
+        <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="h3" gutterBottom> Item Details</Typography>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <TextField label="Search" variant="outlined" size="small" value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        InputProps={{
+                            endAdornment: (
+                                <Button onClick={fetchData} disabled={loading} variant="contained" color="primary">
+                                    {loading ? 'Loading...' : 'Search'}
+                                </Button>
+                            ),
+                        }}
+                    />
+                </div>
             </div>
             {loading ? (
-                <p>Loading...</p>
+                <Typography>Loading...</Typography>
             ) : (
                 <div>
                     <table>

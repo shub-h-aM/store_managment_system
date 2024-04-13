@@ -42,7 +42,7 @@ const MenuPage = ({ isLoggedIn, isMenuOpen, activeUser, handleLogin, handleLogou
                             </Link>
                         </li>
                         <li>
-                            <Link to="/upload" onClick={toggleMenu}>
+                            <Link to="/item/inventory" onClick={toggleMenu}>
                                 <FaUpload/> Add Item
                             </Link>
                         </li>

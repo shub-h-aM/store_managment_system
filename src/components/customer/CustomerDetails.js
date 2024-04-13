@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
-import { Typography, TextField, InputAdornment, Grid, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
+import { Typography, TextField, InputAdornment, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 import Pagination from '@mui/material/Pagination';
 
 function CustomerDetails() {
@@ -10,14 +10,14 @@ function CustomerDetails() {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredCustomers, setFilteredCustomers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(5);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
 
     useEffect(() => {
         // Fetch customer details from the API
         axios.get('http://localhost:5000/api/customers')
             .then(response => {
                 setCustomers(response.data);
-                setFilteredCustomers(response.data); // Initially set filtered customers to all customers
+                setFilteredCustomers(response.data);
             })
             .catch(error => {
                 console.error('Error fetching customer details:', error);
@@ -30,13 +30,12 @@ function CustomerDetails() {
         filterCustomers(event.target.value);
     };
 
-    // Function to filter customers based on search term
     const filterCustomers = (searchTerm) => {
         const filtered = customers.filter(customer =>
             customer.customerName.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setFilteredCustomers(filtered);
-        setCurrentPage(1); // Reset current page when search term changes
+        setCurrentPage(1);
     };
 
     // Function to handle pagination
@@ -51,8 +50,10 @@ function CustomerDetails() {
 
     return (
         <div>
-            <Typography variant="h3" gutterBottom>Customer</Typography>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                <Typography variant="h3" gutterBottom>
+                    Customer
+                </Typography>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <TextField
                         label="Search"
@@ -68,37 +69,35 @@ function CustomerDetails() {
                             ),
                         }}
                     />
+                    <Button component={Link} to="/create-customer" variant="contained" color="primary" style={{ marginLeft: '10px' }}>Create Customer</Button>
                 </div>
-                <Button component={Link} to="/create-customer" variant="contained" color="primary">Create Customer</Button>
             </div>
-            <div style={{ marginTop: '20px' }}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Customer Name</TableCell>
-                            <TableCell>Customer Address</TableCell>
-                            <TableCell>Contact Number</TableCell>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Customer Name</TableCell>
+                        <TableCell>Customer Address</TableCell>
+                        <TableCell>Contact Number</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {currentItems.map(customer => (
+                        <TableRow key={customer.id}>
+                            <TableCell>{customer.customerName}</TableCell>
+                            <TableCell>{customer.customerAddress}</TableCell>
+                            <TableCell>{customer.contactNumber}</TableCell>
                         </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {currentItems.map(customer => (
-                            <TableRow key={customer.id}>
-                                <TableCell>{customer.customerName}</TableCell>
-                                <TableCell>{customer.customerAddress}</TableCell>
-                                <TableCell>{customer.contactNumber}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-                {/* Pagination */}
-                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-                    <Pagination
-                        count={Math.ceil(filteredCustomers.length / itemsPerPage)}
-                        page={currentPage}
-                        onChange={handlePageChange}
-                        color="primary"
-                    />
-                </div>
+                    ))}
+                </TableBody>
+            </Table>
+            {/* Pagination */}
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                <Pagination
+                    count={Math.ceil(filteredCustomers.length / itemsPerPage)}
+                    page={currentPage}
+                    onChange={handlePageChange}
+                    color="primary"
+                />
             </div>
         </div>
     );

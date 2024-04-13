@@ -12,6 +12,7 @@ import InvoiceForm from "./components/Invoice/InvoiceForm";
 import CustomerOnboard from "./components/customer/CustomerOnboard";
 import CustomerDetails from "./components/customer/CustomerDetails";
 import LedgerPage from "./components/LedgerPage";
+import CreateItemDetails from "./components/CreateItemDetails";
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -97,7 +98,8 @@ const App = () => {
                             <Route path="/" element={<HomePage/>}/>
                             <Route path="/pie-chart" element={<PieChartWithCustomizedLabel />} />
                             <Route path="/userDetails" element={<UserDetails />} />
-                            <Route path="/upload" element={<UploadFile />} />
+                            <Route path="/upload/item/details" element={<UploadFile />} />
+                            <Route path="/item/inventory" element={<CreateItemDetails />} />
                             <Route path="/item-details" element={<ItemDetails />} />
                             <Route path="/invoice" element={<InvoiceForm />} />
                             <Route path="/customer" element={<CustomerDetails />} />
