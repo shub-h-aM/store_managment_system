@@ -12,6 +12,7 @@ function CreateItem() {
     const [itemModel, setItemModel] = useState('');
     const [brand, setBrand] = useState('');
     const [itemCategory, setItemCategory] = useState('');
+    const [rate, setRate] = useState('');
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -21,6 +22,7 @@ function CreateItem() {
         if (name === 'itemModel') setItemModel(value);
         if (name === 'brand') setBrand(value);
         if (name === 'itemCategory') setItemCategory(value);
+        if (name === 'rate') setRate(value);
     };
 
     const handleSubmit = async (event) => {
@@ -32,7 +34,8 @@ function CreateItem() {
                 itemDescription,
                 itemModel,
                 brand,
-                itemCategory
+                itemCategory,
+                rate
             });
             console.log(response.data);
             setItemCode('');
@@ -41,6 +44,7 @@ function CreateItem() {
             setItemModel('');
             setBrand('');
             setItemCategory('');
+            setRate('');
             alert('Item added successfully!');
         } catch (error) {
             console.error('Error:', error);
@@ -107,6 +111,15 @@ function CreateItem() {
                                 label="Item Category"
                                 name="itemCategory"
                                 value={itemCategory}
+                                onChange={handleInputChange}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                label="Rate Per Piece"
+                                name="rate"
+                                value={rate}
                                 onChange={handleInputChange}
                             />
                         </Grid>

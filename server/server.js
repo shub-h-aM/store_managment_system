@@ -63,9 +63,9 @@ app.post('/api/signup', (req, res) => {
 
 // Api endpoint for item page
 app.post('/api/items', (req, res) => {
-    const { itemCode, itemName, itemDescription, itemModel, brand, itemCategory } = req.body; // Corrected variable names
-    const sql = 'INSERT INTO items (item_code, item_name, item_description, item_model, brand, item_category) VALUES (?, ?, ?, ?, ?, ?)';
-    db.query(sql, [itemCode, itemName, itemDescription, itemModel, brand, itemCategory], (err, result) => {
+    const { itemCode, itemName, itemDescription, itemModel, brand, itemCategory, rate } = req.body; // Corrected variable names
+    const sql = 'INSERT INTO items (item_code, item_name, item_description, item_model, brand, item_category, rate) VALUES (?, ?, ?, ?, ?, ?,?)';
+    db.query(sql, [itemCode, itemName, itemDescription, itemModel, brand, itemCategory, rate], (err, result) => {
         if (err) {
             console.error('Error inserting item data:', err);
             return res.status(500).json({ error: 'Error submitting item' });
@@ -88,6 +88,7 @@ app.get('/api/get/items', (req, res) => { // Changed endpoint to /api/items
         res.status(200).json(result);
     });
 });
+
 
 
 

@@ -81,6 +81,7 @@ function Item() {
                         <TableCell>Item Model</TableCell>
                         <TableCell>Brand</TableCell>
                         <TableCell>Item Category</TableCell>
+                        <TableCell>Rate</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -92,6 +93,7 @@ function Item() {
                             <TableCell>{item.item_model}</TableCell>
                             <TableCell>{item.brand}</TableCell>
                             <TableCell>{item.item_category}</TableCell>
+                            <TableCell>{item.rate}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

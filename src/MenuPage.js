@@ -72,6 +72,11 @@ const MenuPage = ({ isLoggedIn, isMenuOpen, activeUser, handleLogin, handleLogou
                             </Link>
                         </li>
                         <li>
+                            <Link to="/get/customer_rate/list" onClick={toggleMenu}>
+                                <FaWarehouse/>Item Rate
+                            </Link>
+                        </li>
+                        <li>
                             <button onClick={handleLogout}>Logout</button>
                         </li>
                     </>
