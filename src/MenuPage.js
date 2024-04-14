@@ -67,6 +67,11 @@ const MenuPage = ({ isLoggedIn, isMenuOpen, activeUser, handleLogin, handleLogou
                             </Link>
                         </li>
                         <li>
+                            <Link to="/get/item" onClick={toggleMenu}>
+                                <FaWarehouse/>Item
+                            </Link>
+                        </li>
+                        <li>
                             <button onClick={handleLogout}>Logout</button>
                         </li>
                     </>

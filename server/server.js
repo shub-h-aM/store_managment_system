@@ -61,12 +61,41 @@ app.post('/api/signup', (req, res) => {
     });
 });
 
+// Api endpoint for item page
+app.post('/api/items', (req, res) => {
+    const { itemCode, itemName, itemDescription, itemModel, brand, itemCategory } = req.body; // Corrected variable names
+    const sql = 'INSERT INTO items (item_code, item_name, item_description, item_model, brand, item_category) VALUES (?, ?, ?, ?, ?, ?)';
+    db.query(sql, [itemCode, itemName, itemDescription, itemModel, brand, itemCategory], (err, result) => {
+        if (err) {
+            console.error('Error inserting item data:', err);
+            return res.status(500).json({ error: 'Error submitting item' });
+        }
+        console.log('Item data inserted successfully');
+        res.status(200).json({ message: 'Item submitted successfully' });
+    });
+});
+
+// API Endpoint to retrieve form data
+
+app.get('/api/get/items', (req, res) => { // Changed endpoint to /api/items
+    const sql = 'SELECT * FROM items';
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error('Error retrieving item data:', err);
+            return res.status(500).json({ error: 'Error retrieving item data' });
+        }
+        console.log('Item data retrieved successfully');
+        res.status(200).json(result);
+    });
+});
+
 
 
 app.post('/api/item/details', (req, res) => {
-    const { date_of_purchase, item, item_type, brand, item_category, qty, total_amount, total_gst, location, supplier } = req.body;
-    const sql = 'INSERT INTO item_details (date_of_purchase, item, item_type, brand, item_category, qty, total_amount, total_gst, location, supplier) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?)';
-    db.query(sql, [date_of_purchase, item, item_type, brand, item_category, qty, total_amount, total_gst, location, supplier], (err, result) => {
+    const { date_of_purchase,month_name, item,item_description, item_type,invoice_number, brand, item_category, qty, total_amount, total_gst, supplier, location } = req.body;
+    const sql =
+        'INSERT INTO item_details (date_of_purchase,month_name, item, item_description, item_type,invoice_number, brand, item_category, qty, total_amount, total_gst, supplier, location) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?)';
+    db.query(sql, [date_of_purchase,month_name, item, item_description, item_type,invoice_number, brand, item_category, qty, total_amount, total_gst,supplier, location], (err, result) => {
         if (err) {
             console.error('Error inserting form data:', err);
             res.status(500).json({ error: 'Error submitting form' });

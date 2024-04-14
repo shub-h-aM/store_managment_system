@@ -42,12 +42,16 @@ const ItemDetails = () => {
         setItemsPerPage(+event.target.value);
         setCurrentPage(0);
         setIndexOfFirstItem(0);
-        setIndexOfLastItem(+event.target.value);
+        // setIndexOfLastItem(+event.target.value);
+        const newIndexOfLastItem = indexOfFirstItem + +event.target.value;
+        setIndexOfLastItem(newIndexOfLastItem);
+
     };
 
     const filteredItems = formData.filter(item =>
         item.item.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.item_type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.invoice_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.month.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.item_category.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.supplier.toLowerCase().includes(searchTerm.toLowerCase())
@@ -79,30 +83,38 @@ const ItemDetails = () => {
                         <thead>
                         <tr>
                             <th>Purchase Date</th>
+                            <th>Month</th>
                             <th>Item</th>
+                            <th>Item Description</th>
                             <th>Item Type</th>
+                            <th>Invoice</th>
                             <th>Brand</th>
                             <th>Item Category</th>
                             <th>Quantity</th>
+                            <th>Total</th>
                             <th>Rate Per Piece</th>
                             <th>Total GST</th>
-                            <th>Location</th>
                             <th>Supplier</th>
+                            <th>Location</th>
                         </tr>
                         </thead>
                         <tbody>
                         {currentItems.map((data, index) => (
                             <tr key={index}>
                                 <td>{data.date_of_purchase.split('T')[0]}</td>
+                                <td>{data.month_name}</td>
                                 <td>{data.item}</td>
+                                <td>{data.item_description}</td>
                                 <td>{data.item_type}</td>
+                                <td>{data.invoice_number}</td>
                                 <td>{data.brand}</td>
                                 <td>{data.item_category}</td>
                                 <td>{data.qty}</td>
+                                <td>{data.total_amount}</td>
                                 <td>{Math.round((data.total_amount / data.qty) + (((data.total_amount / data.qty) * data.total_gst) / 100))}</td>
                                 <td>{data.total_gst}</td>
-                                <td>{data.location}</td>
                                 <td>{data.supplier}</td>
+                                <td>{data.location}</td>
                             </tr>
                         ))}
                         </tbody>

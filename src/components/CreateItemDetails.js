@@ -6,8 +6,11 @@ import {Link} from "react-router-dom";
 const CreateItemDetails = () => {
     const initialFormData = {
         date_of_purchase: '',
+        month_name: '',
         item: '',
+        item_description: '',
         item_type: '',
+        invoice_number: '',
         brand: '',
         item_category: '',
         qty: 0,
@@ -66,12 +69,24 @@ const CreateItemDetails = () => {
                                    value={formData.date_of_purchase} onChange={handleInputChange}/>
                     </Grid>
                     <Grid item xs={6}>
+                        <TextField label="Month" fullWidth type="text" name="month_name"
+                                   value={formData.month_name} onChange={handleInputChange}/>
+                    </Grid>
+                    <Grid item xs={6}>
                         <TextField label="Item" fullWidth type="text" name="item"
                                    value={formData.item} onChange={handleInputChange}/>
                     </Grid>
                     <Grid item xs={6}>
+                        <TextField label="Item Description" fullWidth type="text" name="item_description"
+                                   value={formData.item_description} onChange={handleInputChange}/>
+                    </Grid>
+                    <Grid item xs={6}>
                         <TextField label="Item Type" fullWidth type="text" name="item_type"
                                    value={formData.item_type} onChange={handleInputChange}/>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField label="Invoice Number" fullWidth type="text" name="invoice_number"
+                                   value={formData.invoice_number} onChange={handleInputChange}/>
                     </Grid>
                     <Grid item xs={6}>
                         <TextField label="Brand" fullWidth type="text" name="brand"

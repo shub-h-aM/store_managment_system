@@ -13,6 +13,8 @@ import CustomerOnboard from "./components/customer/CustomerOnboard";
 import CustomerDetails from "./components/customer/CustomerDetails";
 import LedgerPage from "./components/LedgerPage";
 import CreateItemDetails from "./components/CreateItemDetails";
+import CreateItem from "./components/CreateItem";
+import Item from "./components/Item";
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -105,6 +107,8 @@ const App = () => {
                             <Route path="/customer" element={<CustomerDetails />} />
                             <Route path="/create-customer" element={<CustomerOnboard />} />
                             <Route path="/ledger-transaction" element={<LedgerPage />} />
+                            <Route path="/create-item" element={<CreateItem />} />
+                            <Route path="/get/item" element={<Item />} />
                             <Route path="*" element={<Navigate to="/" />} />
                         </>
                     )}
