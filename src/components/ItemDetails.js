@@ -9,9 +9,18 @@ const ItemDetails = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(0);
-    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [itemsPerPage, setItemsPerPage] = useState(15);
     const [indexOfFirstItem, setIndexOfFirstItem] = useState(0);
     const [indexOfLastItem, setIndexOfLastItem] = useState(itemsPerPage);
+
+    // State variables for filters
+    const [filters, setFilters] = useState({
+        item: '',
+        brand: '',
+        month_name: '',
+        supplier: '',
+        invoice_number: ''
+    });
 
     useEffect(() => {
         fetchData();
@@ -20,7 +29,7 @@ const ItemDetails = () => {
     const fetchData = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:5000/api/itemDetails');
+            const response = await axios.get('http://localhost:5000/api/itemDetails', { params: filters });
             setFormData(response.data);
         } catch (error) {
             console.error('Error fetching item data:', error);
@@ -42,20 +51,26 @@ const ItemDetails = () => {
         setItemsPerPage(+event.target.value);
         setCurrentPage(0);
         setIndexOfFirstItem(0);
-        // setIndexOfLastItem(+event.target.value);
         const newIndexOfLastItem = indexOfFirstItem + +event.target.value;
         setIndexOfLastItem(newIndexOfLastItem);
+    };
 
+    // Function to handle changes in filter values
+    const handleFilterChange = (key, value) => {
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            [key]: value
+        }));
     };
 
     const filteredItems = formData.filter(item =>
-        item.item.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.invoice_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.month.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.item_category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.supplier.toLowerCase().includes(searchTerm.toLowerCase())
+        (!filters.item || item.item?.toLowerCase().includes(filters.item.toLowerCase())) &&
+        (!filters.brand || item.brand?.toLowerCase().includes(filters.brand.toLowerCase())) &&
+        (!filters.month_name || item.month_name?.toLowerCase().includes(filters.month_name.toLowerCase())) &&
+        (!filters.supplier || item.supplier?.toLowerCase().includes(filters.supplier.toLowerCase())) &&
+        (!filters.invoice_number || item.invoice_number?.toLowerCase().includes(filters.invoice_number.toLowerCase()))
     );
+
     const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
 
     return (
@@ -64,15 +79,25 @@ const ItemDetails = () => {
                 <Typography variant="h3" gutterBottom> Item Details</Typography>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <TextField label="Search" variant="outlined" size="small" value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        InputProps={{
-                            endAdornment: (
-                                <Button onClick={fetchData} disabled={loading} variant="contained" color="primary">
-                                    {loading ? 'Loading...' : 'Search'}
-                                </Button>
-                            ),
-                        }}
+                               onChange={(e) => setSearchTerm(e.target.value)}
+                               InputProps={{
+                                   endAdornment: (
+                                       <Button onClick={fetchData} disabled={loading} variant="contained" color="primary">
+                                           {loading ? 'Loading...' : 'Search'}
+                                       </Button>
+                                   ),
+                               }}
                     />
+                    <TextField label="Item" variant="outlined" size="small" value={filters.item}
+                               onChange={(e) => handleFilterChange('item', e.target.value)} />
+                    <TextField label="Brand" variant="outlined" size="small" value={filters.brand}
+                               onChange={(e) => handleFilterChange('brand', e.target.value)} />
+                    <TextField label="Month" variant="outlined" size="small" value={filters.month_name}
+                               onChange={(e) => handleFilterChange('month_name', e.target.value)} />
+                    <TextField label="Supplier" variant="outlined" size="small" value={filters.supplier}
+                               onChange={(e) => handleFilterChange('supplier', e.target.value)} />
+                    <TextField label="Invoice Number" variant="outlined" size="small" value={filters.invoice_number}
+                               onChange={(e) => handleFilterChange('invoice_number', e.target.value)} />
                 </div>
             </div>
             {loading ? (
@@ -122,7 +147,7 @@ const ItemDetails = () => {
                 </div>
             )}
             <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
+                rowsPerPageOptions={[15, 25, 100]}
                 component="div"
                 count={filteredItems.length}
                 rowsPerPage={itemsPerPage}
