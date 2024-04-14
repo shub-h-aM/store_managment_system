@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Button from "@mui/material/Button";
-import { Link } from "react-router-dom";
-import { Typography, TextField, InputAdornment, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
+import { Typography, TextField, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 import Pagination from '@mui/material/Pagination';
+import { GenerateRateList } from '../helpers/GenerateRateList';
 
 function CustomerItemRate() {
     const [customerRate, setCustomerRate] = useState([]);
@@ -24,22 +24,27 @@ function CustomerItemRate() {
             });
     }, []);
 
-    // Function to handle search input change
+
     const handleSearchChange = (event) => {
         const searchTerm = event.target.value.toLowerCase();
+        setSearchTerm(searchTerm); // Update searchTerm immediately
         const filteredList = customerRate.filter(itemRate =>
-            itemRate.item.toLowerCase().includes(searchTerm) ||
-            itemRate.item_description.toLowerCase().includes(searchTerm) ||
-            itemRate.brand.toLowerCase().includes(searchTerm) ||
-            itemRate.rate.toLowerCase().includes(searchTerm)
+            (itemRate.item && itemRate.item.toLowerCase().includes(searchTerm)) ||
+            (itemRate.item_description && itemRate.item_description.toLowerCase().includes(searchTerm)) ||
+            (itemRate.brand && itemRate.brand.toLowerCase().includes(searchTerm)) ||
+            (typeof itemRate.rate === 'string'  && itemRate.rate.toLowerCase().includes(searchTerm))
         );
         setFilteredCustomers(filteredList);
-        setSearchTerm(event.target.value);
     };
 
 
     const handlePageChange = (event, page) => {
         setCurrentPage(page);
+    };
+
+    const handleGeneratePDF = () => {
+        // Call GenerateRateList function with appropriate parameters
+        GenerateRateList(true);
     };
 
     // Calculate the index of the first and last item of the current page
@@ -51,7 +56,7 @@ function CustomerItemRate() {
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                 <Typography variant="h3" gutterBottom>
-                    Customer
+                    Item Rate List
                 </Typography>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <TextField
@@ -61,29 +66,34 @@ function CustomerItemRate() {
                         value={searchTerm}
                         onChange={handleSearchChange}
                     />
-                    {/*<Button component={Link} to="/create-customer" variant="contained" color="primary" style={{ marginLeft: '10px' }}>Create Customer</Button>*/}
+                    <Button onClick={handleGeneratePDF} variant="contained" color="primary" style={{ marginLeft: '10px' }}>
+                        Download PDF
+                    </Button>
                 </div>
             </div>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Item Name</TableCell>
-                        <TableCell>Item Description</TableCell>
-                        <TableCell>Brand</TableCell>
-                        <TableCell>Rate</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {currentItems.map(itemRate => (
-                        <TableRow key={itemRate.id}>
-                            <TableCell>{itemRate.item_name}</TableCell>
-                            <TableCell>{itemRate.item_description}</TableCell>
-                            <TableCell>{itemRate.brand}</TableCell>
-                            <TableCell> ₹ {parseFloat(itemRate.rate) + (parseFloat(itemRate.rate) * 0.07)}</TableCell>
+            <div id="print">
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Item Name</TableCell>
+                            <TableCell>Item Description</TableCell>
+                            <TableCell>Brand</TableCell>
+                            <TableCell>Rate</TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+                    </TableHead>
+                    <TableBody>
+                        {currentItems.map(itemRate => (
+                            <TableRow key={itemRate.id}>
+                                <TableCell>{itemRate.item_name}</TableCell>
+                                <TableCell>{itemRate.item_description}</TableCell>
+                                <TableCell>{itemRate.brand}</TableCell>
+                                <TableCell> ₹ {parseFloat(itemRate.rate) + (parseFloat(itemRate.rate) * 0.07)}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
+
             {/* Pagination */}
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
                 <Pagination
