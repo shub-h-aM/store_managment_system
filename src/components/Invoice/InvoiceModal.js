@@ -87,7 +87,7 @@ class InvoiceModal extends React.Component {
         invoiceSaved: false
     };
     handleSave = () => {
-        const { billTo, invoiceNumber, subTotal, discountAmount, taxAmount, total,dueAmount, paidAmount, dateOfDue } = this.props.info;
+        const { billTo,billToContact, invoiceNumber, subTotal, discountAmount, taxAmount, total,dueAmount, paidAmount, dateOfDue } = this.props.info;
         const items = this.props.items.map(item => ({
             itemName: item.name,
             rate: item.price,
@@ -102,6 +102,7 @@ class InvoiceModal extends React.Component {
                 },
                 body: JSON.stringify({
                     customer_name: billTo,
+                    customer_number: billToContact,
                     invoice_number: invoiceNumber,
                     items: items
                 }),
@@ -113,6 +114,7 @@ class InvoiceModal extends React.Component {
                 },
                 body: JSON.stringify({
                     customer_name: billTo,
+                    customer_number: billToContact,
                     invoice_number: invoiceNumber,
                     sub_total: subTotal,
                     discount_amount: discountAmount,

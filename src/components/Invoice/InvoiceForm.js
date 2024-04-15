@@ -131,28 +131,6 @@ class InvoiceForm extends React.Component {
         this.handleCalculateTotal();
     }
 
-    // editField = (event) => {
-    //     if (event.target.name === 'discountType') {
-    //         this.setState({
-    //             [event.target.name]: event.target.value
-    //         }, () => {
-    //             this.handleCalculateTotal();
-    //         });
-    //     } else if (event.target.name === 'paidAmount') {
-    //         this.setState({
-    //             [event.target.name]: event.target.value
-    //         }, () => {
-    //             this.handleCalculateTotal();
-    //         });
-    //     }else {
-    //         this.setState({
-    //             [event.target.name]: event.target.value
-    //         }, () => {
-    //             this.handleCalculateTotal();
-    //         });
-    //     }
-    // };
-
     editField = (event) => {
         if (event.target.name === 'discountType') {
             this.setState({

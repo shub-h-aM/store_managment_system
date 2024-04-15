@@ -1,54 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import {
-    TextField,
-    Button,
-    Container,
-    Table,
-    TableContainer,
-    TableHead,
-    TableBody,
-    TableRow,
-    TableCell,
-    Paper,
-    ThemeProvider,
-    createTheme,
-    Menu,
-    MenuItem,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    Typography
-} from '@mui/material';
-import { styled } from '@mui/system';
 import axios from 'axios';
-import {FaSearch} from "react-icons/fa";
+import { Typography, TextField, Button, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
+import Pagination from '@mui/material/Pagination';
+import { styled } from '@mui/system';
+import { FaSearch } from "react-icons/fa";
 
-const theme = createTheme();
-
-const StyledContainer = styled(Container)({
-    marginTop: theme.spacing(4),
+const StyledTableContainer = styled('div')({
+    marginBottom: '20px',
 });
 
-const StyledSearchContainer = styled('div')({
-    marginBottom: theme.spacing(2),
+const StyledPaginationContainer = styled('div')({
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: '20px',
 });
-
-const StyledTextField = styled(TextField)({
-    marginRight: theme.spacing(2),
-    width: '250px', // Adjust width as needed
-});
-
-const StyledButton = styled(Button)({});
 
 const LedgerPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [invoiceTransactions, setInvoiceTransactions] = useState([]);
     const [filteredInvoiceTransactions, setFilteredInvoiceTransactions] = useState([]);
-    const [anchorEl, setAnchorEl] = useState(null); // For menu anchor
-    const [selectedTransaction, setSelectedTransaction] = useState(null); // For selected transaction
-    const [openDialog, setOpenDialog] = useState(false); // For opening dialog
-    const [editedTransaction, setEditedTransaction] = useState(null); // For edited transaction
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(10);
+    const [dueAmountFilter, setDueAmountFilter] = useState(false); // State for the checkbox
 
     useEffect(() => {
         fetchInvoiceTransactions();
@@ -76,160 +49,105 @@ const LedgerPage = () => {
             )
         );
         setFilteredInvoiceTransactions(filteredTransactions);
-    };
-    const handleActionClick = (event, transaction) => {
-        setAnchorEl(event.currentTarget);
-        setSelectedTransaction(transaction);
-        console.log('Selected Transaction:', transaction);
-        setOpenDialog(true);
-        setEditedTransaction({
-            ...transaction,
-            new_payment: '',
-            comments: '',
-        });
+        setCurrentPage(1);
     };
 
-
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-        setSelectedTransaction(null);
+    const handlePageChange = (event, page) => {
+        setCurrentPage(page);
     };
 
-    const handleDialogClose = () => {
-        setOpenDialog(false);
-        setEditedTransaction(null);
+    const handleDueAmountFilterChange = (event) => {
+        setDueAmountFilter(event.target.checked);
+        filterTransactions(event.target.checked);
     };
 
-    const handleSave = async () => {
-        try {
-            // Calculate new paid amount by adding new payment to existing paid amount
-            const newPaidAmount = parseFloat(selectedTransaction.paid_amount) + parseFloat(editedTransaction.new_payment);
-
-            const newDueAmount = parseFloat(selectedTransaction.total) - newPaidAmount;
-            const updatedAt = new Date().toISOString();
-            console.log('Edited Transaction:', editedTransaction);
-
-            if (!editedTransaction || !editedTransaction.transaction_id) {
-                console.error('Transaction ID is undefined');
-                return;
-            }
-            // Send a POST request to update API
-            const response = await axios.post('http://localhost:5000/api/invoice/transactions/update', {
-                transaction_id: editedTransaction.transaction_id,
-                newPaidAmount: newPaidAmount,
-                newDueAmount: newDueAmount,
-                comments: editedTransaction.comments,
-                updatedAt: updatedAt,
-
-            });
-
-            console.log('Transaction updated successfully:', response.data);
-            handleDialogClose();
-            fetchInvoiceTransactions();   // Refresh rth transactions
-        } catch (error) {
-            console.error('Error updating transaction:', error);
+    const filterTransactions = (dueAmountFilter) => {
+        let filteredTransactions = invoiceTransactions;
+        if (dueAmountFilter) {
+            filteredTransactions = filteredTransactions.filter(transaction => transaction.due_amount > 0);
         }
+        setFilteredInvoiceTransactions(filteredTransactions);
+        setCurrentPage(1);
     };
 
-
-
-    const handleNewPaymentChange = (event) => {
-        setEditedTransaction({
-            ...editedTransaction,
-            new_payment: event.target.value,
-        });
-    };
-
-    const handleCommentsChange = (event) => {
-        setEditedTransaction({
-            ...editedTransaction,
-            comments: event.target.value,
-        });
-    };
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentTransactions = filteredInvoiceTransactions.slice(indexOfFirstItem, indexOfLastItem);
 
     return (
-        <ThemeProvider theme={theme}>
-            <StyledContainer>
-                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                    <Typography variant="h3" gutterBottom>Ledger</Typography>
-                    <div style={{display: 'flex', alignItems: 'center'}}>
-                        <TextField
-                            label="Search"
-                            variant="outlined"
-                            size="small"
-                            value={searchQuery}
-                            onChange={handleSearchChange}
-                            InputProps={{
-                                endAdornment: (
-                                    <Button onClick={handleSearch}  color="primary"  ><FaSearch />
-                                    </Button>
-                                ),
-                            }}
-                        />
-                    </div>
+        <>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px'}}>
+                <Typography variant="h3" gutterBottom>
+                    Ledger
+                </Typography>
+                <div style={{display: 'flex', alignItems: 'center'}}>
+                    <label style={{marginRight: '10px', border:'1px solid #ccc', borderRadius:'5px',padding:'10px',marginTop:'9px'}}>
+                        <input type="checkbox" checked={dueAmountFilter} onChange={handleDueAmountFilterChange}/>
+                        &nbsp; Due Amount > 0
+                    </label>
+                    <TextField
+                        label="Search"
+                        variant="outlined"
+                        size="small"
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        InputProps={{
+                            endAdornment: (
+                                <Button onClick={handleSearch} color="primary" size="small">
+                                    <FaSearch/>
+                                </Button>
+                            ),
+                        }}
+                    />
                 </div>
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Customer Name</TableCell>
-                                <TableCell>Invoice Number</TableCell>
-                                <TableCell>Sub Total</TableCell>
-                                <TableCell>Discount Amount</TableCell>
-                                <TableCell>Tax Amount</TableCell>
-                                <TableCell>Total</TableCell>
-                                <TableCell>Paid Amount</TableCell>
-                                <TableCell>Due Amount</TableCell>
-                                <TableCell>Date of Due</TableCell>
-                                <TableCell>Action</TableCell>
+            </div>
+            <StyledTableContainer>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Customer Name</TableCell>
+                            <TableCell>Invoice Number</TableCell>
+                            <TableCell>Sub Total</TableCell>
+                            <TableCell>Discount Amount</TableCell>
+                            <TableCell>Tax Amount</TableCell>
+                            <TableCell>Total</TableCell>
+                            <TableCell>Paid Amount</TableCell>
+                            <TableCell>Due Amount</TableCell>
+                            <TableCell>Date of Due</TableCell>
+                            <TableCell>Action</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {currentTransactions.map((transaction) => (
+                            <TableRow key={transaction.transaction_id}>
+                                <TableCell>{transaction.customer_name}<br />{transaction.customer_number}</TableCell>
+                                <TableCell>{transaction.invoice_number}</TableCell>
+                                <TableCell>{transaction.sub_total}</TableCell>
+                                <TableCell>{transaction.discount_amount}</TableCell>
+                                <TableCell>{transaction.tax_amount}</TableCell>
+                                <TableCell>{transaction.total}</TableCell>
+                                <TableCell>{transaction.paid_amount}</TableCell>
+                                <TableCell>{transaction.due_amount}</TableCell>
+                                <TableCell>{transaction.date_of_due}</TableCell>
+                                <TableCell>
+                                    <Button variant="contained">
+                                        Edit
+                                    </Button>
+                                </TableCell>
                             </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {filteredInvoiceTransactions.map((transaction) => (
-                                <TableRow key={transaction.transaction_id}>
-                                    <TableCell>{transaction.customer_name}</TableCell>
-                                    <TableCell>{transaction.invoice_number}</TableCell>
-                                    <TableCell>{transaction.sub_total}</TableCell>
-                                    <TableCell>{transaction.discount_amount}</TableCell>
-                                    <TableCell>{transaction.tax_amount}</TableCell>
-                                    <TableCell>{transaction.total}</TableCell>
-                                    <TableCell>{transaction.paid_amount}</TableCell>
-                                    <TableCell>{transaction.due_amount}</TableCell>
-                                    <TableCell>{transaction.date_of_due}</TableCell>
-                                    <TableCell>
-                                        <StyledButton variant="contained"
-                                                      onClick={(event) => handleActionClick(event, transaction)}>
-                                            Edit
-                                        </StyledButton>
-                                    </TableCell>
-
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <Dialog open={openDialog} onClose={handleDialogClose}>
-                    <DialogTitle>Edit Transaction</DialogTitle>
-                    <DialogContent>
-                        <div className="fw-bold">Due Amount:
-                            ₹ {selectedTransaction ? selectedTransaction.due_amount : 0}</div>
-                        <TextField
-                            label="New Payment" type="number" min="0"
-                            value={editedTransaction ? editedTransaction.new_payment : ''}
-                            onChange={handleNewPaymentChange}
-                        />
-                        <TextField
-                            label="Comments" value={editedTransaction ? editedTransaction.comments : ''}
-                            onChange={handleCommentsChange}
-                        />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleDialogClose}>Cancel</Button>
-                        <Button onClick={handleSave} color="primary">Save</Button>
-                    </DialogActions>
-                </Dialog>
-            </StyledContainer>
-        </ThemeProvider>
+                        ))}
+                    </TableBody>
+                </Table>
+            </StyledTableContainer>
+            <StyledPaginationContainer>
+                <Pagination
+                    count={Math.ceil(filteredInvoiceTransactions.length / itemsPerPage)}
+                    page={currentPage}
+                    onChange={handlePageChange}
+                    color="primary"
+                />
+            </StyledPaginationContainer>
+        </>
     );
 };
 

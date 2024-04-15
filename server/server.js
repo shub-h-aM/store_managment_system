@@ -246,15 +246,15 @@ app.get('/api/itemDetails', (req, res) => {
 });
 
 app.post('/api/invoices', (req, res) => {
-    const { customer_name, invoice_number, items } = req.body;
+    const { customer_name,customer_number, invoice_number, items } = req.body;
 
-    const sql = 'INSERT INTO invoices (customer_name, invoice_number, item_name, rate, quantity, amount) VALUES (?, ?, ?, ?, ?, ?)';
+    const sql = 'INSERT INTO invoices (customer_name,customer_number, invoice_number, item_name, rate, quantity, amount) VALUES (?, ?, ?, ?, ?, ?, ?)';
 
     const promises = [];
 
     items.forEach(item => {
         const promise = new Promise((resolve, reject) => {
-            db.query(sql, [customer_name, invoice_number, item.itemName, item.rate, item.quantity, item.amount], (err, result) => {
+            db.query(sql, [customer_name, customer_number, invoice_number, item.itemName, item.rate, item.quantity, item.amount], (err, result) => {
                 if (err) {
                     console.error('Error inserting invoice data:', err);
                     reject(err);
@@ -279,11 +279,11 @@ app.post('/api/invoices', (req, res) => {
 });
 
 app.post('/api/invoice_transaction', (req, res) => {
-    const { customer_name, invoice_number, sub_total, discount_amount, tax_amount, total, paid_amount, due_amount,date_of_due } = req.body;
+    const { customer_name, customer_number, invoice_number, sub_total, discount_amount, tax_amount, total, paid_amount, due_amount,date_of_due } = req.body;
 
-    const sql = 'INSERT INTO invoice_transaction (customer_name, invoice_number, sub_total, discount_amount, tax_amount, total, paid_amount, due_amount, date_of_due) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    const sql = 'INSERT INTO invoice_transaction (customer_name, customer_number, invoice_number, sub_total, discount_amount, tax_amount, total, paid_amount, due_amount, date_of_due) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
-    db.query(sql, [customer_name, invoice_number, sub_total, discount_amount, tax_amount, total, paid_amount, due_amount, date_of_due], (err, result) => {
+    db.query(sql, [customer_name, customer_number, invoice_number, sub_total, discount_amount, tax_amount, total, paid_amount, due_amount, date_of_due], (err, result) => {
         if (err) {
             console.error('Error inserting transaction data:', err);
             res.status(500).json({ error: 'Error creating transaction' });
