@@ -119,6 +119,7 @@ function CreateItem() {
                                 fullWidth
                                 label="Rate Per Piece"
                                 name="rate"
+                                type="number"
                                 value={rate}
                                 onChange={handleInputChange}
                             />

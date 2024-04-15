@@ -6,6 +6,8 @@ const mysql = require('mysql');
 const cors = require('cors');
 const path = require("path");
 const fs = require('fs');
+const {get} = require("axios");
+const {utils, write} = require("xlsx");
 
 const app = express();
 const port = 5000;
@@ -89,6 +91,37 @@ app.get('/api/get/items', (req, res) => { // Changed endpoint to /api/items
     });
 });
 
+app.get('/api/generate-excel', async (req, res) => {
+    try {
+        // Fetch data from your API endpoint
+        const response = await get('http://localhost:5000/api/get/items');
+        const formData = response.data;
+
+        // Prepare data for Excel
+        const worksheet = utils.json_to_sheet(formData.map((item, index) => ({
+            'S.No.': index + 1,
+            'Item Name': item.item_name,
+            'Item Description': item.item_description,
+            'Brand': item.brand,
+            'Rate': `₹ ${((parseFloat(item.rate) * 107) / 100).toFixed(2)}`
+        })));
+        const workbook = utils.book_new();
+        utils.book_append_sheet(workbook, worksheet, 'Item Rates');
+
+        // Convert Excel to buffer
+        const excelBuffer = write(workbook, { type: 'buffer' });
+
+        // Set response headers
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', 'attachment; filename="item_rates.xlsx"');
+
+        // Send the Excel file
+        res.send(excelBuffer);
+    } catch (error) {
+        console.error('Error generating Excel:', error);
+        res.status(500).send('Failed to generate Excel. Please try again later.');
+    }
+});
 
 
 

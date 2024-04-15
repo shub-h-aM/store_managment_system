@@ -1,45 +1,65 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Button from "@mui/material/Button";
-import { Typography, TextField, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
-import Pagination from '@mui/material/Pagination';
-import { GenerateRateList } from '../helpers/GenerateRateList';
+import { FaSearch } from 'react-icons/fa';
+import "../../index.css";
+import TablePagination from "@mui/material/TablePagination";
+import { GenerateRateList } from "../helpers/GenerateRateList";
+import { Button } from "@mui/material";
+import XLSX from 'xlsx';
 
-function CustomerItemRate() {
-    const [customerRate, setCustomerRate] = useState([]);
+const CustomerItemRate = () => {
+    const [formData, setFormData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [filteredCustomers, setFilteredCustomers] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [loading, setLoading] = useState(false);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [itemsPerPage, setItemsPerPage] = useState(15);
+    const [indexOfFirstItem, setIndexOfFirstItem] = useState(0);
+    const [indexOfLastItem, setIndexOfLastItem] = useState(itemsPerPage);
 
     useEffect(() => {
-        // Fetch customer details from the API
-        axios.get('http://localhost:5000/api/get/items')
-            .then(response => {
-                setCustomerRate(response.data);
-                setFilteredCustomers(response.data);
-            })
-            .catch(error => {
-                console.error('Error fetching customer details:', error);
-            });
+        fetchData();
     }, []);
 
-
-    const handleSearchChange = (event) => {
-        const searchTerm = event.target.value.toLowerCase();
-        setSearchTerm(searchTerm); // Update searchTerm immediately
-        const filteredList = customerRate.filter(itemRate =>
-            (itemRate.item && itemRate.item.toLowerCase().includes(searchTerm)) ||
-            (itemRate.item_description && itemRate.item_description.toLowerCase().includes(searchTerm)) ||
-            (itemRate.brand && itemRate.brand.toLowerCase().includes(searchTerm)) ||
-            (typeof itemRate.rate === 'string'  && itemRate.rate.toLowerCase().includes(searchTerm))
-        );
-        setFilteredCustomers(filteredList);
+    const fetchData = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get('http://localhost:5000/api/get/items');
+            setFormData(response.data);
+        } catch (error) {
+            console.error('Error fetching item data:', error);
+            alert("Failed to get data. Please try again later.");
+        } finally {
+            setLoading(false);
+        }
     };
 
+    const handleSearch = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get('http://localhost:5000/api/get/items');
+            setFormData(response.data);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching item data:', error);
+            alert("Failed to get data. Please try again later.");
+            setLoading(false);
+        }
+    };
 
-    const handlePageChange = (event, page) => {
-        setCurrentPage(page);
+    const handleChangePage = (event, newPage) => {
+        setCurrentPage(newPage);
+        const newIndexOfFirstItem = newPage * itemsPerPage;
+        const newIndexOfLastItem = newIndexOfFirstItem + itemsPerPage;
+        setIndexOfFirstItem(newIndexOfFirstItem);
+        setIndexOfLastItem(newIndexOfLastItem);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        const newItemsPerPage = +event.target.value;
+        setItemsPerPage(newItemsPerPage);
+        setCurrentPage(0);
+        setIndexOfFirstItem(0);
+        setIndexOfLastItem(newItemsPerPage);
     };
 
     const handleGeneratePDF = () => {
@@ -47,64 +67,98 @@ function CustomerItemRate() {
         GenerateRateList(true);
     };
 
-    // Calculate the index of the first and last item of the current page
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = filteredCustomers.slice(indexOfFirstItem, indexOfLastItem);
+    const handleGenerateExcel = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get('http://localhost:5000/api/generate-excel', {
+                responseType: 'blob' // Important: responseType should be 'blob' for downloading files
+            });
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'Shubham_item_rates.xlsx');
+            document.body.appendChild(link);
+            link.click();
+            setLoading(false);
+        } catch (error) {
+            console.error('Error generating Excel:', error);
+            alert("Failed to generate Excel. Please try again later.");
+            setLoading(false);
+        }
+    };
+
+    const filteredItems = formData.filter(item =>
+        (item.item_name && item.item_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (item.item_description && item.item_description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (item.brand && item.brand.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (typeof item.rate === 'string' && item.rate.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+
+    const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
 
     return (
-        <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                <Typography variant="h3" gutterBottom>
-                    Item Rate List
-                </Typography>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <TextField
-                        label="Search"
-                        variant="outlined"
-                        size="small"
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                    />
-                    <Button onClick={handleGeneratePDF} variant="contained" color="primary" style={{ marginLeft: '10px' }}>
-                        Download PDF
-                    </Button>
-                </div>
-            </div>
-            <div id="print">
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Item Name</TableCell>
-                            <TableCell>Item Description</TableCell>
-                            <TableCell>Brand</TableCell>
-                            <TableCell>Rate</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {currentItems.map(itemRate => (
-                            <TableRow key={itemRate.id}>
-                                <TableCell>{itemRate.item_name}</TableCell>
-                                <TableCell>{itemRate.item_description}</TableCell>
-                                <TableCell>{itemRate.brand}</TableCell>
-                                <TableCell> ₹ {parseFloat(itemRate.rate) + (parseFloat(itemRate.rate) * 0.07)}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </div>
-
-            {/* Pagination */}
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-                <Pagination
-                    count={Math.ceil(filteredCustomers.length / itemsPerPage)}
-                    page={currentPage}
-                    onChange={handlePageChange}
-                    color="primary"
+        <div className="container">
+            <div className="search-bar">
+                <input
+                    type="text"
+                    placeholder="Search..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                 />
+                <button className="search-button" onClick={handleSearch} disabled={loading}>
+                    {loading ? 'Loading...' : <FaSearch />}
+                </button>
             </div>
+            {loading ? (
+                <p>Loading...</p>
+            ) : (
+                <div id='print'>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                        <h3>Shubham </h3>
+                        <h5>Delhi </h5>
+                        <h4>Item Rate List</h4>
+                        <Button onClick={handleGeneratePDF} variant="contained" color="primary" style={{position: 'fixed', top: '100px', right: '10px'}}>
+                            Download PDF
+                        </Button>
+                        <Button onClick={handleGenerateExcel} variant="contained" color="primary" style={{position: 'fixed', top: '100px', right: '162px'}}>
+                            Download Excel
+                        </Button>
+                    </div>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>S.No.</th>
+                            <th>Item Name</th>
+                            <th>Item Description</th>
+                            <th>Brand</th>
+                            <th>Rate</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {currentItems.map((item, index) => (
+                            <tr key={index}>
+                                <td>{index + 1}</td>
+                                <td>{item.item_name}</td>
+                                <td>{item.item_description}</td>
+                                <td>{item.brand}</td>
+                                <td>₹ {((parseFloat(item.rate) * 107) / 100).toFixed(2)}</td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+            <TablePagination
+                rowsPerPageOptions={[15, 25, 100]}
+                component="div"
+                count={filteredItems.length}
+                rowsPerPage={itemsPerPage}
+                page={currentPage}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
         </div>
     );
-}
+};
 
 export default CustomerItemRate;

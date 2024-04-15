@@ -7,7 +7,7 @@ export const GenerateRateList = () => {
         console.error("Element with ID 'print' not found");
         return;
     }
-    toPng(dom)
+    toPng(dom, { quality: 0.5 })
         .then((dataUrl) => {
             const img = new Image();
             img.crossOrigin = 'anonymous'; // Fixed typo
@@ -21,7 +21,9 @@ export const GenerateRateList = () => {
 
                 const imgProps = pdf.getImageProperties(img);
                 const imageType = imgProps.fileType;
+                // const pdfWidth = pdf.internal.pageSize.getWidth();
                 const pdfWidth = pdf.internal.pageSize.getWidth();
+                // const pdfWidth = imgProps.width / 2;
                 const pxFullHeight = imgProps.height;
                 const pxPageHeight = Math.floor((imgProps.width * 8.5) / 5.5);
                 const nPages = Math.ceil(pxFullHeight / pxPageHeight);
@@ -55,7 +57,6 @@ export const GenerateRateList = () => {
         })
         .catch((error) => {
             console.error('Oops, something went wrong!', error);
-            alert("Not Able to Download File!")
-            // You can add additional error handling here, like displaying an error message to the user.
+            alert("Not Able to Download File!");
         });
 };
