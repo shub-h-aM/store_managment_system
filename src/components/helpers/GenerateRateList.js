@@ -28,31 +28,35 @@ export const GenerateRateList = () => {
                 const pxPageHeight = Math.floor((imgProps.width * 8.5) / 5.5);
                 const nPages = Math.ceil(pxFullHeight / pxPageHeight);
                 let pageHeight = pdf.internal.pageSize.getHeight();
+                const currentDate = new Date();
+                const month = currentDate.toLocaleString('default', { month: 'long' });
+                const fileNames = `Shubham_Ele_item_rates_${month}.pdf`;
 
-                const pageCanvas = document.createElement('canvas');
-                const pageCtx = pageCanvas.getContext('2d');
-                pageCanvas.width = imgProps.width;
-                pageCanvas.height = pxPageHeight;
+                const pgCanvas = document.createElement('canvas');
+                const pageCtx = pgCanvas.getContext('2d');
+                pgCanvas.width = imgProps.width;
+                pgCanvas.height = pxPageHeight;
+
 
                 for (let page = 0; page < nPages; page++) {
                     if (page === nPages - 1 && pxFullHeight % pxPageHeight !== 0) {
-                        pageCanvas.height = pxFullHeight % pxPageHeight;
-                        pageHeight = (pageCanvas.height * pdfWidth) / pageCanvas.width;
+                        pgCanvas.height = pxFullHeight % pxPageHeight;
+                        pageHeight = (pgCanvas.height * pdfWidth) / pgCanvas.width;
                     }
                     const imgYPosition = page === 0 ? 0 : -30;
 
-                    const w = pageCanvas.width;
-                    const h = pageCanvas.height;
+                    const w = pgCanvas.width;
+                    const h = pgCanvas.height;
                     pageCtx.fillStyle = 'white';
                     pageCtx.fillRect(0, 0, w, h);
                     pageCtx.drawImage(img, 0, page * pxPageHeight + imgYPosition, w, h, 0, 0, w, h);
 
                     if (page) pdf.addPage();
 
-                    const imgData = pageCanvas.toDataURL(`image/${imageType}`, 1);
+                    const imgData = pgCanvas.toDataURL(`image/${imageType}`, 1);
                     pdf.addImage(imgData, imageType, 0, 0, pdfWidth, pageHeight);
                 }
-                pdf.save(`Item-Rate-List-0001.pdf`);
+                pdf.save(fileNames);
             };
         })
         .catch((error) => {

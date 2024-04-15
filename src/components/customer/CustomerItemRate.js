@@ -5,7 +5,6 @@ import "../../index.css";
 import TablePagination from "@mui/material/TablePagination";
 import { GenerateRateList } from "../helpers/GenerateRateList";
 import { Button } from "@mui/material";
-import XLSX from 'xlsx';
 
 const CustomerItemRate = () => {
     const [formData, setFormData] = useState([]);
@@ -71,12 +70,15 @@ const CustomerItemRate = () => {
         try {
             setLoading(true);
             const response = await axios.get('http://localhost:5000/api/generate-excel', {
-                responseType: 'blob' // Important: responseType should be 'blob' for downloading files
+                responseType: 'blob'
             });
+            const currentDate = new Date();
+            const month = currentDate.toLocaleString('default', { month: 'long' });
+            const fileName = `Shubham_Ele_item_rates_${month}.xlsx`;
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'Shubham_item_rates.xlsx');
+            link.setAttribute('download', fileName);
             document.body.appendChild(link);
             link.click();
             setLoading(false);
@@ -125,7 +127,7 @@ const CustomerItemRate = () => {
                         </Button>
                     </div>
                     <table>
-                        <thead>
+                        <thead style={{ backgroundColor: '#f2f2f2' }}>
                         <tr>
                             <th>S.No.</th>
                             <th>Item Name</th>
