@@ -100,9 +100,9 @@ app.get('/api/generate-excel', async (req, res) => {
         // Prepare data for Excel
         const worksheet = utils.json_to_sheet(formData.map((item, index) => ({
             'S.No.': index + 1,
-            'Item Name': item.item_name,
+            // 'Item Name': item.item_name,
             'Item Description': item.item_description,
-            'Brand': item.brand,
+            // 'Brand': item.brand,
             'Rate': `₹ ${((parseFloat(item.rate) * 107) / 100).toFixed(2)}`
         })));
         const workbook = utils.book_new();
