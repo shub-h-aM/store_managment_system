@@ -10,7 +10,7 @@ function Item() {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredItems, setFilteredItems] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(10);
+    const [itemsPerPage] = useState(11);
 
     useEffect(() => {
         fetchData();
@@ -49,7 +49,7 @@ function Item() {
     const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
 
     return (
-        <div>
+        <div style={{position:'fixed',width:'80%',marginLeft:'10%'}}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                 <Typography variant="h3" gutterBottom>
                     Item

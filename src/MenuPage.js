@@ -1,6 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FaBars, FaWarehouse, FaUpload, FaChartPie } from 'react-icons/fa';
+import {FaBars, FaWarehouse, FaUpload, FaChartPie, FaBook, FaUser, FaFileInvoiceDollar, FaCartPlus} from 'react-icons/fa';
+import {IoIosMan} from "react-icons/io";
+import {MdAssignmentInd, MdListAlt} from "react-icons/md";
+import {PiSignOut} from "react-icons/pi";
+import {GoSignIn} from "react-icons/go";
 
 const MenuPage = ({ isLoggedIn, isMenuOpen, activeUser, handleLogin, handleLogout, toggleMenu }) => {
     return (
@@ -13,12 +17,12 @@ const MenuPage = ({ isLoggedIn, isMenuOpen, activeUser, handleLogin, handleLogou
                     <>
                         <li>
                             <Link to="/login" onClick={toggleMenu}>
-                                Sign In
+                                <GoSignIn style={{marginBottom:"3px",marginRight:"3px"}}/>Sign In
                             </Link>
                         </li>
                         <li>
                             <Link to="/signup" onClick={toggleMenu}>
-                                Sign Up
+                                <MdAssignmentInd style={{marginBottom:"3px",marginRight:"3px"}}/>Sign Up
                             </Link>
                         </li>
                     </>
@@ -33,51 +37,53 @@ const MenuPage = ({ isLoggedIn, isMenuOpen, activeUser, handleLogin, handleLogou
 
                         <li>
                             <Link to="/pie-chart" onClick={toggleMenu}>
-                                <FaChartPie/> Pie Chart
+                                <FaChartPie style={{marginBottom:"4px",marginRight:"-1px"}}/> Pie Chart
                             </Link>
                         </li>
                         <li>
                             <Link to="/userDetails" onClick={toggleMenu}>
-                                <FaWarehouse/> User Details
+                                <FaUser style={{marginBottom:"5px",marginRight:"-1px"}}/> User Details
                             </Link>
                         </li>
                         <li>
                             <Link to="/item/inventory" onClick={toggleMenu}>
-                                <FaUpload/> Add Item
+                                <FaUpload style={{marginBottom:"5px",marginRight:"-1px"}}/> Add Item
                             </Link>
                         </li>
                         <li>
                             <Link to="/item-details" onClick={toggleMenu}>
-                                <FaWarehouse/> Item Details
+                                <FaWarehouse style={{marginBottom:"4px",marginRight:"-1px"}}/> Item Details
                             </Link>
                         </li>
                         <li>
                             <Link to="/invoice" onClick={toggleMenu}>
-                                <FaWarehouse/> Invoice
+                                <FaFileInvoiceDollar style={{marginBottom:"4px",marginRight:"-2px"}}/> Invoice
                             </Link>
                         </li>
                         <li>
                             <Link to="/customer" onClick={toggleMenu}>
-                                <FaWarehouse/> Customer
+                                <IoIosMan style={{marginBottom:"4px",marginRight:"-3px"}}/> Customer
                             </Link>
                         </li>
                         <li>
                             <Link to="/ledger-transaction" onClick={toggleMenu}>
-                                <FaWarehouse/>Ledger
+                                <FaBook style={{marginBottom:"3px",marginRight:"2px"}}/>Ledger
                             </Link>
                         </li>
                         <li>
                             <Link to="/get/item" onClick={toggleMenu}>
-                                <FaWarehouse/>Item
+                                <FaCartPlus style={{marginBottom:"3px",marginRight:"3px"}}/>Item
                             </Link>
                         </li>
                         <li>
                             <Link to="/get/customer_rate/list" onClick={toggleMenu}>
-                                <FaWarehouse/>Item Rate
+                                <MdListAlt style={{marginBottom:"3px",marginRight:"2px"}}/>Item Rate
                             </Link>
                         </li>
                         <li>
-                            <button onClick={handleLogout}>Logout</button>
+                            <button style={{marginTop:"7px",marginLeft:'5px',borderRadius:'20px',marginRight:"-7px",
+                                width:'112px',backgroundColor:'red',textAlign:'center'}} onClick={handleLogout}>
+                                <PiSignOut style={{marginBottom:"3px",marginRight:"2px"}}/>Logout</button>
                         </li>
                     </>
                 )}

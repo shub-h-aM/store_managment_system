@@ -10,7 +10,7 @@ function CustomerDetails() {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredCustomers, setFilteredCustomers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [itemsPerPage, setItemsPerPage] = useState(9);
 
     useEffect(() => {
         // Fetch customer details from the API
@@ -49,7 +49,7 @@ function CustomerDetails() {
     const currentItems = filteredCustomers.slice(indexOfFirstItem, indexOfLastItem);
 
     return (
-        <div>
+        <div style={{position:'fixed',width:'90%',marginLeft:'5%',marginTop:'5%'}}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                 <Typography variant="h3" gutterBottom>
                     Customer

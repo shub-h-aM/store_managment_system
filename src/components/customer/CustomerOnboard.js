@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import {borderRadius} from "@mui/system";
 
 function CustomerOnboard() {
     const [customerName, setCustomerName] = useState('');
@@ -38,7 +39,7 @@ function CustomerOnboard() {
     };
 
     return (
-        <div>
+        <div style={{position:'fixed',width:'90%',marginLeft:'5%',marginTop:'5%'}}>
             <header>
                 <h1>Create Customer</h1>
             </header>
@@ -73,7 +74,7 @@ function CustomerOnboard() {
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <Button variant="contained" color="primary" type="submit" fullWidth>
+                            <Button variant="contained" color="primary" type="submit" fullWidth style={{borderRadius:'10px'}}>
                                 Submit
                             </Button>
                         </Grid>

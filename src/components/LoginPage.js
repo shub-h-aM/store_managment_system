@@ -1,20 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 const LoginPage = ({ onLogin }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-
-    // Effect to check if user is logged in already
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            // If token exists, user is already logged in
-            // You can redirect the user to another page or do any necessary action here
-            console.log('User already logged in');
-        }
-    }, []);
 
     // Function to handle user login
     const handleLogin = async () => {
@@ -28,7 +18,7 @@ const LoginPage = ({ onLogin }) => {
                 setError('Invalid username or password. Please try again.');
             }
         } catch (error) {
-            console.error('Error logging in:', error);
+            console.error('Error logging in:', error.response); // Log the error response
             setError('Error logging in. Please try again later.');
         }
     };
@@ -41,12 +31,12 @@ const LoginPage = ({ onLogin }) => {
 
     return (
         <div className="login-page">
-            <div>
-                <h2>Login</h2>
+            <div style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                <h1 style={{ display: 'flex', marginBottom: '30px', marginLeft: '40px' }}>Login</h1>
+
                 {error && <p style={{ color: 'red' }}>{error}</p>}
                 <form onSubmit={handleSubmit}>
-                    <div>
-                        <label>Username:</label>
+                    <div style={{ display: 'flex', marginBottom: '30px' }}>
                         <input
                             type="text"
                             value={username}
@@ -54,8 +44,7 @@ const LoginPage = ({ onLogin }) => {
                             placeholder="Enter your username"
                         />
                     </div>
-                    <div>
-                        <label>Password:</label>
+                    <div style={{ display: 'flex', marginBottom: '30px' }}>
                         <input
                             type="password"
                             value={password}
@@ -63,7 +52,10 @@ const LoginPage = ({ onLogin }) => {
                             placeholder="Enter your password"
                         />
                     </div>
-                    <button type="submit">Login</button>
+                    <button type="submit" style={{
+                        marginTop: "7px", marginLeft: '27px', borderRadius: '20px',
+                        width: '150px', borderLeftColor: 'pink'
+                    }}>Login</button>
                 </form>
             </div>
         </div>

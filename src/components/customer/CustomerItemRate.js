@@ -5,13 +5,15 @@ import "../../index.css";
 import TablePagination from "@mui/material/TablePagination";
 import { GenerateRateList } from "../helpers/GenerateRateList";
 import { Button } from "@mui/material";
+import {LiaFileDownloadSolid} from "react-icons/lia";
+import {GrDocumentDownload} from "react-icons/gr";
 
 const CustomerItemRate = () => {
     const [formData, setFormData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(0);
-    const [itemsPerPage, setItemsPerPage] = useState(15);
+    const [itemsPerPage, setItemsPerPage] = useState(12);
     const [indexOfFirstItem, setIndexOfFirstItem] = useState(0);
     const [indexOfLastItem, setIndexOfLastItem] = useState(itemsPerPage);
 
@@ -99,7 +101,7 @@ const CustomerItemRate = () => {
     const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
 
     return (
-        <div className="container">
+        <div className="container" style={{position:'revert-layer',width:'90%',marginLeft:'5%',marginTop:'1%', height:'auto'}}>
             <div className="search-bar">
                 <input
                     type="text"
@@ -120,10 +122,10 @@ const CustomerItemRate = () => {
                         <h5>Delhi </h5>
                         <h4>Item Rate List</h4>
                         <Button onClick={handleGeneratePDF} variant="contained" color="primary" style={{position: 'fixed', top: '100px', right: '10px'}}>
-                            Download PDF
+                            <LiaFileDownloadSolid style={{marginRight:'7px',marginLeft:"-4px"}} />Download PDF
                         </Button>
-                        <Button onClick={handleGenerateExcel} variant="contained" color="primary" style={{position: 'fixed', top: '100px', right: '162px'}}>
-                            Download Excel
+                        <Button onClick={handleGenerateExcel} variant="contained" color="primary" style={{position: 'fixed', top: '100px', right: '179px'}}>
+                            <GrDocumentDownload style={{marginRight:'7px',color:'wheat',marginLeft:"-4px"}} />Download Excel
                         </Button>
                     </div>
                     <table>
@@ -151,7 +153,7 @@ const CustomerItemRate = () => {
                 </div>
             )}
             <TablePagination
-                rowsPerPageOptions={[15, 25, 100]}
+                rowsPerPageOptions={[10, 25, 100]}
                 component="div"
                 count={filteredItems.length}
                 rowsPerPage={itemsPerPage}

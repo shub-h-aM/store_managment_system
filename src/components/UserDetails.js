@@ -56,7 +56,7 @@ const UserDetails = () => {
     const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
 
     return (
-        <div>
+        <div style={{position:'fixed',width:'80%',marginLeft:'10%',marginTop:'7%'}}>
             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                 <Typography variant="h3" gutterBottom>User Details</Typography>
                 <div style={{display: 'flex', alignItems: 'center'}}>
