@@ -39,10 +39,11 @@ const UploadFile = () => {
     };
 
     return (
-        <div className="upload-container">
-            <input type="file" onChange={handleFileChange} />
-            <button onClick={handleUpload} disabled={uploading}>
-                {uploading ? 'Uploading...' : 'Upload'} <FaUpload />
+        <div className="upload-container" style={{margin:"20px",width:"40%", backgroundColor:'#f2f2f2'}}>
+            <input type="file" onChange={handleFileChange} style={{margin:"20px",width:"60%"}}/>
+            <button onClick={handleUpload} disabled={uploading} style={{borderRadius:"20px"}}>
+                <FaUpload style={{marginBottom:"6px",marginRight:"4px"}}/>
+                {uploading ? 'Uploading...' : 'Upload'}
             </button>
             {uploadError && <div className="error-message">{uploadError}</div>}
         </div>
