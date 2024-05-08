@@ -4,9 +4,10 @@ import { FaSearch } from 'react-icons/fa';
 import "../../index.css";
 import TablePagination from "@mui/material/TablePagination";
 import { GenerateRateList } from "../helpers/GenerateRateList";
-import { Button } from "@mui/material";
+import {Button, Typography} from "@mui/material";
 import {LiaFileDownloadSolid} from "react-icons/lia";
 import {GrDocumentDownload} from "react-icons/gr";
+import Pagination from "@mui/material/Pagination";
 
 const CustomerItemRate = () => {
     const [formData, setFormData] = useState([]);
@@ -67,6 +68,9 @@ const CustomerItemRate = () => {
         // Call GenerateRateList function with appropriate parameters
         GenerateRateList(true);
     };
+    const handlePageChange = (event, page) => {
+        setCurrentPage(page);
+    };
 
     const handleGenerateExcel = async () => {
         try {
@@ -101,7 +105,8 @@ const CustomerItemRate = () => {
     const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
 
     return (
-        <div className="container" style={{position:'revert-layer',width:'90%',marginLeft:'5%',marginTop:'1%', height:'auto'}}>
+        <div className="container"
+             style={{position: 'revert-layer', width: '90%', marginLeft: '5%', marginTop: '1%', height: 'auto'}}>
             <div className="search-bar">
                 <input
                     type="text"
@@ -110,26 +115,29 @@ const CustomerItemRate = () => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <button className="search-button" onClick={handleSearch} disabled={loading}>
-                    {loading ? 'Loading...' : <FaSearch />}
+                    {loading ? 'Loading...' : <FaSearch/>}
                 </button>
             </div>
             {loading ? (
                 <p>Loading...</p>
             ) : (
                 <div id='print'>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                         <h3>Shubham </h3>
                         <h5>Delhi </h5>
                         <h4>Item Rate List</h4>
-                        <Button onClick={handleGeneratePDF} variant="contained" color="primary" style={{position: 'fixed', top: '100px', right: '10px'}}>
-                            <LiaFileDownloadSolid style={{marginRight:'7px',marginLeft:"-4px"}} />Download PDF
+                        <Button onClick={handleGeneratePDF} variant="contained" color="primary"
+                                style={{position: 'fixed', top: '100px', right: '10px'}}>
+                            <LiaFileDownloadSolid style={{marginRight: '7px', marginLeft: "-4px"}}/>Download PDF
                         </Button>
-                        <Button onClick={handleGenerateExcel} variant="contained" color="primary" style={{position: 'fixed', top: '100px', right: '179px'}}>
-                            <GrDocumentDownload style={{marginRight:'7px',color:'wheat',marginLeft:"-4px"}} />Download Excel
+                        <Button onClick={handleGenerateExcel} variant="contained" color="primary"
+                                style={{position: 'fixed', top: '100px', right: '179px'}}>
+                            <GrDocumentDownload style={{marginRight: '7px', color: 'wheat', marginLeft: "-4px"}}/>Download
+                            Excel
                         </Button>
                     </div>
                     <table>
-                        <thead style={{ backgroundColor: '#f2f2f2' }}>
+                        <thead style={{backgroundColor: '#f2f2f2'}}>
                         <tr>
                             <th>S.No.</th>
                             <th>Item Name</th>
@@ -153,7 +161,7 @@ const CustomerItemRate = () => {
                 </div>
             )}
             <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
+                rowsPerPageOptions={[12, 25, 100]}
                 component="div"
                 count={filteredItems.length}
                 rowsPerPage={itemsPerPage}

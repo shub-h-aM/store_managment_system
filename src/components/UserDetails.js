@@ -14,7 +14,7 @@ const UserDetails = () => {
     const [formData, setFormData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(0); // Change initial page to 0
     const [itemsPerPage, setItemsPerPage] = useState(10);
 
     useEffect(() => {
@@ -40,11 +40,12 @@ const UserDetails = () => {
 
     const handleChangeRowsPerPage = (event) => {
         setItemsPerPage(+event.target.value);
-        setCurrentPage(0);
+        setCurrentPage(0); // Reset page to 0 when changing rows per page
     };
 
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    // Calculate index of first and last item based on current page and items per page
+    const indexOfFirstItem = currentPage * itemsPerPage;
+    const indexOfLastItem = Math.min(indexOfFirstItem + itemsPerPage, formData.length);
 
     const filteredItems = formData.filter(item =>
         item.Name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -56,10 +57,10 @@ const UserDetails = () => {
     const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
 
     return (
-        <div style={{position:'fixed',width:'80%',marginLeft:'10%',marginTop:'7%'}}>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+        <div style={{ position: 'fixed', width: '80%', marginLeft: '10%', marginTop: '7%' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Typography variant="h3" gutterBottom>User Details</Typography>
-                <div style={{display: 'flex', alignItems: 'center'}}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                     <TextField
                         label="Search"
                         variant="outlined"
@@ -76,7 +77,7 @@ const UserDetails = () => {
                     />
                 </div>
             </div>
-            <div style={{marginTop: '20px'}}>
+            <div style={{ marginTop: '20px' }}>
                 <Table>
                     <TableHead>
                         <TableRow>

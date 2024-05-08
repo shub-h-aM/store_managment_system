@@ -31,14 +31,18 @@ function Item() {
         setSearchTerm(term);
         filterItems(term);
     };
-
     const filterItems = (term) => {
-        const filtered = items.filter(item =>
-            item.itemName.toLowerCase().includes(term.toLowerCase())
-        );
-        setFilteredItems(filtered);
-        setCurrentPage(1);
+        if (items.length > 0) {
+            const filtered = items.filter(item =>
+                Object.values(item).some(value =>
+                    value && value.toString().toLowerCase().includes(term.toLowerCase())
+                )
+            );
+            setFilteredItems(filtered);
+            setCurrentPage(1);
+        }
     };
+
 
     const handlePageChange = (event, page) => {
         setCurrentPage(page);
