@@ -34,12 +34,6 @@ const MenuPage = ({ isLoggedIn, isMenuOpen, activeUser, handleLogin, handleLogou
                                 <span className="username">{activeUser.name}</span>
                             </li>
                         )}
-
-                        {/*<li>*/}
-                        {/*    <Link to="/pie-chart" onClick={toggleMenu}>*/}
-                        {/*        <FaChartPie style={{marginBottom:"4px",marginRight:"-1px"}}/> Pie Chart*/}
-                        {/*    </Link>*/}
-                        {/*</li>*/}
                         <li>
                             <Link to="/userDetails" onClick={toggleMenu}>
                                 <FaUser style={{marginBottom:"5px",marginRight:"-1px"}}/> User Details

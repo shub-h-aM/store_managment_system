@@ -4,10 +4,9 @@ import { FaSearch } from 'react-icons/fa';
 import "../../index.css";
 import TablePagination from "@mui/material/TablePagination";
 import { GenerateRateList } from "../helpers/GenerateRateList";
-import {Button, Typography} from "@mui/material";
+import {Button} from "@mui/material";
 import {LiaFileDownloadSolid} from "react-icons/lia";
 import {GrDocumentDownload} from "react-icons/gr";
-import Pagination from "@mui/material/Pagination";
 
 const CustomerItemRate = () => {
     const [formData, setFormData] = useState([]);
@@ -67,9 +66,6 @@ const CustomerItemRate = () => {
     const handleGeneratePDF = () => {
         // Call GenerateRateList function with appropriate parameters
         GenerateRateList(true);
-    };
-    const handlePageChange = (event, page) => {
-        setCurrentPage(page);
     };
 
     const handleGenerateExcel = async () => {

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaSearch } from 'react-icons/fa';
 import { Typography, TextField, Button } from '@mui/material';
 import TablePagination from "@mui/material/TablePagination";
 

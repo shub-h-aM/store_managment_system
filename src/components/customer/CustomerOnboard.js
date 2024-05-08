@@ -4,7 +4,6 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import {borderRadius} from "@mui/system";
 
 function CustomerOnboard() {
     const [customerName, setCustomerName] = useState('');

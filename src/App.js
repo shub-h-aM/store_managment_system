@@ -7,7 +7,7 @@ import SignupPage from './components/SignupPage';
 import UserDetails from './components/UserDetails';
 import UploadFile from './components/UploadFile';
 import ItemDetails from './components/ItemDetails';
-import PieChartWithCustomizedLabel from "./components/PieChart";
+// import PieChartWithCustomizedLabel from "./components/PieChart";
 import InvoiceForm from "./components/Invoice/InvoiceForm";
 import CustomerOnboard from "./components/customer/CustomerOnboard";
 import CustomerDetails from "./components/customer/CustomerDetails";
@@ -99,7 +99,7 @@ const App = () => {
                     ) : (
                         <>
                             <Route path="/" element={<HomePage/>}/>
-                            <Route path="/pie-chart" element={<PieChartWithCustomizedLabel />} />
+                            {/*<Route path="/pie-chart" element={<PieChartWithCustomizedLabel />} />*/}
                             <Route path="/userDetails" element={<UserDetails />} />
                             <Route path="/upload/item/details" element={<UploadFile />} />
                             <Route path="/item/inventory" element={<CreateItemDetails />} />

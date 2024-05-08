@@ -10,7 +10,8 @@ function CustomerDetails() {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredCustomers, setFilteredCustomers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(9);
+    // const [itemsPerPage, setItemsPerPage] = useState(9);
+    const [itemsPerPage] = useState(9);
 
     useEffect(() => {
         // Fetch customer details from the API
