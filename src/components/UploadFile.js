@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { FaUpload } from "react-icons/fa";
+import Footer from "./Footer";
 
 const UploadFile = () => {
     const [file, setFile] = useState(null);
@@ -46,6 +47,7 @@ const UploadFile = () => {
                 {uploading ? 'Uploading...' : 'Upload'}
             </button>
             {uploadError && <div className="error-message">{uploadError}</div>}
+            <Footer />
         </div>
     );
 };

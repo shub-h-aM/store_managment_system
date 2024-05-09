@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import Footer from "./Footer";
 
 function CreateItem() {
     const [itemCode, setItemCode] = useState('');
@@ -132,6 +133,7 @@ function CreateItem() {
                     </Grid>
                 </form>
             </Container>
+            <Footer />
         </div>
     );
 }

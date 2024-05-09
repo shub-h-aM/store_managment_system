@@ -7,7 +7,6 @@ import SignupPage from './components/SignupPage';
 import UserDetails from './components/UserDetails';
 import UploadFile from './components/UploadFile';
 import ItemDetails from './components/ItemDetails';
-// import PieChartWithCustomizedLabel from "./components/PieChart";
 import InvoiceForm from "./components/Invoice/InvoiceForm";
 import CustomerOnboard from "./components/customer/CustomerOnboard";
 import CustomerDetails from "./components/customer/CustomerDetails";
@@ -38,6 +37,8 @@ const App = () => {
         setIsLoggedIn(false);
         setActiveUser(null);
         localStorage.removeItem('isLoggedIn');
+        // Redirect to login page after logout
+        window.location.href = '/login';
     };
 
     useEffect(() => {
@@ -98,11 +99,10 @@ const App = () => {
                         </>
                     ) : (
                         <>
-                            <Route path="/" element={<HomePage/>}/>
-                            {/*<Route path="/pie-chart" element={<PieChartWithCustomizedLabel />} />*/}
+                            <Route path="/home" element={<HomePage/>}/>
                             <Route path="/userDetails" element={<UserDetails />} />
                             <Route path="/upload/item/details" element={<UploadFile />} />
-                            <Route path="/item/inventory" element={<CreateItemDetails />} />
+                            <Route path="/item/create-item" element={<CreateItemDetails />} />
                             <Route path="/item-details" element={<ItemDetails />} />
                             <Route path="/invoice" element={<InvoiceForm />} />
                             <Route path="/customer" element={<CustomerDetails />} />
@@ -111,11 +111,10 @@ const App = () => {
                             <Route path="/create-item" element={<CreateItem />} />
                             <Route path="/get/item" element={<Item />} />
                             <Route path="/get/customer_rate/list" element={<CustomerItemRate />} />
-                            <Route path="*" element={<Navigate to="/" />} />
+                            <Route path="*" element={<Navigate to="/home" />} />
                         </>
                     )}
                 </Routes>
-
             </div>
         </Router>
     );

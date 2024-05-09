@@ -1,5 +1,6 @@
 import React from 'react';
 import '../index.css';
+import Footer from "./Footer";
 
 const HomePage = () => {
     return (
@@ -41,6 +42,7 @@ const HomePage = () => {
                 <div className="category">Category 3</div>
                 {/* Add more categories as needed */}
             </section>
+            <Footer />
         </div>
     );
 };

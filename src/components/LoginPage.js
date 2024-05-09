@@ -14,6 +14,7 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from "axios";
 import {useState} from "react";
+import Footer from "./Footer";
 
 const defaultTheme = createTheme();
 
@@ -46,7 +47,7 @@ const LoginPage = ({ onLogin }) => {
 
     return (
         <ThemeProvider theme={defaultTheme}>
-            <Grid container component="main" sx={{ height: '100vh' }}>
+            <Grid container component="main" sx={{ height: '100vh',position:'fixed' }}>
                 <CssBaseline />
                 <Grid
                     item
@@ -102,7 +103,7 @@ const LoginPage = ({ onLogin }) => {
                                 id="password"
                                 autoComplete="current-password"
                                 value={password}
-                                onChange={(e) => setPassword(e.target.value)} // Add onChange handler
+                                onChange={(e) => setPassword(e.target.value)}
                             />
                             <FormControlLabel
                                 control={<Checkbox value="remember" color="primary" />}
@@ -127,6 +128,7 @@ const LoginPage = ({ onLogin }) => {
                                         {"Don't have an account? Sign Up"}
                                     </Link>
                                 </Grid>
+                                <Footer />
                             </Grid>
                         </Box>
                     </Box>

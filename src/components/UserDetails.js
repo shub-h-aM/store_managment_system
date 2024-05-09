@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaSearch } from 'react-icons/fa';
 import { Typography, TextField, Button, Table, TableHead, TableRow, TableCell, TableBody, TablePagination } from '@mui/material';
+import Footer from "./Footer";
 
 const columns = [
     { id: 'Name', label: 'Name', minWidth: 170 },
@@ -106,6 +107,7 @@ const UserDetails = () => {
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
+            <Footer />
         </div>
     );
 };

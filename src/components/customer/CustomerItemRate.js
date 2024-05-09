@@ -7,13 +7,14 @@ import { GenerateRateList } from "../helpers/GenerateRateList";
 import {Button} from "@mui/material";
 import {LiaFileDownloadSolid} from "react-icons/lia";
 import {GrDocumentDownload} from "react-icons/gr";
+import Footer from "../Footer";
 
 const CustomerItemRate = () => {
     const [formData, setFormData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(0);
-    const [itemsPerPage, setItemsPerPage] = useState(12);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
     const [indexOfFirstItem, setIndexOfFirstItem] = useState(0);
     const [indexOfLastItem, setIndexOfLastItem] = useState(itemsPerPage);
 
@@ -157,7 +158,7 @@ const CustomerItemRate = () => {
                 </div>
             )}
             <TablePagination
-                rowsPerPageOptions={[12, 25, 100]}
+                rowsPerPageOptions={[10, 25, 100]}
                 component="div"
                 count={filteredItems.length}
                 rowsPerPage={itemsPerPage}
@@ -165,6 +166,7 @@ const CustomerItemRate = () => {
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
+            <Footer />
         </div>
     );
 };

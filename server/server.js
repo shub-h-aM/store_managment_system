@@ -155,26 +155,6 @@ app.get('/api/userDetails', (req, res) => {
 });
 
 // Login endpoint
-// app.post('/api/login', (req, res) => {
-//     const { username, password } = req.body;
-//     const sql = 'SELECT * FROM user WHERE username = ? AND password = ?';
-//     db.query(sql, [username, password], (err, result) => {
-//         if (err) {
-//             console.error('Error executing query:', err);
-//             res.status(500).json({ error: 'Error logging in' });
-//             return;
-//         }
-//         if (result.length > 0) {
-//             // User found, login successful
-//             const loggedInUser = result[0]; // Assuming username is unique, so we take the first user from the result
-//             res.status(200).json({ message: 'Login successful', username: loggedInUser.username });
-//
-//         } else {
-//             // User not found or invalid credentials
-//             res.status(401).json({ error: 'Invalid username or password' });
-//         }
-//     });
-// });
 app.post('/api/login', (req, res) => {
     const { username, email, password } = req.body;
     const sql = 'SELECT * FROM user WHERE (username = ? OR email = ?) AND password = ?';

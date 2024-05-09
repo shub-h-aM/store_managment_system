@@ -4,13 +4,14 @@ import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 import { Typography, TextField, InputAdornment, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 import Pagination from '@mui/material/Pagination';
+import Footer from "./Footer";
 
 function Item() {
     const [items, setItems] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredItems, setFilteredItems] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(11);
+    const [itemsPerPage] = useState(10);
 
     useEffect(() => {
         fetchData();
@@ -110,6 +111,7 @@ function Item() {
                     color="primary"
                 />
             </div>
+            <Footer />
         </div>
     );
 }

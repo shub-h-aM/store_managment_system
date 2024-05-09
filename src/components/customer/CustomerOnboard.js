@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import Footer from "../Footer";
 
 function CustomerOnboard() {
     const [customerName, setCustomerName] = useState('');
@@ -80,6 +81,7 @@ function CustomerOnboard() {
                     </Grid>
                 </form>
             </Container>
+            <Footer />
         </div>
     );
 }
