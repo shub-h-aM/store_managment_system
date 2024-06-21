@@ -10,6 +10,7 @@ import { toPng } from 'html-to-image';
 import { jsPDF } from 'jspdf';
 
 
+
 const GenerateInvoice = (invoiceNumber, invoiceSaved) => {
     if (!invoiceSaved) {
         alert("Please save the invoice before downloading.");
@@ -23,7 +24,7 @@ const GenerateInvoice = (invoiceNumber, invoiceSaved) => {
     toPng(dom)
         .then((dataUrl) => {
             const img = new Image();
-            img.crossOrigin = 'anonymous'; // Fixed typo
+            img.crossOrigin = 'anonymous';
             img.src = dataUrl;
             img.onload = () => {
                 // Initialize the PDF.
@@ -35,8 +36,8 @@ const GenerateInvoice = (invoiceNumber, invoiceSaved) => {
 
                 // Define reused data
                 const imgProps = pdf.getImageProperties(img);
-                const imageType = imgProps.fileType;
                 const pdfWidth = pdf.internal.pageSize.getWidth();
+                const topGap = 0.5; // Gap in inches above the first row on new pages
 
                 // Calculate the number of pages.
                 const pxFullHeight = imgProps.height;
@@ -58,29 +59,32 @@ const GenerateInvoice = (invoiceNumber, invoiceSaved) => {
                         pageCanvas.height = pxFullHeight % pxPageHeight;
                         pageHeight = (pageCanvas.height * pdfWidth) / pageCanvas.width;
                     }
-                    const imgYPosition = page === 0 ? 0 : -30;
+
                     // Display the page.
                     const w = pageCanvas.width;
                     const h = pageCanvas.height;
                     pageCtx.fillStyle = 'white';
                     pageCtx.fillRect(0, 0, w, h);
-                    pageCtx.drawImage(img, 0, page * pxPageHeight + imgYPosition, w, h, 0, 0, w, h);
+                    pageCtx.drawImage(img, 0, page * pxPageHeight, w, h, 0, 0, w, h);
 
-                    if (page) pdf.addPage();
+                    if (page) {
+                        pdf.addPage();
+                    }
 
-                    const imgData = pageCanvas.toDataURL(`image/${imageType}`, 1);
-                    pdf.addImage(imgData, imageType, 0, 0, pdfWidth, pageHeight);
+                    // Compress the image to reduce file size
+                    const imgData = pageCanvas.toDataURL('image/jpeg', 0.7); // Adjust quality (0.0 - 1.0)
+                    const yOffset = page ? topGap : 0; // Apply gap above the first row on new pages
+                    pdf.addImage(imgData, 'JPEG', 0, yOffset, pdfWidth, pageHeight - yOffset);
                 }
-                // pdf.save(`invoice-0001.pdf`);
-                pdf.save(`invoice-${invoiceNumber}.pdf`);
 
+                // Save the PDF
+                pdf.save(`invoice-${invoiceNumber}.pdf`);
             };
         })
         .catch((error) => {
             console.error('Oops, something went wrong!', error);
         });
 };
-
 
 class InvoiceModal extends React.Component {
     state = {
@@ -194,16 +198,16 @@ class InvoiceModal extends React.Component {
                                         </div>
                                     )}
                                 </Col>
-                                <Col md={4}>
-                                    <div className="fw-bold mt-2">Date Of Issue:</div>
-                                    <div>{new Date().toLocaleDateString()}</div>
-                                    {this.props.info.dateOfDue && (
-                                        <div>
-                                            <div className="fw-bold mt-2">Due Payment Date:</div>
-                                            <div>{this.props.info.dateOfDue}</div>
-                                        </div>
-                                    )}
-                                </Col>
+                                {/*<Col md={4}>*/}
+                                {/*    <div className="fw-bold mt-2">Date Of Issue:</div>*/}
+                                {/*    <div>{new Date().toLocaleDateString()}</div>*/}
+                                {/*    {this.props.info.dateOfDue && (*/}
+                                {/*        <div>*/}
+                                {/*            <div className="fw-bold mt-2">Due Payment Date:</div>*/}
+                                {/*            <div>{this.props.info.dateOfDue}</div>*/}
+                                {/*        </div>*/}
+                                {/*    )}*/}
+                                {/*</Col>*/}
 
                             </Row>
                             <Table className="mb-0">
