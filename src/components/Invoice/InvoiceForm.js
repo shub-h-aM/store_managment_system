@@ -231,14 +231,14 @@ class InvoiceForm extends React.Component {
                         <hr className="my-4"/>
                         <Row className="mb-5">
                             <Col>
-                                <Form.Label className="fw-bold">Bill from:</Form.Label>
+                                <Form.Label className="fw-bold">Bill From:</Form.Label>
                                 <Form.Control placeholder={"Who is this invoice from?"} rows={3}
                                               value={"Shubham Tripathi"} type="text" name="billFrom" className="my-2" onChange={(event) => this.editField(event)} autoComplete="name" />
                                 <Form.Control placeholder={"Billing address"} value={"Delhi, 122022"} type="text" name="billFromAddress" className="my-2" autoComplete="address" onChange={(event) => this.editField(event)} />
                                 <Form.Control placeholder={"Contact Number"} value={"9090909090"} type="tel" max={10} name="billFromContact" className="my-2" onChange={(event) => this.editField(event)} autoComplete="contact" />
                             </Col>
                             <Col>
-                                <Form.Label className="fw-bold">Bill to:</Form.Label>
+                                <Form.Label className="fw-bold">Bill To:</Form.Label>
                                 <Form.Control as="select" onClick={this.handleBillToClick} className="my-2" rows={3} onChange={(event) => this.handleCustomerSelect(parseInt(event.target.value))}>
                                     <option>Select a customer</option>
                                     {this.state.customers && this.state.customers.map(customer => (
@@ -268,7 +268,7 @@ class InvoiceForm extends React.Component {
                                     </span>
                                 </div>
                                 <div className="d-flex flex-row align-items-start justify-content-between mt-2">
-                                    <span className="fw-bold">Tax:</span>
+                                    <span className="fw-bold">GST :</span>
                                     <span>
                                         <span className="small ">({this.state.taxRate || 0}%)</span>
                                         {this.state.currency}
@@ -298,7 +298,7 @@ class InvoiceForm extends React.Component {
                                       subTotal={this.state.subTotal} taxAmount={this.state.taxAmount} discountAmount={this.state.discountAmount} total={this.state.total}
                                       dueAmount={this.state.dueAmount} paidAmount={this.state.paidAmount} dateOfDue={this.state.dateOfDue}/>
                         <Form.Group className="my-3">
-                            <Form.Label className="fw-bold">Tax rate:</Form.Label>
+                            <Form.Label className="fw-bold">GST Rate:</Form.Label>
                             <InputGroup className="my-1 flex-nowrap">
                                 <Form.Control name="taxRate" type="number" value={this.state.taxRate} onChange={(event) => this.editField(event)} className="bg-white border" placeholder="0.0" min="0.00" step="0.01" max="100.00"/>
                                 <InputGroup.Text className="bg-light fw-bold text-secondary small">
@@ -307,7 +307,7 @@ class InvoiceForm extends React.Component {
                             </InputGroup>
                         </Form.Group>
                         <Form.Group className="my-3">
-                            <Form.Label className="fw-bold">Discount rate:</Form.Label>
+                            <Form.Label className="fw-bold">Discount Rate:</Form.Label>
                             <InputGroup className="my-1 flex-nowrap">
                                 <Form.Control as="select" name="discountType" value={this.state.discountType} onChange={(event) => this.editField(event)} className="bg-white border">
                                     <option value="%">%</option>
