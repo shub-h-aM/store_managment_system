@@ -37,7 +37,7 @@ const GenerateInvoice = (invoiceNumber, invoiceSaved) => {
                 // Define reused data
                 const imgProps = pdf.getImageProperties(img);
                 const pdfWidth = pdf.internal.pageSize.getWidth();
-                const topGap = 0.5; // Gap in inches above the first row on new pages
+                const topGap = 0.2; // Gap in inches above the first row on new pages
 
                 // Calculate the number of pages.
                 const pxFullHeight = imgProps.height;
