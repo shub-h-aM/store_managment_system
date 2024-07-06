@@ -14,7 +14,7 @@ class InvoiceModal extends React.Component {
     };
 
     handleSave = () => {
-        const { billTo, billToContact, invoiceNumber, subTotal, discountAmount, taxAmount, total, dueAmount, paidAmount, dateOfDue } = this.props.info;
+        const { billTo, billToContact, invoiceNumber, subTotal, discountAmount, cgstAmount, sgstAmount, grandTotal, dueAmount, paidAmount, dateOfDue } = this.props.info;
         const items = this.props.items.map(item => ({
             itemName: item.name,
             rate: item.price,
@@ -46,8 +46,9 @@ class InvoiceModal extends React.Component {
                     invoice_number: invoiceNumber,
                     sub_total: subTotal,
                     discount_amount: discountAmount,
-                    tax_amount: taxAmount,
-                    total: total,
+                    cgst_amount: cgstAmount,
+                    sgst_amount: sgstAmount,
+                    grand_total: grandTotal,
                     paid_amount: paidAmount,
                     due_amount: dueAmount,
                     date_of_due: dateOfDue,
@@ -98,7 +99,7 @@ class InvoiceModal extends React.Component {
                             </div>
                             <div className="text-end ms-4">
                                 <h6 className="fw-bold mt-1 mb-2">Amount&nbsp;Due:</h6>
-                                <h5 className="fw-bold text-secondary">{this.props.currency} {this.props.total}</h5>
+                                <h5 className="fw-bold text-secondary">{this.props.currency} {this.props.dueAmount}</h5>
                             </div>
                         </div>
                         <div className="p-4">
@@ -163,11 +164,18 @@ class InvoiceModal extends React.Component {
                                     <td className="fw-bold" style={{ width: '100px' }}>SUBTOTAL</td>
                                     <td className="text-end" style={{ width: '100px' }}>{this.props.currency} {this.props.subTotal}</td>
                                 </tr>
-                                {this.props.taxAmount !== 0.00 && (
+                                {this.props.cgstAmount !== 0.00 && (
                                     <tr className="text-end">
                                         <td></td>
-                                        <td className="fw-bold" style={{ width: '100px' }}>GST </td>
-                                        <td className="text-end" style={{ width: '100px' }}>{this.props.currency} {this.props.taxAmount}</td>
+                                        <td className="fw-bold" style={{ width: '100px' }}>CGST </td>
+                                        <td className="text-end" style={{ width: '100px' }}>{this.props.currency} {this.props.cgstAmount}</td>
+                                    </tr>
+                                )}
+                                {this.props.sgstAmount !== 0.00 && (
+                                    <tr className="text-end">
+                                        <td></td>
+                                        <td className="fw-bold" style={{ width: '100px' }}>SGST </td>
+                                        <td className="text-end" style={{ width: '100px' }}>{this.props.currency} {this.props.sgstAmount}</td>
                                     </tr>
                                 )}
                                 {this.props.discountAmount !== 0.00 && (
@@ -179,8 +187,8 @@ class InvoiceModal extends React.Component {
                                 )}
                                 <tr className="text-end">
                                     <td></td>
-                                    <td className="fw-bold" style={{ width: '100px' }}>TOTAL</td>
-                                    <td className="text-end" style={{ width: '100px' }}>{this.props.currency} {this.props.total}</td>
+                                    <td className="fw-bold" style={{ width: '100px' }}>GRAND TOTAL</td>
+                                    <td className="text-end" style={{ width: '100px' }}>{this.props.currency} {this.props.grandTotal}</td>
                                 </tr>
                                 </tbody>
                             </Table>

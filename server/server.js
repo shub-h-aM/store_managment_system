@@ -280,11 +280,11 @@ app.post('/api/invoices', (req, res) => {
 });
 
 app.post('/api/invoice_transaction', (req, res) => {
-    const { customer_name, customer_number, invoice_number, sub_total, discount_amount, tax_amount, total, paid_amount, due_amount,date_of_due } = req.body;
+    const { customer_name, customer_number, invoice_number, sub_total, discount_amount, cgst_amount, sgst_amount, grand_total, paid_amount, due_amount,date_of_due } = req.body;
 
-    const sql = 'INSERT INTO invoice_transaction (customer_name, customer_number, invoice_number, sub_total, discount_amount, tax_amount, total, paid_amount, due_amount, date_of_due) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    const sql = 'INSERT INTO invoice_transaction (customer_name, customer_number, invoice_number, sub_total, discount_amount, cgst_amount,sgst_amount, grand_total, paid_amount, due_amount, date_of_due) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)';
 
-    db.query(sql, [customer_name, customer_number, invoice_number, sub_total, discount_amount, tax_amount, total, paid_amount, due_amount, date_of_due], (err, result) => {
+    db.query(sql, [customer_name, customer_number, invoice_number, sub_total, discount_amount, cgst_amount, sgst_amount, grand_total, paid_amount, due_amount, date_of_due], (err, result) => {
         if (err) {
             console.error('Error inserting transaction data:', err);
             res.status(500).json({ error: 'Error creating transaction' });
