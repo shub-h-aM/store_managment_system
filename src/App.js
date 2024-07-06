@@ -15,6 +15,7 @@ import CreateItemDetails from "./components/CreateItemDetails";
 import CreateItem from "./components/CreateItem";
 import Item from "./components/Item";
 import CustomerItemRate from "./components/customer/CustomerItemRate";
+import useInactivityTimeout from "./components/hook/useInactivityTimeout";
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -42,37 +43,18 @@ const App = () => {
     };
 
     useEffect(() => {
-        let timeout;
-        const logout = () => {
-            localStorage.removeItem('token');
-            // Perform any other logout actions
-            console.log('User logged out due to inactivity');
-            window.alert('You will be logged out due to inactivity.');
-            handleLogout(); // Logout the user
-        };
-
-        const resetTimeout = () => {
-            clearTimeout(timeout);
-            timeout = setTimeout(logout, 15 * 60 * 1000);
-        };
-
-        resetTimeout();
-
-        // Event listeners to reset timeout on user activity
-        window.addEventListener('mousemove', resetTimeout);
-        window.addEventListener('keydown', resetTimeout);
-
         // Check for login state in local storage and set initial state
         const isLoggedInStored = localStorage.getItem('isLoggedIn');
         if (isLoggedInStored) {
             setIsLoggedIn(true);
         }
-
-        return () => {
-            window.removeEventListener('mousemove', resetTimeout);
-            window.removeEventListener('keydown', resetTimeout);
-        };
     }, []);
+
+    // Use the custom hook for inactivity timeout
+    useInactivityTimeout(5 * 60 * 1000, () => {
+        alert('You will be logged out due to inactivity.');
+        handleLogout();
+    });
 
     useEffect(() => {
         // Store current URL in local storage before refreshing
