@@ -35,19 +35,23 @@ class InvoiceForm extends React.Component {
             discountType: '%',
             paidAmount: '0.00',
             dueAmount: '0.00',
-            customers: []
+            customers: [],
+            items: [
+                {
+                    id: 0,
+                    sno: 0,
+                    name: '',
+                    price: '0.00',
+                    quantity: 0
+                }
+            ],
+            availableItems: []
         };
-        this.state.items = [
-            {
-                id: 0,
-                sno: 1,
-                name: '',
-                price: '1.00',
-                quantity: 1
-            }
-        ];
         this.editField = this.editField.bind(this);
         this.handleCustomerSelect = this.handleCustomerSelect.bind(this);
+        this.onItemizedItemEdit = this.onItemizedItemEdit.bind(this);
+        this.handleAddEvent = this.handleAddEvent.bind(this);
+        this.handleRowDel = this.handleRowDel.bind(this);
     }
 
     componentDidMount() {
@@ -62,7 +66,17 @@ class InvoiceForm extends React.Component {
                 console.error('Error fetching last invoice number:', error);
                 alert('Failed to fetch last invoice number. Please try again later.');
             });
+
+        axios.get('http://localhost:5000/api/get/items')
+            .then(response => {
+                this.setState({ availableItems: response.data });
+            })
+            .catch(error => {
+                console.error('Error fetching item data:', error);
+                alert('Failed to fetch item data. Please try again later.');
+            });
     }
+
 
     handleRowDel(items) {
         const index = this.state.items.indexOf(items);
@@ -70,17 +84,34 @@ class InvoiceForm extends React.Component {
         this.setState(this.state.items);
     };
 
-    handleAddEvent() {
+    // handleAddEvent(selectedItem) {
+    //     const id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
+    //     const items = {
+    //         id: id,
+    //         sno: 1,
+    //         name: selectedItem.item_name,
+    //         price: selectedItem.rate,
+    //         quantity: 1
+    //     };
+    //     this.state.items.push(items);
+    //     this.setState(this.state.items);
+    // }
+
+    handleAddEvent(selectedItem) {
+        console.log("Selected Item:", selectedItem);
         const id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
         const items = {
             id: id,
             sno: 1,
-            name: '',
-            price: '1.00',
+            name: selectedItem.item_name,
+            price: selectedItem.rate,
             quantity: 1
         };
-        this.state.items.push(items);
-        this.setState(this.state.items);
+        this.setState(prevState => ({
+            items: [...prevState.items, items]
+        }), () => {
+            console.log("Updated Items:", this.state.items);
+        });
     }
 
     handleCalculateTotal() {
@@ -201,7 +232,8 @@ class InvoiceForm extends React.Component {
         }
     }
     render() {
-        return (<Form onSubmit={this.openModal} >
+        return (
+            <Form onSubmit={this.openModal} >
             <Row style={{height:'80%',margin:'20px'}}>
                 <Col md={8} lg={9}>
                     <Card className="p-4 p-xl-5 my-3 my-xl-4">
@@ -251,7 +283,7 @@ class InvoiceForm extends React.Component {
                                 <Form.Control placeholder="Contact Number" value={this.state.billToContact} type="text" name="billToContact" className="my-2" autoComplete="contactNumber" required />
                             </Col>
                         </Row>
-                        <InvoiceItem onItemizedItemEdit={this.onItemizedItemEdit.bind(this)} onRowAdd={this.handleAddEvent.bind(this)} onRowDel={this.handleRowDel.bind(this)} currency={this.state.currency} items={this.state.items}/>
+                        <InvoiceItem onItemizedItemEdit={this.onItemizedItemEdit.bind(this)} onRowAdd={this.handleAddEvent.bind(this)} onRowDel={this.handleRowDel.bind(this)} currency={this.state.currency} items={this.state.items} availableItems={this.state.availableItems}/>
                         <Row className="mt-4 justify-content-end">
                             <Col lg={6}>
                                 <div className="d-flex flex-row align-items-start justify-content-between">
@@ -294,7 +326,7 @@ class InvoiceForm extends React.Component {
                 <Col md={4} lg={3}>
                     <div className="sticky-top pt-md-3 pt-xl-4">
                         <Button variant="primary" type="submit" className="d-block w-100 btn-secondary">Review Invoice</Button>
-                        <InvoiceModal showModal={this.state.isOpen} closeModal={this.closeModal} info={this.state} items={this.state.items} currency={this.state.currency}
+                        <InvoiceModal showModal={this.state.isOpen} closeModal={this.closeModal.bind(this)} info={this.state} items={this.state.items} currency={this.state.currency}
                                       subTotal={this.state.subTotal} taxAmount={this.state.taxAmount} discountAmount={this.state.discountAmount} total={this.state.total}
                                       dueAmount={this.state.dueAmount} paidAmount={this.state.paidAmount} dateOfDue={this.state.dateOfDue}/>
                         <Form.Group className="my-3">

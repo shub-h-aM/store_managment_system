@@ -3,26 +3,26 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import { BiTrash } from "react-icons/bi";
-import EditableField from './EditableField';
-import {IoIosAddCircle} from "react-icons/io";
+import { IoIosAddCircle } from "react-icons/io";
+import Form from 'react-bootstrap/Form';
 
 class InvoiceItem extends React.Component {
     render() {
-        const onItemizedItemEdit = this.props.onItemizedItemEdit;
-        const currency = this.props.currency;
-        const rowDel = this.props.onRowDel;
-        const itemTable = this.props.items.map(function (item, index) {
-            return (
-                <ItemRow
-                    onItemizedItemEdit={onItemizedItemEdit}
-                    item={item}
-                    onDelEvent={rowDel.bind(this)}
-                    key={item.id}
-                    currency={currency}
-                    serialNumber={index + 1}
-                />
-            )
-        });
+        const { onItemizedItemEdit, currency, onRowDel, items = [], availableItems = [], onRowAdd } = this.props;
+
+        const itemTable = items.map((item, index) => (
+            <ItemRow
+                key={item.id}
+                onItemizedItemEdit={onItemizedItemEdit}
+                item={item}
+                index={index}
+                currency={currency}
+                onDelEvent={onRowDel}
+                availableItems={availableItems}
+                onRowAdd={onRowAdd}
+            />
+        ));
+
         return (
             <div>
                 <Table>
@@ -32,6 +32,7 @@ class InvoiceItem extends React.Component {
                         <th> &nbsp; &nbsp; &nbsp;ITEM DESCRIPTION</th>
                         <th>QUANTITY</th>
                         <th>PRICE/RATE</th>
+                        <th>TOTAL</th>
                         <th className="text-center">ACTION</th>
                     </tr>
                     </thead>
@@ -39,67 +40,76 @@ class InvoiceItem extends React.Component {
                     {itemTable}
                     </tbody>
                 </Table>
-                <Button className="fw-bold btn-secondary" onClick={this.props.onRowAdd}><IoIosAddCircle style={{paddingBottom :"-4px",marginBottom : "3px"}}/> Item</Button>
+                <Button className="fw-bold btn-secondary" onClick={this.props.onRowAdd}>
+                    <IoIosAddCircle style={{ paddingBottom: "-4px", marginBottom: "3px" }} /> Item
+                </Button>
             </div>
         );
-
     }
 }
 
 class ItemRow extends React.Component {
-    onDelEvent() {
+    onDelEvent = () => {
         this.props.onDelEvent(this.props.item);
     }
+
     render() {
+        const { item, index, currency, availableItems = [], onItemizedItemEdit, onRowAdd } = this.props;
+        console.log(availableItems)
+        // console.log(item_name)
+
         return (
             <tr>
-                <td>{this.props.serialNumber}</td>
-                <td style={{width: '100%'}}>
-                    <EditableField
-                        onItemizedItemEdit={this.props.onItemizedItemEdit}
-                        cellData={{
-                            type: "text",
-                            name: "name",
-                            placeholder: "Item name",
-                            value: this.props.item.name,
-                            id: this.props.item.id,
-                        }}/>
+                <td>{index + 1}</td>
+                <td style={{ width: '100%' }}>
+                    <Form.Select
+                        value={item.name}
+                        onChange={(e) => {
+                            const selectedItem = availableItems.find(i => i.item_name === e.target.value);
+                            if (selectedItem) {
+                                onRowAdd(selectedItem);
+                            }
+                        }}
+                    >
+                        <option>Select Item</option>
+                        {availableItems.map(availableItem => (
+                            <option key={availableItem.id} value={availableItem.item_name}>
+                                {availableItem.item_name}
+                            </option>
+                        ))}
+                    </Form.Select>
                 </td>
-                <td style={{minWidth: '70px'}}>
-                    <EditableField
-                        onItemizedItemEdit={this.props.onItemizedItemEdit}
-                        cellData={{
-                            type: "number",
-                            name: "quantity",
-                            min: 1,
-                            step: "1",
-                            value: this.props.item.quantity,
-                            id: this.props.item.id,
-                        }}/>
+                <td style={{ minWidth: '70px' }}>
+                    <Form.Control
+                        type="number"
+                        name="quantity"
+                        id={item.id}
+                        value={item.quantity}
+                        onChange={onItemizedItemEdit}
+                    />
                 </td>
-                <td style={{minWidth: '130px'}}>
-                    <EditableField
-                        onItemizedItemEdit={this.props.onItemizedItemEdit}
-                        cellData={{
-                            leading: this.props.currency,
-                            type: "number",
-                            name: "price",
-                            min: 1,
-                            step: "0.01",
-                            precision: 2,
-                            textAlign: "text-end",
-                            value: this.props.item.price,
-                            id: this.props.item.id,
-                        }}/>
+                <td style={{ minWidth: '130px' }}>
+                    <Form.Control
+                        type="number"
+                        name="price"
+                        id={item.id}
+                        value={item.price}
+                        onChange={onItemizedItemEdit}
+                    />
                 </td>
-                <td className="text-center" style={{minWidth: '50px'}}>
-                    <BiTrash onClick={this.onDelEvent.bind(this)} style={{height: '33px', width: '33px', padding: '7.5px'}} className="text-white mt-1 btn btn-danger"/>
+                <td style={{ minWidth: '130px',paddingTop: '15px',paddingLeft: '25px'}}>
+                    {currency}{(item.price * item.quantity).toFixed(2)}
+                </td>
+                <td className="text-center" style={{ minWidth: '50px' }}>
+                    <BiTrash
+                        onClick={this.onDelEvent.bind(this)}
+                        style={{ height: '33px', width: '33px', padding: '7.5px' }}
+                        className="text-white mt-1 btn btn-danger"
+                    />
                 </td>
             </tr>
         );
-
     }
-
 }
 
 export default InvoiceItem;
