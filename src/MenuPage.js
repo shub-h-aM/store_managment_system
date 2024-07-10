@@ -1,101 +1,143 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import {
+    Drawer,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    IconButton,
+    Avatar,
+    Button,
+    Typography,
+    Box,
+} from '@mui/material';
 import { FaBars, FaWarehouse, FaUpload, FaBook, FaUser, FaFileInvoiceDollar, FaCartPlus, FaHome } from 'react-icons/fa';
-import { IoIosMan } from "react-icons/io";
-import { MdAssignmentInd, MdListAlt } from "react-icons/md";
-import { PiSignOut } from "react-icons/pi";
-import { GoSignIn } from "react-icons/go";
+import { IoIosMan } from 'react-icons/io';
+import { MdAssignmentInd, MdListAlt } from 'react-icons/md';
+import { PiSignOut } from 'react-icons/pi';
+import { GoSignIn } from 'react-icons/go';
 
 const MenuPage = ({ isLoggedIn, isMenuOpen, activeUser, handleLogin, handleLogout, toggleMenu }) => {
     const location = useLocation();
     const isHomePage = location.pathname === '/home';
 
-    if (!isLoggedIn) {
-        return null;
-    }
     return (
-        <nav className="navbar">
-            <div className="menu-toggle" onClick={toggleMenu}>
-                <FaBars />
-            </div>
-            <ul className={`nav-links ${isMenuOpen ? 'open' : ''}`}>
-                {!isLoggedIn ? (
-                    <>
-                        <li>
-                            <Link to="/login" onClick={toggleMenu}>
-                                <GoSignIn style={{ marginBottom: "3px", marginRight: "3px" }} /> Sign In
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/signup" onClick={toggleMenu}>
-                                <MdAssignmentInd style={{ marginBottom: "3px", marginRight: "3px" }} /> Sign Up
-                            </Link>
-                        </li>
-                    </>
-                ) : (
-                    <>
-                        {activeUser && (
-                            <li className="user-info">
-                                <img src={activeUser.avatar} alt={activeUser.username} className="avatar" />
-                                <span className="username">{activeUser.name}</span>
-                            </li>
-                        )}
-                        <li>
-                            <Link to="/home" onClick={toggleMenu}>
-                                <FaHome style={{ marginBottom: "5px", marginRight: "-1px" }} /> Home
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/userDetails" onClick={toggleMenu}>
-                                <FaUser style={{ marginBottom: "5px", marginRight: "-1px" }} /> User Details
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/item/create-item" onClick={toggleMenu}>
-                                <FaUpload style={{ marginBottom: "5px", marginRight: "-1px" }} /> Add Item
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/item-details" onClick={toggleMenu}>
-                                <FaWarehouse style={{ marginBottom: "4px", marginRight: "-1px" }} /> Item Details
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/invoice" onClick={toggleMenu}>
-                                <FaFileInvoiceDollar style={{ marginBottom: "4px", marginRight: "-2px" }} /> Invoice
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/customer" onClick={toggleMenu}>
-                                <IoIosMan style={{ marginBottom: "4px", marginRight: "-3px" }} /> Customer
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/ledger-transaction" onClick={toggleMenu}>
-                                <FaBook style={{ marginBottom: "3px", marginRight: "2px" }} /> Ledger
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/get/item" onClick={toggleMenu}>
-                                <FaCartPlus style={{ marginBottom: "3px", marginRight: "3px" }} /> Item
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/get/customer_rate/list" onClick={toggleMenu}>
-                                <MdListAlt style={{ marginBottom: "3px", marginRight: "2px" }} /> Item Rate
-                            </Link>
-                        </li>
-                        {isHomePage && (
-                            <li>
-                                <button style={{ marginTop: "7px", marginLeft: '9px', borderRadius: '20px', marginRight: "-7px", width: '122px', backgroundColor: '#632f2f', textAlign: 'center' }} onClick={handleLogout}>
-                                    <PiSignOut style={{ marginBottom: "3px", marginRight: "2px" }} /> Logout
-                                </button>
-                            </li>
-                        )}
-                    </>
-                )}
-            </ul>
-        </nav>
+        <>
+            {isLoggedIn && (
+                <>
+                    <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleMenu}>
+                        <FaBars />
+                    </IconButton>
+                    <Drawer anchor="left" open={isMenuOpen} onClose={toggleMenu}>
+                        <Box display="flex" flexDirection="column" height="100%">
+                            <List style={{ flexGrow: 1 }}>
+                                {!isLoggedIn ? (
+                                    <>
+                                        <ListItem button component={Link} to="/login" onClick={toggleMenu}>
+                                            <ListItemIcon>
+                                                <GoSignIn />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Sign In" />
+                                        </ListItem>
+                                        <ListItem button component={Link} to="/signup" onClick={toggleMenu}>
+                                            <ListItemIcon>
+                                                <MdAssignmentInd />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Sign Up" />
+                                        </ListItem>
+                                    </>
+                                ) : (
+                                    <>
+                                        {activeUser && (
+                                            <ListItem>
+                                                <ListItemIcon>
+                                                    <Avatar src={activeUser.avatar} alt={activeUser.username} />
+                                                </ListItemIcon>
+                                                <Typography variant="h6">{activeUser.name}</Typography>
+                                            </ListItem>
+                                        )}
+                                        <ListItem button component={Link} to="/home" onClick={toggleMenu}>
+                                            <ListItemIcon>
+                                                <FaHome />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Home" />
+                                        </ListItem>
+                                        <ListItem button component={Link} to="/userDetails" onClick={toggleMenu}>
+                                            <ListItemIcon>
+                                                <FaUser />
+                                            </ListItemIcon>
+                                            <ListItemText primary="User Details" />
+                                        </ListItem>
+                                        <ListItem button component={Link} to="/item/create-item" onClick={toggleMenu}>
+                                            <ListItemIcon>
+                                                <FaUpload />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Add Item" />
+                                        </ListItem>
+                                        <ListItem button component={Link} to="/item-details" onClick={toggleMenu}>
+                                            <ListItemIcon>
+                                                <FaWarehouse />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Item Details" />
+                                        </ListItem>
+                                        <ListItem button component={Link} to="/invoice" onClick={toggleMenu}>
+                                            <ListItemIcon>
+                                                <FaFileInvoiceDollar />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Invoice" />
+                                        </ListItem>
+                                        <ListItem button component={Link} to="/customer" onClick={toggleMenu}>
+                                            <ListItemIcon>
+                                                <IoIosMan />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Customer" />
+                                        </ListItem>
+                                        <ListItem button component={Link} to="/ledger-transaction" onClick={toggleMenu}>
+                                            <ListItemIcon>
+                                                <FaBook />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Ledger" />
+                                        </ListItem>
+                                        <ListItem button component={Link} to="/get/item" onClick={toggleMenu}>
+                                            <ListItemIcon>
+                                                <FaCartPlus />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Item" />
+                                        </ListItem>
+                                        <ListItem button component={Link} to="/get/customer_rate/list" onClick={toggleMenu}>
+                                            <ListItemIcon>
+                                                <MdListAlt />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Item Rate" />
+                                        </ListItem>
+                                        <ListItem button component={Link} to="/blog" onClick={toggleMenu}>
+                                            <ListItemIcon>
+                                                <MdListAlt />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Blog" />
+                                        </ListItem>
+                                    </>
+                                )}
+                            </List>
+                            {isHomePage && (
+                                <Box p={2}>
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        startIcon={<PiSignOut />}
+                                        onClick={handleLogout}
+                                        fullWidth
+                                    >
+                                        Logout
+                                    </Button>
+                                </Box>
+                            )}
+                        </Box>
+                    </Drawer>
+                </>
+            )}
+        </>
     );
 };
 

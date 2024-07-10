@@ -16,6 +16,8 @@ import CreateItem from "./components/CreateItem";
 import Item from "./components/Item";
 import CustomerItemRate from "./components/customer/CustomerItemRate";
 import useInactivityTimeout from "./components/hook/useInactivityTimeout";
+import Blog from "./components/HomePage/Blog";
+
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -92,8 +94,11 @@ const App = () => {
                             <Route path="/ledger-transaction" element={<LedgerPage />} />
                             <Route path="/create-item" element={<CreateItem />} />
                             <Route path="/get/item" element={<Item />} />
+                            <Route path="/blog" element={<Blog />} />
                             <Route path="/get/customer_rate/list" element={<CustomerItemRate />} />
                             <Route path="*" element={<Navigate to="/home" />} />
+
+
                         </>
                     )}
                 </Routes>
