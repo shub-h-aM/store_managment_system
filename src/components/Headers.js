@@ -1,17 +1,18 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Container, Button } from '@mui/material';
+import { FaBars } from 'react-icons/fa';
+import FacebookIcon from "@mui/icons-material/Facebook";
 
-const Headers = () => {
+const Headers = ({ toggleMenu }) => {
     return (
         <AppBar position="sticky">
             <Toolbar>
                 <Container maxWidth="lg" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <IconButton edge="start" color="inherit" aria-label="menu">
-                        {/* Replace with your icon */}
-                        <i className="bi bi-camera"></i>
+                    <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleMenu}>
+                        <FaBars />
                     </IconButton>
                     <Typography variant="h6" component="div">
-                        PhotoFolio
+                        Shubham Electronics & Enterprises
                     </Typography>
                     <nav>
                         <Button color="inherit" href="/">Home</Button>
@@ -20,20 +21,17 @@ const Headers = () => {
                         <Button color="inherit" href="/services">Services</Button>
                         <Button color="inherit" href="/contact">Contact</Button>
                     </nav>
-                    <div>
-                        <IconButton color="inherit" href="#">
-                            <i className="bi bi-twitter-x"></i>
-                        </IconButton>
-                        <IconButton color="inherit" href="#">
-                            <i className="bi bi-facebook"></i>
-                        </IconButton>
-                        <IconButton color="inherit" href="#">
-                            <i className="bi bi-instagram"></i>
-                        </IconButton>
-                        <IconButton color="inherit" href="#">
-                            <i className="bi bi-linkedin"></i>
-                        </IconButton>
-                    </div>
+                    {/*<div>*/}
+                    {/*    <IconButton color="black" href="#">*/}
+                    {/*        <FacebookIcon color="primary" fontSize="medium" />*/}
+                    {/*    </IconButton>*/}
+                    {/*    <IconButton color="red" href="https://www.instagram.com/shubham_electronic_/">*/}
+                    {/*        <i className="bi bi-instagram"></i>*/}
+                    {/*    </IconButton>*/}
+                    {/*    <IconButton color="inherit" href="#">*/}
+                    {/*        <i className="bi bi-linkedin"></i>*/}
+                    {/*    </IconButton>*/}
+                    {/*</div>*/}
                 </Container>
             </Toolbar>
         </AppBar>

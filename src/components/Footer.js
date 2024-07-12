@@ -10,17 +10,14 @@ const Footer = () => {
                 backgroundColor: '#f0f0f0',
                 py: 2,
                 px: 4,
-                position: 'fixed',
-                bottom: 0,
-                left: 0,
-                width: '100%',
+                borderTop: '1px solid #ccc', // optional: adds a border at the top
             }}
         >
             <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1 }}>
-                <Link href="https://www.instagram.com/your_instagram_profile" target="_blank" rel="noopener noreferrer" sx={{ mr: 2 }}>
+                <Link href="https://www.instagram.com/shubham_electronic_/" target="_blank" rel="noopener noreferrer" sx={{ mr: 2 }}>
                     <InstagramIcon color="primary" fontSize="large" />
                 </Link>
-                <Link href="https://www.facebook.com/your_facebook_profile" target="_blank" rel="noopener noreferrer">
+                <Link href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">
                     <FacebookIcon color="primary" fontSize="large" />
                 </Link>
             </Box>

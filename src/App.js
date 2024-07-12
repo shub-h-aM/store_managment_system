@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import MenuPage from './MenuPage';
+import Headers from './components/Headers';  // Import Headers
+import Sidebar from './Sidebar';
 import HomePage from './components/HomePage';
 import LoginPage from './components/LoginPage';
 import SignupPage from './components/SignupPage';
@@ -18,7 +19,6 @@ import CustomerItemRate from "./components/customer/CustomerItemRate";
 import useInactivityTimeout from "./components/hook/useInactivityTimeout";
 import Blog from "./components/HomePage/Blog";
 
-
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -32,7 +32,6 @@ const App = () => {
         setIsLoggedIn(true);
         setActiveUser(user);
         localStorage.setItem('isLoggedIn', true);
-        // Close the menu after successful login
         setIsMenuOpen(false);
     };
 
@@ -40,33 +39,30 @@ const App = () => {
         setIsLoggedIn(false);
         setActiveUser(null);
         localStorage.removeItem('isLoggedIn');
-        // Redirect to login page after logout
         window.location.href = '/login';
     };
 
     useEffect(() => {
-        // Check for login state in local storage and set initial state
         const isLoggedInStored = localStorage.getItem('isLoggedIn');
         if (isLoggedInStored) {
             setIsLoggedIn(true);
         }
     }, []);
 
-    // Use the custom hook for inactivity timeout
     useInactivityTimeout(5 * 60 * 1000, () => {
         alert('You will be logged out due to inactivity.');
         handleLogout();
     });
 
     useEffect(() => {
-        // Store current URL in local storage before refreshing
         localStorage.setItem('currentUrl', window.location.pathname);
     }, []);
 
     return (
         <Router>
             <div>
-                <MenuPage
+                <Headers toggleMenu={toggleMenu} />  {/* Include Headers */}
+                <Sidebar
                     isLoggedIn={isLoggedIn}
                     isMenuOpen={isMenuOpen}
                     activeUser={activeUser}
@@ -97,8 +93,6 @@ const App = () => {
                             <Route path="/blog" element={<Blog />} />
                             <Route path="/get/customer_rate/list" element={<CustomerItemRate />} />
                             <Route path="*" element={<Navigate to="/home" />} />
-
-
                         </>
                     )}
                 </Routes>

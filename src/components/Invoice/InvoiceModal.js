@@ -106,9 +106,9 @@ class InvoiceModal extends React.Component {
                             <Row className="mb-4">
                                 <Col md={4}>
                                     <div className="fw-bold">Billed From:</div>
-                                    <div>{"Shubham Tripathi"}</div>
-                                    <div>{"Delhi, 122022"}</div>
-                                    <div>{"9090909090"}</div>
+                                    <div>{this.props.info.billFrom }</div>
+                                    <div>{this.props.info.billFromAddress}</div>
+                                    <div>{this.props.info.billFromContact}</div>
                                 </Col>
                                 <Col md={4}>
                                     <div className="fw-bold">Billed to:</div>

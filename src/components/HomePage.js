@@ -6,7 +6,6 @@ import Headers from './Headers';
 const HomePage = () => {
     return (
         <>
-            <Headers />
             <Container maxWidth="lg" style={{ marginTop: 20 }}>
                 <Typography variant="h2" gutterBottom>Welcome</Typography>
                 <Typography variant="body1" gutterBottom>Explore the latest accessories</Typography>

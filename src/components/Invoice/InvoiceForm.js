@@ -22,9 +22,9 @@ class InvoiceForm extends React.Component {
             billTo: '',
             billToContact: '',
             billToAddress: '',
-            billFrom: 'Shubham Tripathi',
-            billFromContact: '9090909090',
-            billFromAddress: 'Delhi, 122022',
+            billFrom: 'Shubham Electronics & Enterprises',
+            billFromContact: '7309173451',
+            billFromAddress: 'Kundi Bazar, Baragaon, Varanasi, 221204',
             notes: '',
             grandTotal: '0.00',
             subTotal: '0.00',
@@ -256,9 +256,9 @@ class InvoiceForm extends React.Component {
                             <Col>
                                 <Form.Label className="fw-bold">Bill From:</Form.Label>
                                 <Form.Control placeholder={"Who is this invoice from?"} rows={3}
-                                              value={"Shubham Tripathi"} type="text" name="billFrom" className="my-2" onChange={(event) => this.editField(event)} autoComplete="name" />
-                                <Form.Control placeholder={"Billing address"} value={"Delhi, 122022"} type="text" name="billFromAddress" className="my-2" autoComplete="address" onChange={(event) => this.editField(event)} />
-                                <Form.Control placeholder={"Contact Number"} value={"9090909090"} type="tel" max={10} name="billFromContact" className="my-2" onChange={(event) => this.editField(event)} autoComplete="contact" />
+                                              value={"Shubham Electronics & Enterprises"} type="text" name="billFrom" className="my-2" onChange={(event) => this.editField(event)} autoComplete="name" />
+                                <Form.Control placeholder={"Billing address"} value={"Kundi Bazar, Baragaon, Varanasi, 221204"} type="text" name="billFromAddress" className="my-2" autoComplete="address" onChange={(event) => this.editField(event)} />
+                                <Form.Control placeholder={"Contact Number"} value={"7309173451"} type="tel" max={10} name="billFromContact" className="my-2" onChange={(event) => this.editField(event)} autoComplete="contact" />
                             </Col>
                             <Col>
                                 <Form.Label className="fw-bold">Bill To:</Form.Label>

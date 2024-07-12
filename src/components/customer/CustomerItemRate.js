@@ -120,8 +120,7 @@ const CustomerItemRate = () => {
             ) : (
                 <div id='print'>
                     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                        <h3>Shubham </h3>
-                        <h5>Delhi </h5>
+                        <h3>Shubham Electronics & Enterprises</h3>
                         <h4>Item Rate List</h4>
                         <Button onClick={handleGeneratePDF} variant="contained" color="primary"
                                 style={{position: 'fixed', top: '100px', right: '10px'}}>
@@ -166,6 +165,7 @@ const CustomerItemRate = () => {
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
+            <hr />g
             <Footer />
         </div>
     );
