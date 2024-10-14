@@ -2,7 +2,6 @@ import React from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Container, Button } from '@mui/material';
 import { FaBars } from 'react-icons/fa';
 import FacebookIcon from "@mui/icons-material/Facebook";
-
 const Headers = ({ toggleMenu }) => {
     return (
         <AppBar position="sticky">
@@ -15,11 +14,11 @@ const Headers = ({ toggleMenu }) => {
                         Shubham Electronics & Enterprises
                     </Typography>
                     <nav>
-                        <Button color="inherit" href="/">Home</Button>
                         <Button color="inherit" href="/about">About</Button>
                         <Button color="inherit" href="/gallery">Gallery</Button>
                         <Button color="inherit" href="/services">Services</Button>
                         <Button color="inherit" href="/contact">Contact</Button>
+                        <Button color="inherit" href="/card-details">Card</Button>
                     </nav>
                     {/*<div>*/}
                     {/*    <IconButton color="black" href="#">*/}
