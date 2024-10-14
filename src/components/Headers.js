@@ -1,7 +1,6 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Container, Button } from '@mui/material';
 import { FaBars } from 'react-icons/fa';
-import FacebookIcon from "@mui/icons-material/Facebook";
 
 const Headers = ({ toggleMenu }) => {
     return (
