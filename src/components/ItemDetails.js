@@ -21,9 +21,7 @@ const ItemDetails = () => {
         invoice_number: ''
     });
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+    
 
     const fetchData = async () => {
         try {
