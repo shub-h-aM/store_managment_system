@@ -14,23 +14,8 @@ const Headers = ({ toggleMenu }) => {
                         Shubham Electronics & Enterprises
                     </Typography>
                     <nav>
-                        <Button color="inherit" href="/about">About</Button>
-                        <Button color="inherit" href="/gallery">Gallery</Button>
-                        <Button color="inherit" href="/services">Services</Button>
-                        <Button color="inherit" href="/contact">Contact</Button>
                         <Button color="inherit" href="/card-details">Card</Button>
                     </nav>
-                    {/*<div>*/}
-                    {/*    <IconButton color="black" href="#">*/}
-                    {/*        <FacebookIcon color="primary" fontSize="medium" />*/}
-                    {/*    </IconButton>*/}
-                    {/*    <IconButton color="red" href="https://www.instagram.com/shubham_electronic_/">*/}
-                    {/*        <i className="bi bi-instagram"></i>*/}
-                    {/*    </IconButton>*/}
-                    {/*    <IconButton color="inherit" href="#">*/}
-                    {/*        <i className="bi bi-linkedin"></i>*/}
-                    {/*    </IconButton>*/}
-                    {/*</div>*/}
                 </Container>
             </Toolbar>
         </AppBar>

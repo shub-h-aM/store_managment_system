@@ -19,7 +19,11 @@ import CustomerItemRate from "./components/customer/CustomerItemRate";
 import useInactivityTimeout from "./components/hook/useInactivityTimeout";
 import Blog from "./components/HomePage/Blog";
 import CardDetails from './components/card/CardDetails';
-import AdminPage from './components/card/AdminPage'; // Import AdminPage
+import AdminPage from './components/card/AdminPage';
+import About from './components/GeneralPage/About';
+import Services from './components/GeneralPage/Services';
+import Contact from './components/GeneralPage/Contact';
+import Footer from './components/Footer';
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -121,6 +125,9 @@ const App = () => {
                             <Route path="/create-item" element={<CreateItem />} />
                             <Route path="/get/item" element={<Item />} />
                             <Route path="/blog" element={<Blog />} />
+                            <Route path="/about" element={<About />} />
+                            <Route path="/services" element={<Services />} />
+                            <Route path="/contact" element={<Contact />} />
                             <Route path="/get/customer_rate/list" element={<CustomerItemRate />} />
                             <Route path="/card-details" element={<CardDetails animals={animals} onAdd={handleAddAnimal} />}/> {/* Pass props to CardDetails */}
                             <Route path="/admin" element={<AdminPage animals={animals} onAdd={handleAddAnimal} onUpdate={handleUpdateAnimal} onDelete={handleDeleteAnimal} />} /> {/* AdminPage Route */}

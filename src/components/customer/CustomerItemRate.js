@@ -165,7 +165,7 @@ const CustomerItemRate = () => {
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-            <hr />g
+            <hr />
             <Footer />
         </div>
     );

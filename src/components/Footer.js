@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Link, Typography } from '@mui/material';
+import { Box, Typography, Link } from '@mui/material';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import FacebookIcon from '@mui/icons-material/Facebook';
 
@@ -7,6 +7,10 @@ const Footer = () => {
     return (
         <Box
             sx={{
+                position: 'fixed',
+                bottom: 0,
+                left: 0,
+                right: 0,
                 backgroundColor: '#f0f0f0',
                 py: 2,
                 px: 4,
@@ -14,6 +18,17 @@ const Footer = () => {
             }}
         >
             <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1 }}>
+                <nav>
+                    <Link href="/about" sx={{ mx: 2 }}>
+                        About
+                    </Link>
+                    <Link href="/services" sx={{ mx: 2 }}>
+                        Services
+                    </Link>
+                    <Link href="/contact" sx={{ mx: 2 }}>
+                        Contact
+                    </Link>
+                </nav>
                 <Link href="https://www.instagram.com/shubham_electronic_/" target="_blank" rel="noopener noreferrer" sx={{ mr: 2 }}>
                     <InstagramIcon color="primary" fontSize="large" />
                 </Link>

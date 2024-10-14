@@ -14,7 +14,6 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from "axios";
 import {useState} from "react";
-import Footer from "./Footer";
 
 const defaultTheme = createTheme();
 
@@ -128,7 +127,6 @@ const LoginPage = ({ onLogin }) => {
                                         {"Don't have an account? Sign Up"}
                                     </Link>
                                 </Grid>
-                                <Footer />
                             </Grid>
                         </Box>
                     </Box>
