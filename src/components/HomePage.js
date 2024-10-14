@@ -1,7 +1,6 @@
 import React from 'react';
 import { Container, Typography, Grid, Card, CardContent, CardMedia } from '@mui/material';
 import Footer from './Footer';
-import Headers from './Headers';
 
 const HomePage = () => {
     return (
