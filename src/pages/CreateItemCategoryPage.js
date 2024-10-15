@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography } from '@mui/material';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
+import config from '../config';
 
 const CreateItemCategory = () => {
     const [categoryName, setCategoryName] = useState('');
@@ -11,7 +12,8 @@ const CreateItemCategory = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post('http://localhost:5000/api/create/item-category', {
+            const url = "${config.BASE_URL}";
+            const response = await axios.post(url+'/api/create/item-category', {
                 category_name: categoryName,
             });
 
