@@ -4,7 +4,7 @@ import { Link } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Avatar, Box, Button, Container, CssBaseline, Grid, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Footer from "./Footer";
+import Footer from "../components/Footer";
 
 const defaultTheme = createTheme();
 

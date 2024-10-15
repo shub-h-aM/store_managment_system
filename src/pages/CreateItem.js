@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import Footer from "./Footer";
+import Footer from "../components/Footer";
 
 function CreateItem() {
     const [itemCode, setItemCode] = useState('');

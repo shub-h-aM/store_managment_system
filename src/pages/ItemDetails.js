@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Typography, TextField, Button } from '@mui/material';
 import TablePagination from "@mui/material/TablePagination";
@@ -9,23 +9,18 @@ const ItemDetails = () => {
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(15);
-    const [indexOfFirstItem, setIndexOfFirstItem] = useState(0);
-    const [indexOfLastItem, setIndexOfLastItem] = useState(itemsPerPage);
 
-    // State variables for filters
+    // State for filters
     const [filters, setFilters] = useState({
         item: '',
         brand: '',
         month_name: '',
         supplier: '',
-        invoice_number: ''
+        invoice_number: '',
     });
 
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const fetchData = async () => {
+    // Fetch data with useCallback to avoid unnecessary re-renders
+    const fetchData = useCallback(async () => {
         try {
             setLoading(true);
             const response = await axios.get('http://localhost:5000/api/itemDetails', { params: filters });
@@ -36,29 +31,27 @@ const ItemDetails = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [filters]);
+
+    // Call fetchData on component mount and whenever filters change
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     const handleChangePage = (event, newPage) => {
         setCurrentPage(newPage);
-        const newIndexOfFirstItem = newPage * itemsPerPage;
-        const newIndexOfLastItem = newIndexOfFirstItem + itemsPerPage;
-        setIndexOfFirstItem(newIndexOfFirstItem);
-        setIndexOfLastItem(newIndexOfLastItem);
     };
 
     const handleChangeRowsPerPage = (event) => {
-        setItemsPerPage(+event.target.value);
+        const newItemsPerPage = parseInt(event.target.value, 10);
+        setItemsPerPage(newItemsPerPage);
         setCurrentPage(0);
-        setIndexOfFirstItem(0);
-        const newIndexOfLastItem = indexOfFirstItem + +event.target.value;
-        setIndexOfLastItem(newIndexOfLastItem);
     };
 
-    // Function to handle changes in filter values
     const handleFilterChange = (key, value) => {
         setFilters(prevFilters => ({
             ...prevFilters,
-            [key]: value
+            [key]: value,
         }));
     };
 
@@ -70,35 +63,73 @@ const ItemDetails = () => {
         (!filters.invoice_number || item.invoice_number?.toLowerCase().includes(filters.invoice_number.toLowerCase()))
     );
 
-    const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+    const currentItems = filteredItems.slice(
+        currentPage * itemsPerPage,
+        (currentPage + 1) * itemsPerPage
+    );
 
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="h3" gutterBottom> Item Details</Typography>
+                <Typography variant="h3" gutterBottom>Item Details</Typography>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <TextField label="Search" variant="outlined" size="small" value={searchTerm}
-                               onChange={(e) => setSearchTerm(e.target.value)}
-                               InputProps={{
-                                   endAdornment: (
-                                       <Button onClick={fetchData} disabled={loading} variant="contained" color="primary">
-                                           {loading ? 'Loading...' : 'Search'}
-                                       </Button>
-                                   ),
-                               }}
+                    <TextField
+                        label="Search"
+                        variant="outlined"
+                        size="small"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        InputProps={{
+                            endAdornment: (
+                                <Button
+                                    onClick={fetchData}
+                                    disabled={loading}
+                                    variant="contained"
+                                    color="primary"
+                                >
+                                    {loading ? 'Loading...' : 'Search'}
+                                </Button>
+                            ),
+                        }}
                     />
-                    <TextField label="Item" variant="outlined" size="small" value={filters.item}
-                               onChange={(e) => handleFilterChange('item', e.target.value)} />
-                    <TextField label="Brand" variant="outlined" size="small" value={filters.brand}
-                               onChange={(e) => handleFilterChange('brand', e.target.value)} />
-                    <TextField label="Month" variant="outlined" size="small" value={filters.month_name}
-                               onChange={(e) => handleFilterChange('month_name', e.target.value)} />
-                    <TextField label="Supplier" variant="outlined" size="small" value={filters.supplier}
-                               onChange={(e) => handleFilterChange('supplier', e.target.value)} />
-                    <TextField label="Invoice Number" variant="outlined" size="small" value={filters.invoice_number}
-                               onChange={(e) => handleFilterChange('invoice_number', e.target.value)} />
+                    <TextField
+                        label="Item"
+                        variant="outlined"
+                        size="small"
+                        value={filters.item}
+                        onChange={(e) => handleFilterChange('item', e.target.value)}
+                    />
+                    <TextField
+                        label="Brand"
+                        variant="outlined"
+                        size="small"
+                        value={filters.brand}
+                        onChange={(e) => handleFilterChange('brand', e.target.value)}
+                    />
+                    <TextField
+                        label="Month"
+                        variant="outlined"
+                        size="small"
+                        value={filters.month_name}
+                        onChange={(e) => handleFilterChange('month_name', e.target.value)}
+                    />
+                    <TextField
+                        label="Supplier"
+                        variant="outlined"
+                        size="small"
+                        value={filters.supplier}
+                        onChange={(e) => handleFilterChange('supplier', e.target.value)}
+                    />
+                    <TextField
+                        label="Invoice Number"
+                        variant="outlined"
+                        size="small"
+                        value={filters.invoice_number}
+                        onChange={(e) => handleFilterChange('invoice_number', e.target.value)}
+                    />
                 </div>
             </div>
+
             {loading ? (
                 <Typography>Loading...</Typography>
             ) : (
@@ -135,7 +166,12 @@ const ItemDetails = () => {
                                 <td>{data.item_category}</td>
                                 <td>{data.qty}</td>
                                 <td>{data.total_amount}</td>
-                                <td>{Math.round((data.total_amount / data.qty) + (((data.total_amount / data.qty) * data.total_gst) / 100))}</td>
+                                <td>
+                                    {Math.round(
+                                        (data.total_amount / data.qty) +
+                                        (((data.total_amount / data.qty) * data.total_gst) / 100)
+                                    )}
+                                </td>
                                 <td>{data.total_gst}</td>
                                 <td>{data.supplier}</td>
                                 <td>{data.location}</td>
@@ -145,6 +181,7 @@ const ItemDetails = () => {
                     </table>
                 </div>
             )}
+
             <TablePagination
                 rowsPerPageOptions={[15, 25, 100]}
                 component="div"

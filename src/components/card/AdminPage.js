@@ -171,11 +171,11 @@ const AdminPage = () => {
                         onClick={handleAddImage}
                         sx={{
                             marginTop: '10px',
-                            background: 'linear-gradient(to right, #ff7e5f, #feb47b)', // Replace with your desired gradient colors
+                            background: 'linear-gradient(to right, #ff7e5f, #feb47b)',
                             border: 'none',
-                            color: 'white', // Text color
+                            color: 'white',
                             '&:hover': {
-                                background: 'linear-gradient(to right, #feb47b, #ff7e5f)', // Optional: Change gradient on hover
+                                background: 'linear-gradient(to right, #feb47b, #ff7e5f)', 
                             },
                         }}
                     >

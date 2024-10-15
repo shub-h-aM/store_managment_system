@@ -65,7 +65,7 @@ app.post('/api/signup', (req, res) => {
 
 // Api endpoint for item page
 app.post('/api/items', (req, res) => {
-    const { itemCode, itemName, itemDescription, itemModel, brand, itemCategory, rate } = req.body; // Corrected variable names
+    const { itemCode, itemName, itemDescription, itemModel, brand, itemCategory, rate } = req.body;
     const sql = 'INSERT INTO items (item_code, item_name, item_description, item_model, brand, item_category, rate) VALUES (?, ?, ?, ?, ?, ?,?)';
     db.query(sql, [itemCode, itemName, itemDescription, itemModel, brand, itemCategory, rate], (err, result) => {
         if (err) {
@@ -79,7 +79,7 @@ app.post('/api/items', (req, res) => {
 
 // API Endpoint to retrieve form data
 
-app.get('/api/get/items', (req, res) => { // Changed endpoint to /api/items
+app.get('/api/get/items', (req, res) => {
     const sql = 'SELECT * FROM items';
     db.query(sql, (err, result) => {
         if (err) {
@@ -383,6 +383,36 @@ app.get('/api/customers', async (req, res) => {
         res.status(500).json({ error: 'Error retrieving customer data' });
     }
 });
+
+// api to get item and item rate in order
+
+app.get('/api/get/itemandrate', (req, res) => {
+    const sql = `
+        SELECT 
+            id AS itemId, 
+            id_item AS itemId, 
+            id_item_description AS itemDescriptionId, 
+            id_rate AS rateId,
+            item_description.product_name AS productName,
+            rate.price AS price
+        FROM 
+            items
+        JOIN 
+            ItemDescription AS item_description ON items.id_item_description = item_description.id
+        JOIN 
+            rate ON items.id_rate = rate.id
+    `;
+
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error('Error retrieving item data:', err);
+            return res.status(500).json({ error: 'Error retrieving item data' });
+        }
+        console.log('Item data retrieved successfully');
+        res.status(200).json(result);
+    });
+});
+
 
 
 

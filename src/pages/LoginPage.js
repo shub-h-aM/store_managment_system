@@ -24,7 +24,8 @@ const LoginPage = ({ onLogin }) => {
 
     const handleLogin = async (username, password) => {
         try {
-            const response = await axios.post('http://localhost:5000/api/login', {username, email: username, password});
+            const BaseUrl ="http://localhost:5000";
+            const response = await axios.post(BaseUrl +'/api/login', {username, email: username, password});
             if (response.status === 200) {
                 const { token, user } = response.data;
                 localStorage.setItem('token', token); // Store token in local storage

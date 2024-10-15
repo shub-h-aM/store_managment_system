@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaSearch } from 'react-icons/fa';
-import "../../index.css";
+import "../../styles/index.css";
 import TablePagination from "@mui/material/TablePagination";
 import { GenerateRateList } from "../helpers/GenerateRateList";
 import {Button} from "@mui/material";

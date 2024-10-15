@@ -143,7 +143,7 @@ class InvoiceForm extends React.Component {
         const items = this.state.items.slice();
         const newItems = items.map(function (items) {
             for (const key in items) {
-                if (key === item.name && items.id == item.id) {
+                if (key === item.name && items.id === item.id) {
                     items[key] = item.value;
                 }
             }

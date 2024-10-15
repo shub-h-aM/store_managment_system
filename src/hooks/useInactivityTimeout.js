@@ -1,14 +1,14 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 
 const useInactivityTimeout = (timeout = 5 * 60 * 1000, onTimeout) => {
     const timeoutRef = useRef(null);
 
-    const resetTimeout = () => {
+    const resetTimeout = useCallback(() => {
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
         }
         timeoutRef.current = setTimeout(onTimeout, timeout);
-    };
+    }, [timeout, onTimeout]);
 
     useEffect(() => {
         resetTimeout();
@@ -25,7 +25,7 @@ const useInactivityTimeout = (timeout = 5 * 60 * 1000, onTimeout) => {
             window.removeEventListener('mousemove', handleActivity);
             window.removeEventListener('keydown', handleActivity);
         };
-    }, [timeout, onTimeout]);
+    }, [resetTimeout]);
 
     return null;
 };

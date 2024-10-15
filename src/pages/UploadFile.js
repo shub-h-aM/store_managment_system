@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { FaUpload } from "react-icons/fa";
-import Footer from "./Footer";
+import Footer from "../components/Footer";
 
 const UploadFile = () => {
     const [file, setFile] = useState(null);

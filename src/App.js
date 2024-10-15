@@ -1,29 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import Headers from './components/Headers';  // Import Headers
+import Headers from './components/Headers';  
 import Sidebar from './Sidebar';
-import HomePage from './components/HomePage';
-import LoginPage from './components/LoginPage';
-import SignupPage from './components/SignupPage';
-import UserDetails from './components/UserDetails';
-import UploadFile from './components/UploadFile';
-import ItemDetails from './components/ItemDetails';
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
+import UserDetails from './pages/UserDetails';
+import UploadFile from './pages/UploadFile';
+import ItemDetails from './pages/ItemDetails';
 import InvoiceForm from "./components/Invoice/InvoiceForm";
 import CustomerOnboard from "./components/customer/CustomerOnboard";
 import CustomerDetails from "./components/customer/CustomerDetails";
-import LedgerPage from "./components/LedgerPage";
-import CreateItemDetails from "./components/CreateItemDetails";
-import CreateItem from "./components/CreateItem";
-import Item from "./components/Item";
+import LedgerPage from "./pages/LedgerPage";
+import CreateItemDetails from "./pages/CreateItemDetails";
+import CreateItem from "./pages/CreateItem";
+import Item from "./pages/Item";
 import CustomerItemRate from "./components/customer/CustomerItemRate";
-import useInactivityTimeout from "./components/hook/useInactivityTimeout";
+import useInactivityTimeout from "./hooks/useInactivityTimeout";
 import Blog from "./components/HomePage/Blog";
 import CardDetails from './components/card/CardDetails';
 import AdminPage from './components/card/AdminPage';
-import About from './components/GeneralPage/About';
-import Services from './components/GeneralPage/Services';
-import Contact from './components/GeneralPage/Contact';
-import Footer from './components/Footer';
+import About from './components/InformationPages/About';
+import Services from './components/InformationPages/Services';
+import Contact from './components/InformationPages/Contact';
+import OrderForm from './pages/OrderForm';
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -95,7 +95,7 @@ const App = () => {
     return (
         <Router>
             <div>
-                <Headers toggleMenu={toggleMenu} />  {/* Include Headers */}
+                <Headers toggleMenu={toggleMenu} />  
                 <Sidebar
                     isLoggedIn={isLoggedIn}
                     isMenuOpen={isMenuOpen}
@@ -113,7 +113,7 @@ const App = () => {
                         </>
                     ) : (
                         <>
-                            <Route path="/home" element={<HomePage/>}/>
+                            <Route path="/home" element={<HomePage />}/>
                             <Route path="/userDetails" element={<UserDetails />} />
                             <Route path="/upload/item/details" element={<UploadFile />} />
                             <Route path="/item/create-item" element={<CreateItemDetails />} />
@@ -129,8 +129,9 @@ const App = () => {
                             <Route path="/services" element={<Services />} />
                             <Route path="/contact" element={<Contact />} />
                             <Route path="/get/customer_rate/list" element={<CustomerItemRate />} />
-                            <Route path="/card-details" element={<CardDetails animals={animals} onAdd={handleAddAnimal} />}/> {/* Pass props to CardDetails */}
-                            <Route path="/admin" element={<AdminPage animals={animals} onAdd={handleAddAnimal} onUpdate={handleUpdateAnimal} onDelete={handleDeleteAnimal} />} /> {/* AdminPage Route */}
+                            <Route path="/get/order/form" element={<OrderForm />} />
+                            <Route path="/card-details" element={<CardDetails animals={animals} onAdd={handleAddAnimal} />}/>
+                            <Route path="/admin" element={<AdminPage animals={animals} onAdd={handleAddAnimal} onUpdate={handleUpdateAnimal} onDelete={handleDeleteAnimal} />} /> 
                             <Route path="*" element={<Navigate to="/home" />} />
                         </>
                     )}
