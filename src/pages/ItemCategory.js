@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Typography, Paper, Grid, CircularProgress, Card, CardContent, CardActions } from '@mui/material';
+import { Button, Typography, Paper, Grid, CircularProgress, Card, CardContent } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import CategoryIcon from '@mui/icons-material/Category';
