@@ -24,6 +24,8 @@ import About from './components/InformationPages/About';
 import Services from './components/InformationPages/Services';
 import Contact from './components/InformationPages/Contact';
 import OrderForm from './pages/OrderForm';
+import ItemCategory from './pages/ItemCategory';
+import CreateCategory from './pages/CreateItemCategoryPage';
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -130,6 +132,8 @@ const App = () => {
                             <Route path="/contact" element={<Contact />} />
                             <Route path="/get/customer_rate/list" element={<CustomerItemRate />} />
                             <Route path="/get/order/form" element={<OrderForm />} />
+                            <Route path="/ops/get-category" element={<ItemCategory />} />
+                            <Route path="/create-item-category" element={<CreateCategory />} />
                             <Route path="/card-details" element={<CardDetails animals={animals} onAdd={handleAddAnimal} />}/>
                             <Route path="/admin" element={<AdminPage animals={animals} onAdd={handleAddAnimal} onUpdate={handleUpdateAnimal} onDelete={handleDeleteAnimal} />} /> 
                             <Route path="*" element={<Navigate to="/home" />} />

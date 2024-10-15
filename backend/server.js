@@ -361,6 +361,7 @@ app.post('/api/customer', (req, res) => {
     });
 });
 
+
 // Endpoint to get customer data
 
 app.get('/api/customers', async (req, res) => {
@@ -384,36 +385,39 @@ app.get('/api/customers', async (req, res) => {
     }
 });
 
-// api to get item and item rate in order
+// API endpoint to create a new item category
 
-app.get('/api/get/itemandrate', (req, res) => {
-    const sql = `
-        SELECT 
-            id AS itemId, 
-            id_item AS itemId, 
-            id_item_description AS itemDescriptionId, 
-            id_rate AS rateId,
-            item_description.product_name AS productName,
-            rate.price AS price
-        FROM 
-            items
-        JOIN 
-            ItemDescription AS item_description ON items.id_item_description = item_description.id
-        JOIN 
-            rate ON items.id_rate = rate.id
-    `;
-
-    db.query(sql, (err, result) => {
+app.post('/api/create/item-category', (req, res) => {
+    const { category_name } = req.body;
+    const sql = `INSERT INTO ItemCategory (category_name) VALUES (?)`;
+    db.query(sql, [category_name], (err, result) => {
         if (err) {
-            console.error('Error retrieving item data:', err);
-            return res.status(500).json({ error: 'Error retrieving item data' });
+            console.error('Error inserting category data:', err);
+            res.status(500).json({ error: 'Error creating Category' });
+            return;
         }
-        console.log('Item data retrieved successfully');
-        res.status(200).json(result);
+        console.log('Item Category created successfully');
+        res.status(200).json({ message: 'Item categorry created successfully' });
     });
 });
+//get item category
 
-
+app.get('/api/get/item-categories', async (req, res) => {
+    try {
+        const query = 'SELECT * FROM ItemCategory'; // Use correct table name (ItemCategory)
+        db.query(query, (err, result) => {
+            if (err) {
+                console.error('Error retrieving item category data:', err);
+                return res.status(500).json({ error: 'Error retrieving Category data' });
+            }
+            console.log('Item Category data retrieved successfully');
+            res.status(200).json({ categories: result }); // Wrap result in an object
+        });
+    } catch (error) {
+        console.error('Error retrieving Category data:', error);
+        res.status(500).json({ error: 'Error retrieving Category data' });
+    }
+});
 
 
 // Close the database connection when the server shuts down

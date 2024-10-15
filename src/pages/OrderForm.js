@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { createOrder } from '../services/apiService';
 import {
-    Container, TextField, Button, Grid, Typography, Paper, IconButton
+    Container, TextField, Button, Grid, Typography, Paper, IconButton, Dialog, DialogTitle, DialogContent, DialogActions
 } from '@mui/material';
-import { Add, Delete } from '@mui/icons-material';
+import { Add, Delete, ShoppingCart } from '@mui/icons-material';
 import axios from 'axios';
+import Cart from '../components/Cart';
 
 const OrderForm = () => {
-    const [items, setItems] = useState([{ productName: '', quantity: 1, price: 0 }]);
+    const [items, setItems] = useState([{ productName: '', productType: '', quantity: 1, price: 0 }]);
     const [productList, setProductList] = useState([]);
+    const [cartItems, setCartItems] = useState([]);
+    const [cartOpen, setCartOpen] = useState(false); // State to manage cart dialog visibility
     const token = localStorage.getItem('token');
 
     useEffect(() => {
@@ -20,11 +23,12 @@ const OrderForm = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                // Extract only item_description and rate from the response
+
                 const formattedProductList = response.data.map(product => ({
-                    itemId: product.id, // Assuming you need itemId for further reference
-                    productName: product.item_description, // Use item_description for product name
-                    price: product.rate, // Use rate for price
+                    itemId: product.id,
+                    productName: product.item_description,
+                    productType: product.item_category,
+                    price: product.rate,
                 }));
                 setProductList(formattedProductList);
             } catch (error) {
@@ -35,9 +39,14 @@ const OrderForm = () => {
         fetchItems();
     }, [token]);
 
+    const handleAddToCart = () => {
+        setCartItems([...cartItems, ...items.filter(item => item.productName)]);
+        alert('All items added to cart successfully!');
+    };
+
     const handleSubmit = async () => {
         try {
-            await createOrder({ items, totalAmount: calculateTotal() }, token);
+            await createOrder({ items: cartItems, totalAmount: calculateTotal(cartItems) }, token);
             alert('Order placed successfully!');
         } catch (error) {
             console.error(error);
@@ -45,27 +54,76 @@ const OrderForm = () => {
         }
     };
 
-    const calculateTotal = () =>
-        items.reduce((sum, item) => sum + item.quantity * item.price, 0);
+    const calculateTotal = (itemList) =>
+        itemList.reduce((sum, item) => sum + item.quantity * item.price, 0);
 
     const handleAddItem = () => {
-        setItems([...items, { productName: '', quantity: 1, price: 0 }]);
+        setItems([...items, { productName: '', productType: '', quantity: 1, price: 0 }]);
     };
 
     const handleRemoveItem = (index) => {
         setItems(items.filter((_, idx) => idx !== index));
     };
 
+    const toggleCart = () => {
+        setCartOpen(!cartOpen);
+    };
+
+    const removeFromCart = (index) => {
+        setCartItems(cartItems.filter((_, idx) => idx !== index));
+    };
+
     return (
         <Container maxWidth="md" sx={{ mt: 5 }}>
-            <Typography variant="h4" gutterBottom>
-                Order Form
-            </Typography>
-
+            <Grid container spacing={2} sx={{ mt: 2 }}>
+                <Grid item xs={6}>
+                    <Typography variant="h4" gutterBottom>
+                        Order
+                    </Typography>
+                </Grid>
+                <Grid item xs={6} container justifyContent="flex-end" alignItems="center">
+                    <IconButton color="primary" onClick={toggleCart}>
+                        <ShoppingCart />
+                    </IconButton>
+                    <Typography variant="body1" display="inline" sx={{ ml: 1 }} onClick={toggleCart}>
+                        View Cart
+                    </Typography>
+                </Grid>
+            </Grid>
             <Paper elevation={3} sx={{ p: 3 }}>
                 <Grid container spacing={2}>
                     {items.map((item, index) => (
                         <Grid item xs={12} key={index} container spacing={2} alignItems="center">
+                            <Grid item xs={3}>
+                                <TextField
+                                    label="Product Type"
+                                    select
+                                    variant="outlined"
+                                    fullWidth
+                                    value={item.productType}
+                                    onChange={(e) =>
+                                        setItems(items.map((i, idx) =>
+                                            idx === index
+                                                ? { ...i, productType: e.target.value }
+                                                : i
+                                        ))
+                                    }
+                                    SelectProps={{
+                                        native: true,
+                                    }}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                >
+                                    <option value="">Select Product Type</option>
+                                    {[...new Set(productList.map(product => product.productType))].map((type, idx) => (
+                                        <option key={idx} value={type}>
+                                            {type}
+                                        </option>
+                                    ))}
+                                </TextField>
+                            </Grid>
+
                             <Grid item xs={4}>
                                 <TextField
                                     label="Product Name"
@@ -88,24 +146,26 @@ const OrderForm = () => {
                                         native: true,
                                     }}
                                     InputLabelProps={{
-                                        shrink: true, // Ensures the label is always in the shrunk position when focused or filled
+                                        shrink: true,
                                     }}
                                 >
-                                    <option value="">Select a product</option>
-                                    {productList.map((product) => (
-                                        <option key={product.itemId} value={product.productName}>
-                                            {product.productName}
-                                        </option>
-                                    ))}
+                                    <option value="">Select Product</option>
+                                    {productList
+                                        .filter(product => product.productType === item.productType)
+                                        .map((product) => (
+                                            <option key={product.itemId} value={product.productName}>
+                                                {product.productName}
+                                            </option>
+                                        ))}
                                 </TextField>
                             </Grid>
 
-
-                            <Grid item xs={3}>
+                            <Grid item xs={2}>
                                 <TextField
                                     label="Quantity"
                                     type="number"
                                     variant="outlined"
+                                    inputProps={{ min: 1 }}
                                     fullWidth
                                     value={item.quantity}
                                     onChange={(e) =>
@@ -118,27 +178,20 @@ const OrderForm = () => {
                                 />
                             </Grid>
 
-                            <Grid item xs={3}>
+                            <Grid item xs={2}>
                                 <TextField
                                     label="Rate"
                                     type="number"
                                     variant="outlined"
                                     fullWidth
                                     value={item.price}
-                                    onChange={(e) =>
-                                        setItems(items.map((i, idx) =>
-                                            idx === index
-                                                ? { ...i, price: parseFloat(e.target.value) }
-                                                : i
-                                        ))
-                                    }
                                     InputProps={{
                                         readOnly: true,
                                     }}
                                 />
                             </Grid>
 
-                            <Grid item xs={2}>
+                            <Grid item xs={1}>
                                 <IconButton
                                     color="error"
                                     onClick={() => handleRemoveItem(index)}
@@ -149,7 +202,7 @@ const OrderForm = () => {
                         </Grid>
                     ))}
 
-                    <Grid item xs={12}>
+                    <Grid item xs={4}>
                         <Button
                             variant="outlined"
                             startIcon={<Add />}
@@ -162,11 +215,22 @@ const OrderForm = () => {
 
                     <Grid item xs={12} sx={{ mt: 2 }}>
                         <Typography variant="h6">
-                            Total Amount: ₹{calculateTotal().toFixed(2)}
+                            Total Amount: ₹{calculateTotal(items).toFixed(2)}
                         </Typography>
                     </Grid>
 
-                    <Grid item xs={12} sx={{ mt: 2 }}>
+                    <Grid item xs={6} sx={{ mt: 2 }}>
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            onClick={handleAddToCart}
+                            fullWidth
+                        >
+                            Add to Cart
+                        </Button>
+                    </Grid>
+
+                    <Grid item xs={6} sx={{ mt: 2 }}>
                         <Button
                             variant="contained"
                             color="primary"
@@ -178,6 +242,21 @@ const OrderForm = () => {
                     </Grid>
                 </Grid>
             </Paper>
+            <Dialog open={cartOpen} onClose={toggleCart}>
+                <DialogTitle>Shopping Cart</DialogTitle>
+                <DialogContent>
+                    <Cart
+                        cartItems={cartItems}
+                        removeFromCart={removeFromCart}
+                        placeOrder={handleSubmit}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={toggleCart} color="primary">
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     );
 };
