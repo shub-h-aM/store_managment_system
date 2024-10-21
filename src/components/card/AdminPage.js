@@ -175,7 +175,7 @@ const AdminPage = () => {
                             border: 'none',
                             color: 'white',
                             '&:hover': {
-                                background: 'linear-gradient(to right, #feb47b, #ff7e5f)', 
+                                background: 'linear-gradient(to right, #feb47b, #ff7e5f)',
                             },
                         }}
                     >
@@ -244,7 +244,7 @@ const AdminPage = () => {
                             marginTop: '10px',
                             background: 'linear-gradient(to right, #7a3322, #d08b56)',
                             border: 'none',
-                            color: 'white', 
+                            color: 'white',
                             '&:hover': {
                                 background: 'linear-gradient(to right, #d08b56, #7a3322)',
                             },

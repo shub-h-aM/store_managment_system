@@ -1,9 +1,6 @@
-// src/components/CardItem.js
-
 import React from 'react';
 import { Card, CardContent, CardMedia, Typography, Grid } from '@mui/material';
 
-// CardItem Component for the Grid View
 const CardItem = ({ app }) => {
     return (
         <Grid item xs={12} sm={6} lg={4} xl={3}>

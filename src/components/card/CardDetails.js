@@ -2,24 +2,10 @@ import React from 'react';
 import { Container, Typography, Grid } from '@mui/material';
 import CardItem from './CardItem';
 import AdminPage from './AdminPage';
-
-// Main Component Rendering the List and Grid View
 class CardDetails extends React.Component {
     render() {
         return (
             <Container style={{ marginTop: '20px' }}>
-                {/*<Typography variant="h4" gutterBottom>*/}
-                {/*    Scrollable List*/}
-                {/*</Typography>*/}
-                {/*<Box*/}
-                {/*    display="flex"*/}
-                {/*    overflow="auto"*/}
-                {/*    style={{ whiteSpace: 'nowrap' }}*/}
-                {/*>*/}
-                {/*    {this.props.birds.map((app) => (*/}
-                {/*        <AppItem app={app} key={app.id} />*/}
-                {/*    ))}*/}
-                {/*</Box>*/}
 
                 <Typography variant="h4" gutterBottom style={{ marginTop: '20px' }}>
                     Grid View
