@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import Headers from './components/Header';  
+import Header from './components/Header'; 
 import Sidebar from './Sidebar';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
@@ -8,17 +8,16 @@ import SignupPage from './pages/SignupPage';
 import UserDetails from './pages/UserDetails';
 import UploadFile from './pages/UploadFile';
 import ItemDetails from './pages/ItemDetails';
-import InvoiceForm from "./components/Invoice/InvoiceForm";
-import CustomerOnboard from "./components/customer/CustomerOnboard";
-import CustomerDetails from "./components/customer/CustomerDetails";
-import LedgerPage from "./pages/LedgerPage";
-import CreateItemDetails from "./pages/CreateItemDetails";
-import CreateItem from "./pages/CreateItem";
-import Item from "./pages/Item";
-import CustomerItemRate from "./components/customer/CustomerItemRate";
-import useInactivityTimeout from "./hooks/useInactivityTimeout";
-import Blog from "./components/HomePage/Blog";
-import CardDetails from './components/card/CardDetails';
+import InvoiceForm from './components/Invoice/InvoiceForm';
+import CustomerOnboard from './components/customer/CustomerOnboard';
+import CustomerDetails from './components/customer/CustomerDetails';
+import LedgerPage from './pages/LedgerPage';
+import CreateItemDetails from './pages/CreateItemDetails';
+import CreateItem from './pages/CreateItem';
+import Item from './pages/Item';
+import CustomerItemRate from './components/customer/CustomerItemRate';
+import useInactivityTimeout from './hooks/useInactivityTimeout';
+import Blog from './components/HomePage/Blog';
 import AdminPage from './components/card/AdminPage';
 import About from './components/InformationPages/About';
 import Services from './components/InformationPages/Services';
@@ -26,13 +25,16 @@ import Contact from './components/InformationPages/Contact';
 import OrderForm from './pages/OrderForm';
 import ItemCategory from './pages/ItemCategory';
 import CreateCategory from './pages/CreateItemCategoryPage';
+import Cart from './components/Cart';
+import UserProduct from './components/card/UserPage';
+import Roles from './pages/RolesPage';
+import AccessManagementPage from './pages/AccessManagementPage';
+import Pages from './pages/UiPagesPage';
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [activeUser, setActiveUser] = useState(null);
-
-    // State for animals data
     const [animals, setAnimals] = useState([
         { id: 1, img: 'https://img.mobiscroll.com/demos/gridlayout/okapi.jpg', name: 'Okapi', about: 'Native to Congo.' },
         { id: 2, img: 'https://img.mobiscroll.com/demos/gridlayout/dragon.jpg', name: 'The Blue Dragon', about: 'Found in Indian Pacific Oceans.' },
@@ -97,7 +99,7 @@ const App = () => {
     return (
         <Router>
             <div>
-                <Headers toggleMenu={toggleMenu} />  
+                <Header toggleMenu={toggleMenu} />
                 <Sidebar
                     isLoggedIn={isLoggedIn}
                     isMenuOpen={isMenuOpen}
@@ -109,13 +111,13 @@ const App = () => {
                 <Routes>
                     {!isLoggedIn ? (
                         <>
-                            <Route path="/login" element={<LoginPage onLogin={handleLogin}/>}/>
-                            <Route path="/signup" element={<SignupPage/>}/>
-                            <Route path="/" element={<Navigate to="/login"/>}/>
+                            <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+                            <Route path="/signup" element={<SignupPage />} />
+                            <Route path="/" element={<Navigate to="/login" />} />
                         </>
                     ) : (
                         <>
-                            <Route path="/home" element={<HomePage />}/>
+                            <Route path="/home" element={<HomePage />} />
                             <Route path="/userDetails" element={<UserDetails />} />
                             <Route path="/upload/item/details" element={<UploadFile />} />
                             <Route path="/item/create-item" element={<CreateItemDetails />} />
@@ -134,8 +136,12 @@ const App = () => {
                             <Route path="/get/order/form" element={<OrderForm />} />
                             <Route path="/ops/get-category" element={<ItemCategory />} />
                             <Route path="/create-item-category" element={<CreateCategory />} />
-                            <Route path="/card-details" element={<CardDetails animals={animals} onAdd={handleAddAnimal} />}/>
-                            <Route path="/admin" element={<AdminPage animals={animals} onAdd={handleAddAnimal} onUpdate={handleUpdateAnimal} onDelete={handleDeleteAnimal} />} /> 
+                            <Route path="/ops/get/product" element={<UserProduct />} />
+                            <Route path="/ops/access/management" element={<AccessManagementPage />} />
+                            <Route path="/ops/roles/management" element={<Roles />} />
+                            <Route path="/ops/pages/management" element={<Pages />} />
+                            <Route path="/ops/admin/card" element={<AdminPage />} />
+                            <Route path="/cart" element={<Cart />} />
                             <Route path="*" element={<Navigate to="/home" />} />
                         </>
                     )}

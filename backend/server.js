@@ -418,6 +418,178 @@ app.get('/api/get/item-categories', async (req, res) => {
         res.status(500).json({ error: 'Error retrieving Category data' });
     }
 });
+// API Endpoint to Add an Image on admin page
+app.post('/api/ops/admin/images', (req, res) => {
+    const { name, about, mrp, image_url } = req.body;
+
+    console.log('Received Payload:', req.body);
+
+    const query = 'INSERT INTO admin_card_page (name, about, mrp, image_url) VALUES (?, ?, ?, ?)';
+    db.query(query, [name, about, mrp, image_url], (err, result) => {
+        if (err) {
+            console.error('Error inserting image:', err);  
+            return res.status(500).json({ error: 'Database error', details: err });
+        }
+        res.status(201).json({ id: result.insertId, name, about, mrp, image_url });
+    });
+});
+
+//API Endpoint to get the details of product with image added by admin
+app.get('/api/ops/get/product', (req, res) => {
+    const query = 'SELECT * FROM admin_card_page';
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error fetching items:', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.json(results);
+    });
+});
+
+// Get All Users, Roles, and Pages
+app.get('/api/access-management', (req, res) => {
+    const usersQuery = db.query('SELECT * FROM user');
+    const rolesQuery = db.query('SELECT * FROM roles');
+    const pagesQuery = db.query('SELECT * FROM pages');
+
+    Promise.all([usersQuery, rolesQuery, pagesQuery])
+        .then((results) => {
+            console.log('Query results:', results); // Log all results
+
+            const users = results[0][0]; // Get the user data
+            const roles = results[1][0]; // Get the roles data
+            const pages = results[2][0]; // Get the pages data
+
+            // Check if data is empty
+            if (!users || !roles || !pages) {
+                console.error('Data is empty');
+            }
+
+            // Return structured data
+            res.json({ users, roles, pages });
+        })
+        .catch((error) => {
+            console.error('Error fetching data:', error);
+            res.status(500).json({ error: 'Server Error', details: error.message });
+        });
+});
+
+
+
+
+//  Assign Role and Access to User
+app.post('/api/access-management/assign', async (req, res) => {
+    const { userId, pageId, roleId } = req.body;
+    try {
+        const query = 'INSERT INTO user_access (user_id, page_id, role_id) VALUES (?, ?, ?)';
+        await db.query(query, [userId, pageId, roleId]);
+        res.status(200).json({ message: 'Access assigned successfully' });
+    } catch (error) {
+        console.error('Error assigning access:', error);
+        res.status(500).json({ error: 'Server Error' });
+    }
+});
+
+//API Endpoints for Roles Management
+   //Get All Roles
+app.get('/api/ops/roles', (req, res) => {
+    const sql = 'SELECT * FROM roles';
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error('Error retrieving form data:', err);
+            res.status(500).json({ error: 'Error retrieving form data' });
+            alert("Failed to Get Roles Details!")
+            return;
+        }
+        console.log('Form data retrieved successfully');
+        res.status(200).json(result);
+    });
+});
+// Add a New Role
+app.post('/api/roles', async (req, res) => {
+    const { roleName } = req.body;
+    try {
+        await db.query('INSERT INTO roles (role_name) VALUES (?)', [roleName]);
+        res.status(201).json({ message: 'Role added successfully' });
+    } catch (error) {
+        console.error('Error adding role:', error);
+        res.status(500).json({ error: 'Server Error' });
+    }
+});
+//Edit a Role
+app.put('/api/roles/:id', async (req, res) => {
+    const { id } = req.params;
+    const { roleName } = req.body;
+    try {
+        await db.query('UPDATE roles SET role_name = ? WHERE id = ?', [roleName, id]);
+        res.status(200).json({ message: 'Role updated successfully' });
+    } catch (error) {
+        console.error('Error updating role:', error);
+        res.status(500).json({ error: 'Server Error' });
+    }
+});
+// Delete a Role
+app.delete('/api/roles/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await db.query('DELETE FROM roles WHERE id = ?', [id]);
+        res.status(200).json({ message: 'Role deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting role:', error);
+        res.status(500).json({ error: 'Server Error' });
+    }
+});
+
+//API Endpoints for Managing Pages
+//Get All Pages
+app.get('/api/get/pages', (req, res) => {
+    const sql = 'SELECT * FROM pages';
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error('Error retrieving form data:', err);
+            res.status(500).json({ error: 'Error retrieving form data' });
+            alert("Failed to Get Page Details!")
+            return;
+        }
+        console.log('Form data retrieved successfully');
+        res.status(200).json(result);
+    });
+});
+
+//Add a New Page
+app.post('/api/pages', async (req, res) => {
+    const { pageName, description } = req.body;
+    try {
+        await db.query('INSERT INTO pages (page_name, description) VALUES (?, ?)', [pageName, description]);
+        res.status(201).json({ message: 'Page added successfully' });
+    } catch (error) {
+        console.error('Error adding page:', error);
+        res.status(500).json({ error: 'Server Error' });
+    }
+});
+//Edit a Page
+app.put('/api/pages/:id', async (req, res) => {
+    const { id } = req.params;
+    const { pageName, description } = req.body;
+    try {
+        await db.query('UPDATE pages SET page_name = ?, description = ? WHERE id = ?', [pageName, description, id]);
+        res.status(200).json({ message: 'Page updated successfully' });
+    } catch (error) {
+        console.error('Error updating page:', error);
+        res.status(500).json({ error: 'Server Error' });
+    }
+});
+//Delete a Page
+app.delete('/api/pages/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await db.query('DELETE FROM pages WHERE id = ?', [id]);
+        res.status(200).json({ message: 'Page deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting page:', error);
+        res.status(500).json({ error: 'Server Error' });
+    }
+});
 
 
 // Close the database connection when the server shuts down
@@ -431,6 +603,8 @@ process.on('SIGINT', () => {
         process.exit(0);
     });
 });
+
+
 
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);

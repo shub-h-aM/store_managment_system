@@ -1,22 +1,11 @@
 import React, { useState } from 'react';
 import Tooltip from '@mui/material/Tooltip';
-import {
-    Card,
-    CardContent,
-    CardMedia,
-    Typography,
-    Button,
-    TextField,
-    Grid,
-    IconButton,
-    Menu,
-    MenuItem,
-    Fab,
-    Container,
-    Box,
-} from '@mui/material';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { Fab, Container, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import ImageForm from './ImageForm';
+import ImageGrid from './ImageGrid';
+import ImageCard from './UserImageCard';
+import axios from 'axios';
 
 const AdminPage = () => {
     const [items, setItems] = useState([]);
@@ -47,17 +36,38 @@ const AdminPage = () => {
         setEditMode(false);
     };
 
-    const handleAddImage = () => {
+    // const handleAddImage = () => {
+    //     const newItem = {
+    //         id: items.length + 1,
+    //         img: currentItem.img,
+    //         name: currentItem.name,
+    //         about: currentItem.about,
+    //         mrp: currentItem.mrp
+    //     };
+    //     setItems([...items, newItem]);
+    //     resetForm();
+    //     setShowAddItem(false);
+    // };
+
+    const handleAddImage = async () => {
         const newItem = {
-            id: items.length + 1,
-            img: currentItem.img,
             name: currentItem.name,
             about: currentItem.about,
-            mrp: currentItem.mrp
+            mrp: parseFloat(currentItem.mrp),
+            image_url: currentItem.img.startsWith('data:image')
+                ? 'img/about.jpg'
+                : currentItem.img,
         };
-        setItems([...items, newItem]);
-        resetForm();
-        setShowAddItem(false);
+
+        try {
+            const response = await axios.post('http://localhost:5000/api/ops/admin/images', newItem);
+            const addedItem = response.data;
+            setItems([...items, addedItem]);
+            resetForm();
+            setShowAddItem(false);
+        } catch (error) {
+            console.error('Error adding image:', error);
+        }
     };
 
     const handleOpenMenu = (event, id) => {
@@ -70,39 +80,21 @@ const AdminPage = () => {
         setActiveItemId(null);
     };
 
-    const activeItem = items.find(item => item.id === activeItemId);
-
     return (
         <Container maxWidth={false} style={{ padding: 0 }}>
             <Typography variant="h4" gutterBottom style={{ marginTop: '15px' }}>
                 Admin Page
             </Typography>
 
-            <Grid container spacing={3}>
-                {items.map(item => (
-                    <Grid item xs={12} sm={6} lg={3} key={item.id}>
-                        <Card>
-                            <CardMedia component="img" image={item.img} alt={item.name} height="150" />
-                            <CardContent>
-                                <Typography variant="h6">{item.name}</Typography>
-                                <Typography variant="body2" color="textSecondary">{item.about}</Typography>
-                                <Typography variant="h6" color="primary">₹ {item.mrp}</Typography>
-                                <IconButton onClick={(e) => handleOpenMenu(e, item.id)}>
-                                    <MoreVertIcon />
-                                </IconButton>
-                                <Menu
-                                    anchorEl={anchorEl}
-                                    open={Boolean(anchorEl) && activeItemId === item.id}
-                                    onClose={handleCloseMenu}
-                                >
-                                    <MenuItem onClick={() => handleEdit(item)}>Edit</MenuItem>
-                                    <MenuItem onClick={() => handleDelete(item.id)}>Delete</MenuItem>
-                                </Menu>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                ))}
-            </Grid>
+            <ImageGrid
+                items={items}
+                onOpenMenu={handleOpenMenu}
+                anchorEl={anchorEl}
+                activeItemId={activeItemId}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+            />
+
             <Tooltip title="Add New Details" arrow>
                 <Fab
                     color="primary"
@@ -113,146 +105,22 @@ const AdminPage = () => {
                 </Fab>
             </Tooltip>
 
-            {showAddItem && ( // Conditional rendering for the add item form
-                <Box style={{ marginTop: '20px', padding: '20px', backgroundColor: '#f5f5f5' }}>
-                    <Typography variant="h5">Add New Item</Typography>
-                    <TextField
-                        label="Image URL or Upload"
-                        value={currentItem.img}
-                        onChange={(e) => setCurrentItem({ ...currentItem, img: e.target.value })}
-                        fullWidth
-                        margin="normal"
-                    />
-                    <input
-                        accept="image/*"
-                        style={{ display: 'none' }}
-                        id="upload-button"
-                        type="file"
-                        onChange={(e) => {
-                            const file = e.target.files[0];
-                            if (file) {
-                                const reader = new FileReader();
-                                reader.onloadend = () => {
-                                    setCurrentItem({ ...currentItem, img: reader.result });
-                                };
-                                reader.readAsDataURL(file);
-                            }
-                        }}
-                    />
-                    <label htmlFor="upload-button">
-                        <Button variant="contained" component="span" style={{ margin: '10px 0' }}>
-                            Upload Image
-                        </Button>
-                    </label>
-                    <TextField
-                        label="Name"
-                        value={currentItem.name}
-                        onChange={(e) => setCurrentItem({ ...currentItem, name: e.target.value })}
-                        fullWidth
-                        margin="normal"
-                    />
-                    <TextField
-                        label="About"
-                        value={currentItem.about}
-                        onChange={(e) => setCurrentItem({ ...currentItem, about: e.target.value })}
-                        fullWidth
-                        margin="normal"
-                    />
-                    <TextField
-                        label="MRP (₹)"
-                        type="number"
-                        inputProps={{ min: 0 }}
-                        value={currentItem.mrp}
-                        onChange={(e) => setCurrentItem({ ...currentItem, mrp: e.target.value })}
-                        fullWidth
-                        margin="normal"
-                    />
-                    <Button
-                        onClick={handleAddImage}
-                        sx={{
-                            marginTop: '10px',
-                            background: 'linear-gradient(to right, #ff7e5f, #feb47b)',
-                            border: 'none',
-                            color: 'white',
-                            '&:hover': {
-                                background: 'linear-gradient(to right, #feb47b, #ff7e5f)',
-                            },
-                        }}
-                    >
-                        Add Image
-                    </Button>
-                </Box>
+            {showAddItem && (
+                <ImageForm
+                    currentItem={currentItem}
+                    setCurrentItem={setCurrentItem}
+                    handleSubmit={handleAddImage}
+                    isEditing={false}
+                />
             )}
 
             {editMode && (
-                <Box style={{ marginTop: '20px', padding: '20px', backgroundColor: '#f5f5f5' }}>
-                    <Typography variant="h5">Edit Item</Typography>
-                    <TextField
-                        label="Image URL or Upload"
-                        value={currentItem.img}
-                        onChange={(e) => setCurrentItem({ ...currentItem, img: e.target.value })}
-                        fullWidth
-                        margin="normal"
-                    />
-                    <input
-                        accept="image/*"
-                        style={{ display: 'none' }}
-                        id="edit-upload-button"
-                        type="file"
-                        onChange={(e) => {
-                            const file = e.target.files[0];
-                            if (file) {
-                                const reader = new FileReader();
-                                reader.onloadend = () => {
-                                    setCurrentItem({ ...currentItem, img: reader.result });
-                                };
-                                reader.readAsDataURL(file);
-                            }
-                        }}
-                    />
-                    <label htmlFor="edit-upload-button">
-                        <Button variant="contained" component="span" style={{ margin: '10px 0' }}>
-                            Upload Image
-                        </Button>
-                    </label>
-                    <TextField
-                        label="Name"
-                        value={currentItem.name}
-                        onChange={(e) => setCurrentItem({ ...currentItem, name: e.target.value })}
-                        fullWidth
-                        margin="normal"
-                    />
-                    <TextField
-                        label="About"
-                        value={currentItem.about}
-                        onChange={(e) => setCurrentItem({ ...currentItem, about: e.target.value })}
-                        fullWidth
-                        margin="normal"
-                    />
-                    <TextField
-                        label="MRP (₹)"
-                        type="number"
-                        inputProps={{ min: 0 }}
-                        value={currentItem.mrp}
-                        onChange={(e) => setCurrentItem({ ...currentItem, mrp: e.target.value })}
-                        fullWidth
-                        margin="normal"
-                    />
-                    <Button
-                        onClick={handleUpdate}
-                        sx={{
-                            marginTop: '10px',
-                            background: 'linear-gradient(to right, #7a3322, #d08b56)',
-                            border: 'none',
-                            color: 'white',
-                            '&:hover': {
-                                background: 'linear-gradient(to right, #d08b56, #7a3322)',
-                            },
-                        }}
-                    >
-                        Update
-                    </Button>
-                </Box>
+                <ImageForm
+                    currentItem={currentItem}
+                    setCurrentItem={setCurrentItem}
+                    handleSubmit={handleUpdate}
+                    isEditing={true}
+                />
             )}
         </Container>
     );

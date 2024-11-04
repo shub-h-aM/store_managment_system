@@ -4,6 +4,9 @@ import {
     Container, Button, Box
 } from '@mui/material';
 import { FaBars } from 'react-icons/fa';
+import '../components/card/ImageCard'
+import '../pages/RolesPage';
+import '../pages/AccessManagementPage';
 
 const Header = ({ toggleMenu }) => {
     return (
@@ -48,7 +51,7 @@ const Header = ({ toggleMenu }) => {
                     <Box component="nav" sx={{ display: 'flex', gap: 2 }}>
                         <Button
                             color="inherit"
-                            href="/card-details"
+                            href="/ops/admin/card"
                             sx={{
                                 fontWeight: 'bold',
                                 '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.2)' }
@@ -65,6 +68,46 @@ const Header = ({ toggleMenu }) => {
                             }}
                         >
                             Order
+                        </Button>
+                        <Button
+                            color="inherit"
+                            href="/ops/get/product"
+                            sx={{
+                                fontWeight: 'bold',
+                                '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.2)' }
+                            }}
+                        >
+                            Product
+                        </Button>
+                        <Button
+                            color="inherit"
+                            href="/ops/access/management"
+                            sx={{
+                                fontWeight: 'bold',
+                                '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.2)' }
+                            }}
+                        >
+                            Access
+                        </Button>
+                        <Button
+                            color="inherit"
+                            href="/ops/roles/management"
+                            sx={{
+                                fontWeight: 'bold',
+                                '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.2)' }
+                            }}
+                        >
+                            User Role
+                        </Button>
+                        <Button
+                            color="inherit"
+                            href="/ops/pages/management"
+                            sx={{
+                                fontWeight: 'bold',
+                                '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.2)' }
+                            }}
+                        >
+                            Page
                         </Button>
                     </Box>
                 </Container>
