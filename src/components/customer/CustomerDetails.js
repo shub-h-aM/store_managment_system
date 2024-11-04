@@ -4,13 +4,15 @@ import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 import { Typography, TextField, InputAdornment, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 import Pagination from '@mui/material/Pagination';
+import Footer from "../Footer";
 
 function CustomerDetails() {
     const [customers, setCustomers] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredCustomers, setFilteredCustomers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(9);
+    // const [itemsPerPage, setItemsPerPage] = useState(9);
+    const [itemsPerPage] = useState(9);
 
     useEffect(() => {
         // Fetch customer details from the API
@@ -99,6 +101,7 @@ function CustomerDetails() {
                     color="primary"
                 />
             </div>
+            <Footer />
         </div>
     );
 }

@@ -1,26 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import MenuPage from './MenuPage';
-import HomePage from './components/HomePage';
-import LoginPage from './components/LoginPage';
-import SignupPage from './components/SignupPage';
-import UserDetails from './components/UserDetails';
-import UploadFile from './components/UploadFile';
-import ItemDetails from './components/ItemDetails';
-import PieChartWithCustomizedLabel from "./components/PieChart";
-import InvoiceForm from "./components/Invoice/InvoiceForm";
-import CustomerOnboard from "./components/customer/CustomerOnboard";
-import CustomerDetails from "./components/customer/CustomerDetails";
-import LedgerPage from "./components/LedgerPage";
-import CreateItemDetails from "./components/CreateItemDetails";
-import CreateItem from "./components/CreateItem";
-import Item from "./components/Item";
-import CustomerItemRate from "./components/customer/CustomerItemRate";
+import Header from './components/Header'; 
+import Sidebar from './Sidebar';
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
+import UserDetails from './pages/UserDetails';
+import UploadFile from './pages/UploadFile';
+import ItemDetails from './pages/ItemDetails';
+import InvoiceForm from './components/Invoice/InvoiceForm';
+import CustomerOnboard from './components/customer/CustomerOnboard';
+import CustomerDetails from './components/customer/CustomerDetails';
+import LedgerPage from './pages/LedgerPage';
+import CreateItemDetails from './pages/CreateItemDetails';
+import CreateItem from './pages/CreateItem';
+import Item from './pages/Item';
+import CustomerItemRate from './components/customer/CustomerItemRate';
+import useInactivityTimeout from './hooks/useInactivityTimeout';
+import Blog from './components/HomePage/Blog';
+import AdminPage from './components/card/AdminPage';
+import About from './components/InformationPages/About';
+import Services from './components/InformationPages/Services';
+import Contact from './components/InformationPages/Contact';
+import OrderForm from './pages/OrderForm';
+import ItemCategory from './pages/ItemCategory';
+import CreateCategory from './pages/CreateItemCategoryPage';
+import Cart from './components/Cart';
+import UserProduct from './components/card/UserPage';
+import Roles from './pages/RolesPage';
+import AccessManagementPage from './pages/AccessManagementPage';
+import Pages from './pages/UiPagesPage';
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [activeUser, setActiveUser] = useState(null);
+
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -30,7 +45,6 @@ const App = () => {
         setIsLoggedIn(true);
         setActiveUser(user);
         localStorage.setItem('isLoggedIn', true);
-        // Close the menu after successful login
         setIsMenuOpen(false);
     };
 
@@ -38,50 +52,30 @@ const App = () => {
         setIsLoggedIn(false);
         setActiveUser(null);
         localStorage.removeItem('isLoggedIn');
+        window.location.href = '/login';
     };
 
     useEffect(() => {
-        let timeout;
-        const logout = () => {
-            localStorage.removeItem('token');
-            // Perform any other logout actions
-            console.log('User logged out due to inactivity');
-            window.alert('You will be logged out due to inactivity.');
-            handleLogout(); // Logout the user
-        };
-
-        const resetTimeout = () => {
-            clearTimeout(timeout);
-            timeout = setTimeout(logout, 15 * 60 * 1000);
-        };
-
-        resetTimeout();
-
-        // Event listeners to reset timeout on user activity
-        window.addEventListener('mousemove', resetTimeout);
-        window.addEventListener('keydown', resetTimeout);
-
-        // Check for login state in local storage and set initial state
         const isLoggedInStored = localStorage.getItem('isLoggedIn');
         if (isLoggedInStored) {
             setIsLoggedIn(true);
         }
-
-        return () => {
-            window.removeEventListener('mousemove', resetTimeout);
-            window.removeEventListener('keydown', resetTimeout);
-        };
     }, []);
 
+    useInactivityTimeout(5 * 60 * 1000, () => {
+        alert('You will be logged out due to inactivity.');
+        handleLogout();
+    });
+
     useEffect(() => {
-        // Store current URL in local storage before refreshing
         localStorage.setItem('currentUrl', window.location.pathname);
     }, []);
 
     return (
         <Router>
             <div>
-                <MenuPage
+                <Header toggleMenu={toggleMenu} />
+                <Sidebar
                     isLoggedIn={isLoggedIn}
                     isMenuOpen={isMenuOpen}
                     activeUser={activeUser}
@@ -92,17 +86,16 @@ const App = () => {
                 <Routes>
                     {!isLoggedIn ? (
                         <>
-                            <Route path="/login" element={<LoginPage onLogin={handleLogin}/>}/>
-                            <Route path="/signup" element={<SignupPage/>}/>
-                            <Route path="/" element={<Navigate to="/login"/>}/>
+                            <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+                            <Route path="/signup" element={<SignupPage />} />
+                            <Route path="/" element={<Navigate to="/login" />} />
                         </>
                     ) : (
                         <>
-                            <Route path="/" element={<HomePage/>}/>
-                            <Route path="/pie-chart" element={<PieChartWithCustomizedLabel />} />
+                            <Route path="/home" element={<HomePage />} />
                             <Route path="/userDetails" element={<UserDetails />} />
                             <Route path="/upload/item/details" element={<UploadFile />} />
-                            <Route path="/item/inventory" element={<CreateItemDetails />} />
+                            <Route path="/item/create-item" element={<CreateItemDetails />} />
                             <Route path="/item-details" element={<ItemDetails />} />
                             <Route path="/invoice" element={<InvoiceForm />} />
                             <Route path="/customer" element={<CustomerDetails />} />
@@ -110,12 +103,24 @@ const App = () => {
                             <Route path="/ledger-transaction" element={<LedgerPage />} />
                             <Route path="/create-item" element={<CreateItem />} />
                             <Route path="/get/item" element={<Item />} />
+                            <Route path="/blog" element={<Blog />} />
+                            <Route path="/about" element={<About />} />
+                            <Route path="/services" element={<Services />} />
+                            <Route path="/contact" element={<Contact />} />
                             <Route path="/get/customer_rate/list" element={<CustomerItemRate />} />
-                            <Route path="*" element={<Navigate to="/" />} />
+                            <Route path="/get/order/form" element={<OrderForm />} />
+                            <Route path="/ops/get-category" element={<ItemCategory />} />
+                            <Route path="/create-item-category" element={<CreateCategory />} />
+                            <Route path="/ops/get/product" element={<UserProduct />} />
+                            <Route path="/ops/access/management" element={<AccessManagementPage />} />
+                            <Route path="/ops/roles/management" element={<Roles />} />
+                            <Route path="/ops/pages/management" element={<Pages />} />
+                            <Route path="/ops/admin/card" element={<AdminPage />} />
+                            <Route path="/cart" element={<Cart />} />
+                            <Route path="*" element={<Navigate to="/home" />} />
                         </>
                     )}
                 </Routes>
-
             </div>
         </Router>
     );

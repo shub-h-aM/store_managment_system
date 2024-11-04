@@ -74,8 +74,12 @@ you will require to download
 
 1. material ui
 2. Bootstrap
+3. markdown-to-jsx
+
 
 material ui common link{
 
 1. npm install @mui/material @emotion/react @emotion/styled
+2. npm install markdown-to-jsx
+3. 
 }
