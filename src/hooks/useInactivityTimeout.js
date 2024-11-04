@@ -8,10 +8,10 @@ const useInactivityTimeout = (timeout = 5 * 60 * 1000, onTimeout) => {
             clearTimeout(timeoutRef.current);
         }
         timeoutRef.current = setTimeout(onTimeout, timeout);
-    }, [timeout, onTimeout]);
+    }, [timeout, onTimeout]); // Dependencies for useCallback
 
     useEffect(() => {
-        resetTimeout();
+        resetTimeout(); // Call the memoized function
 
         const handleActivity = () => {
             resetTimeout();
@@ -25,7 +25,7 @@ const useInactivityTimeout = (timeout = 5 * 60 * 1000, onTimeout) => {
             window.removeEventListener('mousemove', handleActivity);
             window.removeEventListener('keydown', handleActivity);
         };
-    }, [resetTimeout]);
+    }, [resetTimeout]); // Add resetTimeout to the dependency array
 
     return null;
 };

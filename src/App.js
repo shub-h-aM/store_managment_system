@@ -35,12 +35,7 @@ const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [activeUser, setActiveUser] = useState(null);
-    const [animals, setAnimals] = useState([
-        { id: 1, img: 'https://img.mobiscroll.com/demos/gridlayout/okapi.jpg', name: 'Okapi', about: 'Native to Congo.' },
-        { id: 2, img: 'https://img.mobiscroll.com/demos/gridlayout/dragon.jpg', name: 'The Blue Dragon', about: 'Found in Indian Pacific Oceans.' },
-        { id: 3, img: 'https://img.mobiscroll.com/demos/gridlayout/wolf.jpg', name: 'The Maned Wolf', about: 'Often found in Brazil.' },
-        { id: 4, img: 'https://img.mobiscroll.com/demos/gridlayout/fossa.jpg', name: 'Fossa', about: 'A carnivorous animal in Madagascar.' },
-    ]);
+
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -58,26 +53,6 @@ const App = () => {
         setActiveUser(null);
         localStorage.removeItem('isLoggedIn');
         window.location.href = '/login';
-    };
-
-    const handleAddAnimal = (newAnimal) => {
-        const animalWithId = {
-            ...newAnimal,
-            id: animals.length ? Math.max(...animals.map(a => a.id)) + 1 : 1 // Generate a new ID
-        };
-        setAnimals((prevAnimals) => [...prevAnimals, animalWithId]);
-    };
-
-    const handleUpdateAnimal = (updatedAnimal) => {
-        setAnimals((prevAnimals) =>
-            prevAnimals.map(animal =>
-                animal.id === updatedAnimal.id ? updatedAnimal : animal
-            )
-        );
-    };
-
-    const handleDeleteAnimal = (id) => {
-        setAnimals((prevAnimals) => prevAnimals.filter(animal => animal.id !== id));
     };
 
     useEffect(() => {
