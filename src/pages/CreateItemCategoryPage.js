@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TextField, Button, Typography } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import config from '../config';
+//import config from '../config';
 
 const CreateItemCategory = () => {
     const [categoryName, setCategoryName] = useState('');
