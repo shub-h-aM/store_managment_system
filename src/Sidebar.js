@@ -123,6 +123,12 @@ const Sidebar = ({ isLoggedIn, isMenuOpen, activeUser, handleLogin, handleLogout
                                 </ListItemIcon>
                                 <ListItemText primary="Blog" />
                             </ListItem>
+                            <ListItem button component={Link} to="/get/order/form" onClick={toggleMenu}>
+                                <ListItemIcon>
+                                    <MdListAlt />
+                                </ListItemIcon>
+                                <ListItemText primary="Order" />
+                            </ListItem>
                         </>
                     )}
                 </List>
