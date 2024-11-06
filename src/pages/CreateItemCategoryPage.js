@@ -12,8 +12,7 @@ const CreateItemCategory = () => {
         e.preventDefault();
 
         try {
-            const url = "${config.BASE_URL}";
-            const response = await axios.post(url+'/api/create/item-category', {
+            const response = await axios.post('http://localhost:5000/api/create/item-category', {
                 category_name: categoryName,
             });
 
