@@ -4,7 +4,7 @@ import { Fab, Container, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import ImageForm from './ImageForm';
 import ImageGrid from './ImageGrid';
-import ImageCard from './UserImageCard';
+//import ImageCard from './UserImageCard';
 import axios from 'axios';
 
 const AdminPage = () => {
