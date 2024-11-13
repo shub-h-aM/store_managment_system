@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: backend-service
+    env: node
+    buildCommand: cd backend && npm install  # Navigate to the backend directory and install dependencies
+    startCommand: cd backend && node index.js 
