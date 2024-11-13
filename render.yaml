@@ -1,0 +1,19 @@
+# render.yaml
+services:
+  - type: web
+    name: react-app
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    plan: free
+    branches: ["develop"]  # Updated to deploy from the 'develop' branch
+    repo: https://github.com/your-username/your-repo # Replace with your actual repo URL
+
+staticSites:
+  - name: react-app-static
+    env: static
+    buildCommand: npm install && npm run build
+    publishDirectory: build
+    branches: ["develop"]  # Updated to deploy from the 'develop' branch
+    repo: https://github.com/your-username/your-repo # Replace with your actual repo URL
+    plan: free
