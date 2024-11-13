@@ -35,6 +35,8 @@ const upload = multer({ storage: storage });
 //     password: 'Shubham@21',
 //     database: 'store'
 // });
+
+
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
