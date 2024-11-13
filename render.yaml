@@ -1,8 +1,6 @@
-# render.yaml
 services:
   - type: web
-    name: react-app
+    name: backend-service
     env: node
-    buildCommand: npm install && npm run build
-    startCommand: npm run start
-    plan: free
+    buildCommand: cd backend && npm install  # Navigate to the backend directory and install dependencies
+    startCommand: cd backend && node index.js 
