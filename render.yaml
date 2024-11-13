@@ -6,10 +6,3 @@ services:
     buildCommand: npm install && npm run build
     startCommand: npm run start
     plan: free
-
-staticSites:
-  - name: react-app-static
-    env: static
-    buildCommand: npm install && npm run build
-    publishDirectory: build
-    plan: free
