@@ -85,8 +85,13 @@ class ItemRow extends React.Component {
                         type="text"
                         name="brand"
                         id={item.id}
-                        value={item.brand}
+                        value={item.brand || ''}
                         onChange={onItemizedItemEdit}
+                        style={{
+                            padding: '2px 6px', // Reduce padding for smaller height
+                            fontSize: '18px',   // Adjust font size for a compact look
+                            height: '39px',     // Explicitly set height
+                        }}
                     />
                 </td>
                 <td style={{minWidth: '70px'}}>

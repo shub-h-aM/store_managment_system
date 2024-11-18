@@ -123,7 +123,6 @@ const CreateInventory = () => {
             <div style={{textAlign: 'center'}}>
                 <Button variant="contained" color="primary" onClick={handleSubmit}>Submit</Button>
             </div>
-            {/*<Footer />*/}
         </div>
     );
 };

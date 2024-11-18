@@ -23,7 +23,7 @@ const ItemInventory = () => {
     const fetchData = useCallback(async () => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:5000/api/itemDetails', { params: filters });
+            const response = await axios.get('http://localhost:5000/api/get/item-inventory', { params: filters });
             setFormData(response.data);
         } catch (error) {
             console.error('Error fetching item data:', error);

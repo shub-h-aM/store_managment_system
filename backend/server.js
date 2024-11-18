@@ -149,7 +149,7 @@ app.get('/api/generate-excel', async (req, res) => {
 app.post('/api/item/details', (req, res) => {
     const { date_of_purchase,month_name, item,item_description, item_type,invoice_number, brand, item_category, qty, total_amount, total_gst, supplier, location } = req.body;
     const sql =
-        'INSERT INTO item_details (date_of_purchase,month_name, item, item_description, item_type,invoice_number, brand, item_category, qty, total_amount, total_gst, supplier, location) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?)';
+        'INSERT INTO item_inventory (date_of_purchase,month_name, item, item_description, item_type,invoice_number, brand, item_category, qty, total_amount, total_gst, supplier, location) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?)';
     db.query(sql, [date_of_purchase,month_name, item, item_description, item_type,invoice_number, brand, item_category, qty, total_amount, total_gst,supplier, location], (err, result) => {
         if (err) {
             console.error('Error inserting form data:', err);
@@ -227,7 +227,7 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
         console.log('Data Rows:', dataRows);
 
         // Insert rows into MySQL database
-        const query = 'INSERT INTO item_details (date_of_purchase, item, item_type, brand, item_category, qty, total_amount, total_gst, location, supplier) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        const query = 'INSERT INTO item_inventory (date_of_purchase, item, item_type, brand, item_category, qty, total_amount, total_gst, location, supplier) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
         const promises = dataRows.map(row => {
             return new Promise((resolve, reject) => {
                 db.query(query, row, (error, results) => {
@@ -254,8 +254,8 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
 
 
 // API Endpoint to retrieve item data
-app.get('/api/itemDetails', (req, res) => {
-    const sql = 'SELECT * FROM item_details';
+app.get('/api/get/item-inventory', (req, res) => {
+    const sql = 'SELECT * FROM item_inventory';
     db.query(sql, (err, result) => {
         if (err) {
             console.error('Error retrieving form data:', err);
