@@ -1,71 +1,67 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaSearch } from 'react-icons/fa';
-import { Button,Typography, TextField, Select, MenuItem, Checkbox, ListItemText, Table, TableHead, TableBody, TableRow, TableCell, TablePagination, CircularProgress } from '@mui/material';
-import { LiaFileDownloadSolid } from "react-icons/lia";
-import { GrDocumentDownload } from "react-icons/gr";
-import { generateExcelFile } from "../helpers/GenerateItemExcel";
-import { GenerateRateList } from "../helpers/GenerateRateList";
+import {Button, Typography, TextField, Select, MenuItem, Checkbox, ListItemText, Table, TableHead, TableBody,
+    TableRow, TableCell, TablePagination, CircularProgress,} from '@mui/material';
+import { LiaFileDownloadSolid } from 'react-icons/lia';
+import { GrDocumentDownload } from 'react-icons/gr';
+import { generateExcelFile } from '../helpers/GenerateItemExcel';
+import { GenerateRateList } from '../helpers/GenerateRateList';
 
 const CustomerItemRate = () => {
+    // State variables
     const [formData, setFormData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(10);
-    const [indexOfFirstItem, setIndexOfFirstItem] = useState(0);
-    const [indexOfLastItem, setIndexOfLastItem] = useState(itemsPerPage);
     const [selectedBrands, setSelectedBrands] = useState([]);
 
     useEffect(() => {
         fetchData();
     }, []);
 
+    // Fetch data from API
     const fetchData = async () => {
+        setLoading(true);
         try {
-            setLoading(true);
             const response = await axios.get('http://localhost:5000/api/get/get-items');
             setFormData(response.data);
         } catch (error) {
             console.error('Error fetching item data:', error);
-            alert("Failed to get data. Please try again later.");
+            alert('Failed to get data. Please try again later.');
         } finally {
             setLoading(false);
         }
     };
 
+    // Handle search functionality
     const handleSearch = async () => {
+        setLoading(true);
         try {
-            setLoading(true);
             const response = await axios.get('http://localhost:5000/api/get/items');
             setFormData(response.data);
-            setLoading(false);
         } catch (error) {
             console.error('Error fetching item data:', error);
-            alert("Failed to get data. Please try again later.");
+            alert('Failed to get data. Please try again later.');
+        } finally {
             setLoading(false);
         }
     };
 
+    // Handle pagination changes
     const handleChangePage = (event, newPage) => {
         setCurrentPage(newPage);
-        const newIndexOfFirstItem = newPage * itemsPerPage;
-        const newIndexOfLastItem = newIndexOfFirstItem + itemsPerPage;
-        setIndexOfFirstItem(newIndexOfFirstItem);
-        setIndexOfLastItem(newIndexOfLastItem);
     };
 
     const handleChangeRowsPerPage = (event) => {
         const newItemsPerPage = +event.target.value;
         setItemsPerPage(newItemsPerPage);
         setCurrentPage(0);
-        setIndexOfFirstItem(0);
-        setIndexOfLastItem(newItemsPerPage);
     };
 
-    const handleGeneratePDF = () => {
-        GenerateRateList(true);
-    };
+    // Handle PDF and Excel generation
+    const handleGeneratePDF = () => GenerateRateList(true);
 
     const handleGenerateExcel = async () => {
         setLoading(true);
@@ -73,105 +69,112 @@ const CustomerItemRate = () => {
         setLoading(false);
     };
 
-    const handleBrandChange = (event) => {
-        const selectedValues = event.target.value;
-        setSelectedBrands(selectedValues);
-    };
+    // Handle brand filter change
+    const handleBrandChange = (event) => setSelectedBrands(event.target.value);
 
-    const filteredItems = formData.filter(item => {
-        const isBrandMatch = selectedBrands.length === 0 || selectedBrands.includes(item.brand);
-        const isSearchMatch =
-            (item.item_name && item.item_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-            (item.item_description && item.item_description.toLowerCase().includes(searchTerm.toLowerCase())) ||
-            (item.brand && item.brand.toLowerCase().includes(searchTerm.toLowerCase())) ||
-            (typeof item.rate === 'string' && item.rate.toLowerCase().includes(searchTerm.toLowerCase()));
+    // Filter items based on search and selected brands
+    const filteredItems = formData.filter((item) => {
+        const matchesBrand = selectedBrands.length === 0 || selectedBrands.includes(item.brand);
+        const matchesSearch =
+            (item.item_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.item_description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.brand?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.rate?.toString().includes(searchTerm));
 
-        return isBrandMatch && isSearchMatch;
+        return matchesBrand && matchesSearch;
     });
 
-    const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+    // Paginate items
+    const currentItems = filteredItems.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
     return (
         <div style={{ width: '90%', margin: '0 auto', marginTop: '2%' }}>
-            <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '20px'}}>
-                <Typography variant="h4" gutterBottom>Item Rate List</Typography>
-                <div style={{display: 'flex', alignItems: 'center', flexGrow: 1, maxWidth: '300px'}}>
+            <div style={{marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                borderBottom: '2px solid #ddd'}}>
+                <Typography variant="h4">Customer Rate</Typography>
+                <div style={{display: 'flex', gap: '20px', marginTop: '10px',marginBottom: '10px'}}>
                     <TextField
                         label="Search"
                         variant="outlined"
                         fullWidth
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        style={{marginRight: '20px'}}
                     />
-                </div>
-                <div style={{width: '300px'}}>
                     <Select
-                        label="Select Brand"
                         multiple
                         value={selectedBrands}
                         onChange={handleBrandChange}
-                        renderValue={(selected) => selected.length === 0 ? "Select Brand" : selected.join(', ')}
+                        renderValue={(selected) => (selected.length === 0 ? 'Select Brand' : selected.join(', '))}
                         fullWidth
                         displayEmpty
+                        style={{minWidth: '200px',maxHeight: '50px'}}
                     >
-                        {Array.from(new Set(formData.map(item => item.brand))).map(brand => (
+                        {Array.from(new Set(formData.map((item) => item.brand))).map((brand) => (
                             <MenuItem key={brand} value={brand}>
-                                <Checkbox checked={selectedBrands.indexOf(brand) > -1}/>
+                                <Checkbox checked={selectedBrands.includes(brand)}/>
                                 <ListItemText primary={brand}/>
                             </MenuItem>
                         ))}
                     </Select>
                 </div>
+                <div style={{display: 'flex', gap: '10px'}}>
+                    <Button
+                        onClick={handleGeneratePDF}
+                        variant="contained"
+                        color="primary"
+                        startIcon={<LiaFileDownloadSolid/>}
+                    >
+                        Download PDF
+                    </Button>
+                    <Button
+                        onClick={handleGenerateExcel}
+                        variant="contained"
+                        color="primary"
+                        startIcon={<GrDocumentDownload/>}
+                    >
+                        Download Excel
+                    </Button>
+                </div>
             </div>
-
+            {/* Table Section */}
             {loading ? (
                 <CircularProgress/>
             ) : (
-                <div id='print'>
-                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                        <h3>Shubham Electronics & Enterprises</h3>
-                        <h4>Item Rate List</h4>
-                        <Button
-                            onClick={handleGeneratePDF}
-                            variant="contained"
-                            color="primary"
-                            style={{marginLeft: '10px'}}
-                        >
-                            <LiaFileDownloadSolid style={{marginRight: '7px'}}/> Download PDF
-                        </Button>
-                        <Button
-                            onClick={handleGenerateExcel}
-                            variant="contained"
-                            color="primary"
-                            style={{ marginLeft: '10px' }}
-                        >
-                            <GrDocumentDownload style={{ marginRight: '7px' }} /> Download Excel
-                        </Button>
-                    </div>
-
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>S.No.</TableCell>
-                                <TableCell>Item Name</TableCell>
-                                <TableCell>Item Description</TableCell>
-                                <TableCell>Brand</TableCell>
-                                <TableCell>Rate</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {currentItems.map((item, index) => (
-                                <TableRow key={index}>
-                                    <TableCell>{index + 1}</TableCell>
-                                    <TableCell>{item.item_name}</TableCell>
-                                    <TableCell>{item.item_description}</TableCell>
-                                    <TableCell>{item.brand}</TableCell>
-                                    <TableCell>₹ {((parseFloat(item.rate) * 107) / 100).toFixed(2)}</TableCell>
+                <div >
+                    <div id='print'>
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                marginBottom: '10px', borderBottom: '2px solid #ddd', paddingBottom: '10px',}}>
+                            <Typography variant="h5" gutterBottom style={{textAlign: 'left'}}>
+                                Shubham Electronics & Electrical<br/>
+                                Kundi, Varanasi, 9990909000
+                            </Typography>
+                            <Typography variant="h5" gutterBottom style={{textAlign: 'right'}}>
+                                Item Rate List
+                            </Typography>
+                        </div>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>S.No.</TableCell>
+                                    <TableCell>Product Name</TableCell>
+                                    {/*<TableCell>Item Description</TableCell>*/}
+                                    <TableCell>Brand</TableCell>
+                                    <TableCell>Rate</TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHead>
+                            <TableBody>
+                                {currentItems.map((item, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell>{index + 1 + currentPage * itemsPerPage}</TableCell>
+                                        {/*<TableCell>{item.item_name }</TableCell>*/}
+                                        <TableCell>{item.item_description}</TableCell>
+                                        <TableCell>{item.brand}</TableCell>
+                                        <TableCell>₹ {(item.rate).toFixed(2)}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
 
                     <TablePagination
                         rowsPerPageOptions={[10, 25, 50]}
