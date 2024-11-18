@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Typography, TextField, Button } from '@mui/material';
 import TablePagination from "@mui/material/TablePagination";
 
-const ItemDetails = () => {
+const ItemInventory = () => {
     const [formData, setFormData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(false);
@@ -71,7 +71,7 @@ const ItemDetails = () => {
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="h3" gutterBottom>Item Details</Typography>
+                <Typography variant="h3" gutterBottom>Item Inventory</Typography>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <TextField
                         label="Search"
@@ -195,4 +195,4 @@ const ItemDetails = () => {
     );
 };
 
-export default ItemDetails;
+export default ItemInventory;

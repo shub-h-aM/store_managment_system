@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import Footer from "../components/Footer";
+// import Footer from "../components/Footer";
 import { MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 
 function CreateItem() {
@@ -157,7 +157,7 @@ function CreateItem() {
                     </Grid>
                 </form>
             </Container>
-            <Footer />
+            {/*<Footer />*/}
         </div>
     );
 }

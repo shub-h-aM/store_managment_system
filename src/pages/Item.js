@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 import { Typography, TextField, InputAdornment, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 import Pagination from '@mui/material/Pagination';
-import Footer from "../components/Footer";
+// import Footer from "../components/Footer";
 
 function Item() {
     const [items, setItems] = useState([]);
@@ -111,7 +111,7 @@ function Item() {
                     color="primary"
                 />
             </div>
-            <Footer />
+            {/*<Footer />*/}
         </div>
     );
 }

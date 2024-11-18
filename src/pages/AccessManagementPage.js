@@ -18,9 +18,9 @@ const AccessManagementPage = () => {
         const fetchData = async () => {
             try {
                 const { data } = await axios.get('http://localhost:5000/api/access-management');
-                console.log(data); // Log the response data structure here
+                console.log(data); 
 
-                setUsers(data.users || []); // Fallback to empty array
+                setUsers(data.users || []); 
                 setRoles(data.roles || []);
                 setPages(data.pages || []);
 
