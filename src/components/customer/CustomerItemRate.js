@@ -7,7 +7,6 @@ import { GenerateRateList } from "../helpers/GenerateRateList";
 import {Button} from "@mui/material";
 import {LiaFileDownloadSolid} from "react-icons/lia";
 import {GrDocumentDownload} from "react-icons/gr";
-import Footer from "../Footer";
 
 const CustomerItemRate = () => {
     const [formData, setFormData] = useState([]);
@@ -25,7 +24,7 @@ const CustomerItemRate = () => {
     const fetchData = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:5000/api/get/items');
+            const response = await axios.get('http://localhost:5000/api/get/get-items');
             setFormData(response.data);
         } catch (error) {
             console.error('Error fetching item data:', error);
@@ -38,7 +37,7 @@ const CustomerItemRate = () => {
     const handleSearch = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:5000/api/get/items');
+            const response = await axios.get('http://localhost:5000/api/get/get-items');
             setFormData(response.data);
             setLoading(false);
         } catch (error) {
@@ -68,22 +67,34 @@ const CustomerItemRate = () => {
         // Call GenerateRateList function with appropriate parameters
         GenerateRateList(true);
     };
-
+    
     const handleGenerateExcel = async () => {
         try {
             setLoading(true);
             const response = await axios.get('http://localhost:5000/api/generate-excel', {
-                responseType: 'blob'
+                responseType: 'blob',
             });
+
+            console.log(response); // Debug log to inspect the response
+
+            const file = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const fileURL = URL.createObjectURL(file);
+            console.log('File URL:', fileURL); // Debug log to inspect the file URL
+
+            const link = document.createElement('a');
+            link.href = fileURL;
+
             const currentDate = new Date();
             const month = currentDate.toLocaleString('default', { month: 'long' });
             const fileName = `Shubham_Ele_item_rates_${month}.xlsx`;
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
-            link.href = url;
+
+            console.log('File Name:', fileName); // Debug log to inspect the file name
+
             link.setAttribute('download', fileName);
             document.body.appendChild(link);
             link.click();
+            document.body.removeChild(link);
+
             setLoading(false);
         } catch (error) {
             console.error('Error generating Excel:', error);
@@ -91,6 +102,7 @@ const CustomerItemRate = () => {
             setLoading(false);
         }
     };
+
 
     const filteredItems = formData.filter(item =>
         (item.item_name && item.item_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
@@ -104,6 +116,7 @@ const CustomerItemRate = () => {
     return (
         <div className="container"
              style={{position: 'revert-layer', width: '90%', marginLeft: '5%', marginTop: '1%', height: 'auto'}}>
+            <h3>Item Rate List</h3>
             <div className="search-bar">
                 <input
                     type="text"
@@ -165,8 +178,7 @@ const CustomerItemRate = () => {
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-            <hr />
-            <Footer />
+            <hr/>
         </div>
     );
 };

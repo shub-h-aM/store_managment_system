@@ -14,7 +14,7 @@ import CustomerDetails from './components/customer/CustomerDetails';
 import LedgerPage from './pages/LedgerPage';
 import CreateInventory from './pages/CreateInventory';
 import CreateItem from './pages/CreateItem';
-import Item from './pages/Item';
+import ItemList from './pages/ItemList';
 import CustomerItemRate from './components/customer/CustomerItemRate';
 import useInactivityTimeout from './hooks/useInactivityTimeout';
 import Blog from './components/HomePage/Blog';
@@ -25,6 +25,8 @@ import Contact from './components/InformationPages/Contact';
 import OrderForm from './pages/OrderForm';
 import ItemCategory from './pages/ItemCategory';
 import CreateCategory from './pages/CreateItemCategoryPage';
+import ItemBrand from './pages/ItemBrand';
+import CreateBrand from './pages/CreateItemBrandPage';
 import Cart from './components/Cart';
 import UserProduct from './components/card/UserPage';
 import Roles from './pages/RolesPage';
@@ -102,7 +104,7 @@ const App = () => {
                             <Route path="/create-customer" element={<CustomerOnboard />} />
                             <Route path="/ledger-transaction" element={<LedgerPage />} />
                             <Route path="/create-item" element={<CreateItem />} />
-                            <Route path="/get/item" element={<Item />} />
+                            <Route path="/get/item" element={<ItemList />} />
                             <Route path="/blog" element={<Blog />} />
                             <Route path="/about" element={<About />} />
                             <Route path="/services" element={<Services />} />
@@ -111,6 +113,8 @@ const App = () => {
                             <Route path="/get/order/form" element={<OrderForm />} />
                             <Route path="/ops/get-category" element={<ItemCategory />} />
                             <Route path="/create-item-category" element={<CreateCategory />} />
+                            <Route path="/ops/get-brand" element={<ItemBrand />} />
+                            <Route path="/create-item-brand" element={<CreateBrand />} />
                             <Route path="/ops/get/product" element={<UserProduct />} />
                             <Route path="/ops/access/management" element={<AccessManagementPage />} />
                             <Route path="/ops/roles/management" element={<Roles />} />

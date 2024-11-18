@@ -81,6 +81,12 @@ const Sidebar = ({ isLoggedIn, isMenuOpen, activeUser, handleLogin, handleLogout
                                 </ListItemIcon>
                                 <ListItemText primary="Item Category" />
                             </ListItem>
+                            <ListItem button component={Link} to="/ops/get-brand" onClick={toggleMenu}>
+                                <ListItemIcon>
+                                    <FaUpload />
+                                </ListItemIcon>
+                                <ListItemText primary="Item Brand" />
+                            </ListItem>
                             <ListItem button component={Link} to="/item-details" onClick={toggleMenu}>
                                 <ListItemIcon>
                                     <FaWarehouse />
