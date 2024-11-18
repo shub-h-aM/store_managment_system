@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaSearch } from 'react-icons/fa';
-import "../../styles/index.css";
-import TablePagination from "@mui/material/TablePagination";
+import { Button,Typography, TextField, Select, MenuItem, Checkbox, ListItemText, Table, TableHead, TableBody, TableRow, TableCell, TablePagination, CircularProgress } from '@mui/material';
+import { LiaFileDownloadSolid } from "react-icons/lia";
+import { GrDocumentDownload } from "react-icons/gr";
+import { generateExcelFile } from "../helpers/GenerateItemExcel";
 import { GenerateRateList } from "../helpers/GenerateRateList";
-import {Button} from "@mui/material";
-import {LiaFileDownloadSolid} from "react-icons/lia";
-import {GrDocumentDownload} from "react-icons/gr";
 
 const CustomerItemRate = () => {
     const [formData, setFormData] = useState([]);
@@ -16,6 +15,7 @@ const CustomerItemRate = () => {
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [indexOfFirstItem, setIndexOfFirstItem] = useState(0);
     const [indexOfLastItem, setIndexOfLastItem] = useState(itemsPerPage);
+    const [selectedBrands, setSelectedBrands] = useState([]);
 
     useEffect(() => {
         fetchData();
@@ -37,7 +37,7 @@ const CustomerItemRate = () => {
     const handleSearch = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:5000/api/get/get-items');
+            const response = await axios.get('http://localhost:5000/api/get/items');
             setFormData(response.data);
             setLoading(false);
         } catch (error) {
@@ -64,121 +64,126 @@ const CustomerItemRate = () => {
     };
 
     const handleGeneratePDF = () => {
-        // Call GenerateRateList function with appropriate parameters
         GenerateRateList(true);
     };
-    
+
     const handleGenerateExcel = async () => {
-        try {
-            setLoading(true);
-            const response = await axios.get('http://localhost:5000/api/generate-excel', {
-                responseType: 'blob',
-            });
-
-            console.log(response); // Debug log to inspect the response
-
-            const file = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-            const fileURL = URL.createObjectURL(file);
-            console.log('File URL:', fileURL); // Debug log to inspect the file URL
-
-            const link = document.createElement('a');
-            link.href = fileURL;
-
-            const currentDate = new Date();
-            const month = currentDate.toLocaleString('default', { month: 'long' });
-            const fileName = `Shubham_Ele_item_rates_${month}.xlsx`;
-
-            console.log('File Name:', fileName); // Debug log to inspect the file name
-
-            link.setAttribute('download', fileName);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            setLoading(false);
-        } catch (error) {
-            console.error('Error generating Excel:', error);
-            alert("Failed to generate Excel. Please try again later.");
-            setLoading(false);
-        }
+        setLoading(true);
+        await generateExcelFile();
+        setLoading(false);
     };
 
+    const handleBrandChange = (event) => {
+        const selectedValues = event.target.value;
+        setSelectedBrands(selectedValues);
+    };
 
-    const filteredItems = formData.filter(item =>
-        (item.item_name && item.item_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (item.item_description && item.item_description.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (item.brand && item.brand.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (typeof item.rate === 'string' && item.rate.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
+    const filteredItems = formData.filter(item => {
+        const isBrandMatch = selectedBrands.length === 0 || selectedBrands.includes(item.brand);
+        const isSearchMatch =
+            (item.item_name && item.item_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (item.item_description && item.item_description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (item.brand && item.brand.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (typeof item.rate === 'string' && item.rate.toLowerCase().includes(searchTerm.toLowerCase()));
+
+        return isBrandMatch && isSearchMatch;
+    });
 
     const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
 
     return (
-        <div className="container"
-             style={{position: 'revert-layer', width: '90%', marginLeft: '5%', marginTop: '1%', height: 'auto'}}>
-            <h3>Item Rate List</h3>
-            <div className="search-bar">
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <button className="search-button" onClick={handleSearch} disabled={loading}>
-                    {loading ? 'Loading...' : <FaSearch/>}
-                </button>
+        <div style={{ width: '90%', margin: '0 auto', marginTop: '2%' }}>
+            <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '20px'}}>
+                <Typography variant="h4" gutterBottom>Item Rate List</Typography>
+                <div style={{display: 'flex', alignItems: 'center', flexGrow: 1, maxWidth: '300px'}}>
+                    <TextField
+                        label="Search"
+                        variant="outlined"
+                        fullWidth
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{marginRight: '20px'}}
+                    />
+                </div>
+                <div style={{width: '300px'}}>
+                    <Select
+                        label="Select Brand"
+                        multiple
+                        value={selectedBrands}
+                        onChange={handleBrandChange}
+                        renderValue={(selected) => selected.length === 0 ? "Select Brand" : selected.join(', ')}
+                        fullWidth
+                        displayEmpty
+                    >
+                        {Array.from(new Set(formData.map(item => item.brand))).map(brand => (
+                            <MenuItem key={brand} value={brand}>
+                                <Checkbox checked={selectedBrands.indexOf(brand) > -1}/>
+                                <ListItemText primary={brand}/>
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </div>
             </div>
+
             {loading ? (
-                <p>Loading...</p>
+                <CircularProgress/>
             ) : (
                 <div id='print'>
                     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                         <h3>Shubham Electronics & Enterprises</h3>
                         <h4>Item Rate List</h4>
-                        <Button onClick={handleGeneratePDF} variant="contained" color="primary"
-                                style={{position: 'fixed', top: '100px', right: '10px'}}>
-                            <LiaFileDownloadSolid style={{marginRight: '7px', marginLeft: "-4px"}}/>Download PDF
+                        <Button
+                            onClick={handleGeneratePDF}
+                            variant="contained"
+                            color="primary"
+                            style={{marginLeft: '10px'}}
+                        >
+                            <LiaFileDownloadSolid style={{marginRight: '7px'}}/> Download PDF
                         </Button>
-                        <Button onClick={handleGenerateExcel} variant="contained" color="primary"
-                                style={{position: 'fixed', top: '100px', right: '179px'}}>
-                            <GrDocumentDownload style={{marginRight: '7px', color: 'wheat', marginLeft: "-4px"}}/>Download
-                            Excel
+                        <Button
+                            onClick={handleGenerateExcel}
+                            variant="contained"
+                            color="primary"
+                            style={{ marginLeft: '10px' }}
+                        >
+                            <GrDocumentDownload style={{ marginRight: '7px' }} /> Download Excel
                         </Button>
                     </div>
-                    <table>
-                        <thead style={{backgroundColor: '#f2f2f2'}}>
-                        <tr>
-                            <th>S.No.</th>
-                            <th>Item Name</th>
-                            <th>Item Description</th>
-                            <th>Brand</th>
-                            <th>Rate</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {currentItems.map((item, index) => (
-                            <tr key={index}>
-                                <td>{index + 1}</td>
-                                <td>{item.item_name}</td>
-                                <td>{item.item_description}</td>
-                                <td>{item.brand}</td>
-                                <td>₹ {((parseFloat(item.rate) * 107) / 100).toFixed(2)}</td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
+
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>S.No.</TableCell>
+                                <TableCell>Item Name</TableCell>
+                                <TableCell>Item Description</TableCell>
+                                <TableCell>Brand</TableCell>
+                                <TableCell>Rate</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {currentItems.map((item, index) => (
+                                <TableRow key={index}>
+                                    <TableCell>{index + 1}</TableCell>
+                                    <TableCell>{item.item_name}</TableCell>
+                                    <TableCell>{item.item_description}</TableCell>
+                                    <TableCell>{item.brand}</TableCell>
+                                    <TableCell>₹ {((parseFloat(item.rate) * 107) / 100).toFixed(2)}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+
+                    <TablePagination
+                        rowsPerPageOptions={[10, 25, 50]}
+                        component="div"
+                        count={filteredItems.length}
+                        rowsPerPage={itemsPerPage}
+                        page={currentPage}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
                 </div>
             )}
-            <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
-                component="div"
-                count={filteredItems.length}
-                rowsPerPage={itemsPerPage}
-                page={currentPage}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-            <hr/>
         </div>
     );
 };
