@@ -132,6 +132,7 @@ class InvoiceModal extends React.Component {
                                 <tr>
                                     <th>S.No</th>
                                     <th>ITEM DESCRIPTION</th>
+                                    <th>Brand</th>
                                     <th>QTY</th>
                                     <th className="text-end">PRICE</th>
                                     <th className="text-end">AMOUNT</th>
@@ -144,6 +145,7 @@ class InvoiceModal extends React.Component {
                                         <tr key={i}>
                                             <td style={{ width: '50px' }}>{serialNumber}</td>
                                             <td>{item.name}</td>
+                                            <td>{item.brand}</td>
                                             <td style={{ width: '60px' }}>{item.quantity}</td>
                                             <td className="text-end" style={{ width: '100px' }}>{this.props.currency} {item.price}</td>
                                             <td className="text-end" style={{ width: '100px' }}>{this.props.currency} {item.price * item.quantity}</td>
