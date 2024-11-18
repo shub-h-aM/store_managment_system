@@ -17,6 +17,7 @@ class InvoiceModal extends React.Component {
         const { billTo, billToContact, invoiceNumber, subTotal, discountAmount, cgstAmount, sgstAmount, grandTotal, dueAmount, paidAmount, dateOfDue } = this.props.info;
         const items = this.props.items.map(item => ({
             itemName: item.name,
+            brand: item.brand,
             rate: item.price,
             quantity: item.quantity,
             amount: parseFloat((item.price * item.quantity).toFixed(2)),

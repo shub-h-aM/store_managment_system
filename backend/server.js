@@ -270,13 +270,13 @@ app.get('/api/itemDetails', (req, res) => {
 app.post('/api/invoices', (req, res) => {
     const { customer_name,customer_number, invoice_number, items } = req.body;
 
-    const sql = 'INSERT INTO invoices (customer_name,customer_number, invoice_number, item_name, rate, quantity, amount) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    const sql = 'INSERT INTO invoices (customer_name,customer_number, invoice_number, item_name,brand, rate, quantity, amount) VALUES (?,?, ?, ?, ?, ?, ?, ?)';
 
     const promises = [];
 
     items.forEach(item => {
         const promise = new Promise((resolve, reject) => {
-            db.query(sql, [customer_name, customer_number, invoice_number, item.itemName, item.rate, item.quantity, item.amount], (err, result) => {
+            db.query(sql, [customer_name, customer_number, invoice_number, item.itemName,item.brand, item.rate, item.quantity, item.amount], (err, result) => {
                 if (err) {
                     console.error('Error inserting invoice data:', err);
                     reject(err);
