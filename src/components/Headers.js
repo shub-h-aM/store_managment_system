@@ -35,6 +35,6 @@ const Headers = ({ toggleMenu }) => {
             </Toolbar>
         </AppBar>
     );
-}
+};
 
 export default Headers;

@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Box, TextField, Button, Typography, Container } from '@mui/material';
-import Footer from "../Footer"
+import Footer from '../Footer';
 
 const Contact = () => {
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });

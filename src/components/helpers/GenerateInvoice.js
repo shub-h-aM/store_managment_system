@@ -4,7 +4,7 @@ import { jsPDF } from 'jspdf';
 export const GenerateInvoice = (invoiceNumber) => {
     const dom = document.getElementById('print');
     if (!dom) {
-        console.error("Element with ID 'print' not found");
+        console.error('Element with ID \'print\' not found');
         return;
     }
 

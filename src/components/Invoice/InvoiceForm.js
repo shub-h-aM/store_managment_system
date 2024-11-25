@@ -62,6 +62,7 @@ class InvoiceForm extends React.Component {
             .then(response => {
                 const lastInvoiceNumber = response.data.lastInvoiceNumber;
                 this.setState(prevState => ({
+                    ...prevState,
                     invoiceNumber: lastInvoiceNumber + 1,
                 }));
             })

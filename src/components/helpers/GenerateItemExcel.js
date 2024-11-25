@@ -21,6 +21,6 @@ export const generateExcelFile = async () => {
         document.body.removeChild(link);
     } catch (error) {
         console.error('Error generating Excel:', error);
-        alert("Failed to generate Excel. Please try again later.");
+        alert('Failed to generate Excel. Please try again later.');
     }
 };

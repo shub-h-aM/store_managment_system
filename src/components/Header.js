@@ -4,7 +4,7 @@ import {
     Container, Button, Box
 } from '@mui/material';
 import { FaBars } from 'react-icons/fa';
-import '../components/card/ImageCard'
+import '../components/card/ImageCard';
 import '../pages/RolesPage';
 import '../pages/AccessManagementPage';
 
@@ -59,16 +59,16 @@ const Header = ({ toggleMenu }) => {
                         >
                             Card
                         </Button>
-                        <Button
-                            color="inherit"
-                            href="/get/order/form"
-                            sx={{
-                                fontWeight: 'bold',
-                                '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.2)' }
-                            }}
-                        >
-                            Order
-                        </Button>
+                        {/*<Button*/}
+                        {/*    color="inherit"*/}
+                        {/*    href="/get/order/form"*/}
+                        {/*    sx={{*/}
+                        {/*        fontWeight: 'bold',*/}
+                        {/*        '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.2)' }*/}
+                        {/*    }}*/}
+                        {/*>*/}
+                        {/*    Order*/}
+                        {/*</Button>*/}
                         <Button
                             color="inherit"
                             href="/ops/get/product"

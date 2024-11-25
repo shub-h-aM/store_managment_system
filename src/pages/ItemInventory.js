@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Typography, TextField, Button } from '@mui/material';
-import TablePagination from "@mui/material/TablePagination";
+import TablePagination from '@mui/material/TablePagination';
 
 const ItemInventory = () => {
     const [formData, setFormData] = useState([]);
@@ -27,7 +27,7 @@ const ItemInventory = () => {
             setFormData(response.data);
         } catch (error) {
             console.error('Error fetching item data:', error);
-            alert("Failed to get data. Please try again later.");
+            alert('Failed to get data. Please try again later.');
         } finally {
             setLoading(false);
         }

@@ -1,4 +1,4 @@
-import * as XLSX from "xlsx";
+import * as XLSX from 'xlsx';
 
 const readHeadersFromFile = (file) => {
     return new Promise((resolve, reject) => {

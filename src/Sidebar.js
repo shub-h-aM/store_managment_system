@@ -17,7 +17,7 @@ import { MdAssignmentInd, MdListAlt } from 'react-icons/md';
 import { PiSignOut } from 'react-icons/pi';
 import { GoSignIn } from 'react-icons/go';
 
-const Sidebar = ({ isLoggedIn, isMenuOpen, activeUser, handleLogin, handleLogout, toggleMenu }) => {
+const Sidebar = ({ isLoggedIn, isMenuOpen, activeUser, handleLogout, toggleMenu }) => {
     const location = useLocation();
     const isHomePage = location.pathname === '/home';
 

@@ -4,10 +4,10 @@ const exceljs = require('exceljs');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const cors = require('cors');
-const path = require("path");
+const path = require('path');
 const fs = require('fs');
-const {get} = require("axios");
-const {utils, write} = require("xlsx");
+const {get} = require('axios');
+const {utils, write} = require('xlsx');
 
 const app = express();
 const port = 5000;
@@ -339,7 +339,7 @@ app.get('/api/invoice/transactions', (req, res) => {
         if (err) {
             console.error('Error retrieving form data:', err);
             res.status(500).json({ error: 'Error retrieving form data' });
-            alert("Failed to Get Transaction Details!")
+            alert('Failed to Get Transaction Details!');
             return;
         }
         console.log('Form data retrieved successfully');
@@ -370,7 +370,7 @@ app.post('/api/invoice/transactions/update', (req, res) => {
 // Endpoint to insert customer data
 app.post('/api/customer', (req, res) => {
     const { customerName, customerAddress, contactNumber } = req.body;
-    const sql = `INSERT INTO customers (customerName, customerAddress, contactNumber) VALUES (?, ?, ?)`;
+    const sql = 'INSERT INTO customers (customerName, customerAddress, contactNumber) VALUES (?, ?, ?)';
     db.query(sql, [customerName, customerAddress, contactNumber], (err, result) => {
         if (err) {
             console.error('Error inserting invoice data:', err);
@@ -410,7 +410,7 @@ app.get('/api/customers', async (req, res) => {
 
 app.post('/api/create/item-category', (req, res) => {
     const { category_name } = req.body;
-    const sql = `INSERT INTO ItemCategory (category_name) VALUES (?)`;
+    const sql = 'INSERT INTO ItemCategory (category_name) VALUES (?)';
     db.query(sql, [category_name], (err, result) => {
         if (err) {
             console.error('Error inserting category data:', err);
@@ -455,7 +455,7 @@ app.delete('/api/delete/item-category/:categoryId', async (req, res) => {
 
 app.post('/api/create/item-brand', (req, res) => {
     const { brand_name } = req.body;
-    const sql = `INSERT INTO Brand (brand_name) VALUES (?)`;
+    const sql = 'INSERT INTO Brand (brand_name) VALUES (?)';
     db.query(sql, [brand_name], (err, result) => {
         if (err) {
             console.error('Error inserting brand data:', err);
@@ -578,7 +578,7 @@ app.get('/api/ops/roles', (req, res) => {
         if (err) {
             console.error('Error retrieving form data:', err);
             res.status(500).json({ error: 'Error retrieving form data' });
-            alert("Failed to Get Roles Details!")
+            alert('Failed to Get Roles Details!');
             return;
         }
         console.log('Form data retrieved successfully');
@@ -628,7 +628,7 @@ app.get('/api/get/pages', (req, res) => {
         if (err) {
             console.error('Error retrieving form data:', err);
             res.status(500).json({ error: 'Error retrieving form data' });
-            alert("Failed to Get Page Details!")
+            alert('Failed to Get Page Details!');
             return;
         }
         console.log('Form data retrieved successfully');
@@ -670,6 +670,100 @@ app.delete('/api/pages/:id', async (req, res) => {
         res.status(500).json({ error: 'Server Error' });
     }
 });
+
+// api to add order in table
+
+// app.post('/api/create-order', (req, res) => {
+//     const { items, totalAmount } = req.body;
+//
+//     // Insert the order into the orders table
+//     const orderQuery = 'INSERT INTO orders (total_amount) VALUES (?)';
+//     db.query(orderQuery, [totalAmount], (err, result) => {
+//         if (err) {
+//             console.error('Error creating order:', err);
+//             return res.status(500).send('Error creating order');
+//         }
+//
+//         const orderId = result.insertId;
+//
+//         // Insert the order items into the order_items table
+//         const orderItemsQuery = 'INSERT INTO order_items (order_id, product_name, product_brand, quantity, price) VALUES ?';
+//         const orderItemsValues = items.map(item => [
+//             orderId,
+//             item.productName,
+//             item.productBrand,
+//             item.quantity,
+//             item.price
+//         ]);
+//
+//         db.query(orderItemsQuery, [orderItemsValues], (err) => {
+//             if (err) {
+//                 console.error('Error inserting order items:', err);
+//                 return res.status(500).send('Error adding order items');
+//             }
+//             res.status(201).send({ message: 'Order created successfully', orderId });
+//         });
+//     });
+// });
+
+app.post('/api/create-order', async (req, res) => {
+    const { items, totalAmount } = req.body;
+
+    try {
+        await db.beginTransaction();
+
+        // Insert order
+        const [orderResult] = await db.query('INSERT INTO orders (total_amount) VALUES (?)', [totalAmount]);
+        const orderId = orderResult.insertId;
+
+        // Insert order items
+        const orderItemsValues = items.map(item => [
+            orderId,
+            item.productName,
+            item.productBrand,
+            item.quantity,
+            item.price
+        ]);
+        await db.query('INSERT INTO order_items (order_id, product_name, product_brand, quantity, price) VALUES ?', [orderItemsValues]);
+
+        await db.commit();
+        res.status(201).send({ message: 'Order created successfully', orderId });
+    } catch (err) {
+        console.error('Error creating order:', err.sqlMessage || err);
+        await db.rollback();
+        res.status(500).send({ message: 'Failed to create order', details: err.sqlMessage || err });
+    }
+});
+
+
+// API to get order details
+app.get('/api/order/:orderId', (req, res) => {
+    const orderId = req.params.orderId;
+
+    const orderQuery = 'SELECT * FROM orders WHERE order_id = ?';
+    db.query(orderQuery, [orderId], (err, orderResult) => {
+        if (err) {
+            console.error('Error fetching order:', err);
+            return res.status(500).send('Error fetching order');
+        }
+
+        if (orderResult.length === 0) {
+            return res.status(404).send('Order not found');
+        }
+
+        const order = orderResult[0];
+
+        const orderItemsQuery = 'SELECT * FROM order_items WHERE order_id = ?';
+        db.query(orderItemsQuery, [orderId], (err, orderItemsResult) => {
+            if (err) {
+                console.error('Error fetching order items:', err);
+                return res.status(500).send('Error fetching order items');
+            }
+            res.status(200).send({ order, items: orderItemsResult });
+        });
+    });
+});
+
 
 
 // Close the database connection when the server shuts down

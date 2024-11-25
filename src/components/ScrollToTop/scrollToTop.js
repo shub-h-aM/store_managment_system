@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
-import { SvgIcon } from "./SvgIcon";
-import { ScrollUpContainer } from "./styles";
+import { useCallback, useEffect, useState } from 'react';
+import { SvgIcon } from './SvgIcon';
+import { ScrollUpContainer } from './styles';
 
 const ScrollToTop = () => {
     const [showScroll, setShowScroll] = useState(false);
@@ -12,17 +12,17 @@ const ScrollToTop = () => {
     }, []);
 
     useEffect(() => {
-        window.addEventListener("scroll", checkScrollTop);
-        return () => window.removeEventListener("scroll", checkScrollTop);
+        window.addEventListener('scroll', checkScrollTop);
+        return () => window.removeEventListener('scroll', checkScrollTop);
     }, [checkScrollTop]);
 
     const scrollUp = () => {
-        const element = document.getElementById("intro");
+        const element = document.getElementById('intro');
         if (element) {
             element.scrollIntoView({
-                behavior: "smooth",
-                block: "end",
-                inline: "nearest",
+                behavior: 'smooth',
+                block: 'end',
+                inline: 'nearest',
             });
         }
     };
