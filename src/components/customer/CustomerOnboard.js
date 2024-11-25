@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import Footer from '../Footer';
+import PageHeader from '../PageHeader';
 
 function CustomerOnboard() {
     const [customerName, setCustomerName] = useState('');
@@ -40,9 +40,7 @@ function CustomerOnboard() {
 
     return (
         <div style={{position:'fixed',width:'90%',marginLeft:'5%',marginTop:'5%'}}>
-            <header>
-                <h1>Create Customer</h1>
-            </header>
+            <PageHeader title="Create Customer" color="#FF5722" align="center" />
             <Container maxWidth="sm">
                 <form onSubmit={handleSubmit}>
                     <Grid container spacing={2}>
@@ -81,7 +79,6 @@ function CustomerOnboard() {
                     </Grid>
                 </form>
             </Container>
-            <Footer />
         </div>
     );
 }

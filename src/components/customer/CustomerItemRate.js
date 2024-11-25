@@ -34,21 +34,7 @@ const CustomerItemRate = () => {
         }
     };
 
-    // // Handle search functionality
-    // const handleSearch = async () => {
-    //     setLoading(true);
-    //     try {
-    //         const response = await axios.get('http://localhost:5000/api/get/items');
-    //         setFormData(response.data);
-    //     } catch (error) {
-    //         console.error('Error fetching item data:', error);
-    //         alert('Failed to get data. Please try again later.');
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
 
-    // Handle pagination changes
     const handleChangePage = (event, newPage) => {
         setCurrentPage(newPage);
     };

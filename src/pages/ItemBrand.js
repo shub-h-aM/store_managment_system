@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Typography, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { Button,Typography, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-// import CorporateFareIcon from '@mui/icons-material/CorporateFare';
+import PageHeader from '../components/PageHeader';
 import DeleteIcon from '@mui/icons-material/Delete';
 import config from '../config';
 
@@ -54,7 +54,7 @@ const ItemBrandPage = () => {
                     marginBottom: '16px',
                 }}
             >
-                <Typography variant="h4">Item Brand</Typography>
+                <PageHeader title="Item Brand" color="#FF5722" align="center" />
                 <Button variant="contained" color="primary" onClick={handleCreateBrand}>
                     Create Item Brand
                 </Button>

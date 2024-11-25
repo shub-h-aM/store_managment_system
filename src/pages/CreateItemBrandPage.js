@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography } from '@mui/material';
+import { TextField, Button } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import PageHeader from '../components/PageHeader';
 
 
 const CreateItemBrand = () => {
@@ -31,7 +32,7 @@ const CreateItemBrand = () => {
 
     return (
         <div style={{ maxWidth: 600, margin: '0 auto' }}>
-            <Typography variant="h4" gutterBottom>Create Item Brand</Typography>
+            <PageHeader title="Create Item Brand" color="#FF5722" align="center" />
             <form onSubmit={handleSubmit}>
                 <TextField
                     fullWidth

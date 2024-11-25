@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import PageHeader from '../components/PageHeader'
+import ReusableButton from '../components/ReusableButton';
 import { useNavigate } from 'react-router-dom';
 import { MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 
@@ -11,29 +12,30 @@ function CreateItem() {
     const [itemName, setItemName] = useState('');
     const [itemDescription, setItemDescription] = useState('');
     const [itemModel, setItemModel] = useState('');
+    const [color, setColor] = useState('');
     const [brand, setBrand] = useState('');
     const [itemCategory, setItemCategory] = useState('');
     const [rate, setRate] = useState('');
     const [categories, setCategories] = useState([]);
-    const [brands, setBrands] = useState([]);  // New state for brands
+    const [brands, setBrands] = useState([]);
+    const [colors] = useState(['Red', 'Blue', 'Silver','Green', 'Yellow', 'Black', 'White', 'Orange', 'Purple', 'Pink', 'Brown','Others']); // Predefined colors
     const navigate = useNavigate();
 
-    // Fetch item categories when the component mounts
     useEffect(() => {
         const fetchCategories = async () => {
             try {
                 const response = await axios.get('http://localhost:5000/api/get/item-categories');
-                setCategories(response.data.categories); // Use the correct structure
+                setCategories(response.data.categories);
             } catch (error) {
                 console.error('Error fetching categories:', error);
                 alert('Failed to load item categories.');
             }
         };
 
-        const fetchBrands = async () => {  // New function to fetch brands
+        const fetchBrands = async () => {
             try {
                 const response = await axios.get('http://localhost:5000/api/get/item-brand');
-                setBrands(response.data.brand); // Use the correct structure for brand data
+                setBrands(response.data.brand);
             } catch (error) {
                 console.error('Error fetching brands:', error);
                 alert('Failed to load item brands.');
@@ -41,11 +43,12 @@ function CreateItem() {
         };
 
         fetchCategories();
-        fetchBrands();  // Call fetchBrands to load the brands
+        fetchBrands();
     }, []);
 
     const handleBack = () => {
         navigate('/get/item');
+        console.log('Back clicked');
     };
 
     const handleInputChange = (event) => {
@@ -64,18 +67,21 @@ function CreateItem() {
                 itemName,
                 itemDescription,
                 itemModel,
+                color,
                 brand,
                 itemCategory,
-                rate
+                rate,
             });
             console.log(response.data);
             setItemName('');
             setItemDescription('');
             setItemModel('');
+            setColor('');
             setBrand('');
             setItemCategory('');
             setRate('');
             alert('Item added successfully!');
+            console.log('Submit clicked');
         } catch (error) {
             console.error('Error:', error);
             alert('Failed to create item.');
@@ -85,7 +91,7 @@ function CreateItem() {
     return (
         <div>
             <header>
-                <h1>Create Item</h1>
+                <PageHeader title="Create Item" color="#FF5722" align="center" />
             </header>
             <Container maxWidth="sm">
                 <form onSubmit={handleSubmit}>
@@ -116,6 +122,23 @@ function CreateItem() {
                                 value={itemModel}
                                 onChange={handleInputChange}
                             />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FormControl fullWidth>
+                                <InputLabel id="color-label">Color</InputLabel>
+                                <Select
+                                    labelId="color-label"
+                                    name="color"
+                                    value={color}
+                                    onChange={(e) => setColor(e.target.value)}
+                                >
+                                    {colors.map((color) => (
+                                        <MenuItem key={color} value={color}>
+                                            {color}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
                         </Grid>
                         <Grid item xs={12}>
                             <FormControl fullWidth>
@@ -159,48 +182,32 @@ function CreateItem() {
                                 type="number"
                                 value={rate}
                                 onChange={handleInputChange}
+                                InputProps={{
+                                    inputProps: {min: 0,},
+                                }}
                             />
                         </Grid>
-                        <Grid container spacing={2}>
+                        <Grid container spacing={2} sx={{ mt: 3 }}>
                             <Grid item xs={6}>
-                                <Button
+                                <ReusableButton
                                     variant="outlined"
                                     color="secondary"
                                     onClick={handleBack}
-                                    sx={{
-                                        mt: 2,
-                                        ml: 2,
-                                        border: '2px solid #4CAF50',
-                                        backgroundImage: 'linear-gradient(to right, #4CAF50, #81C784)',
-                                        color: 'white',
-                                        '&:hover': {
-                                            backgroundImage: 'linear-gradient(to right, #81C784, #4CAF50)',
-                                        },
-                                    }}
-                                >
-                                    Back
-                                </Button>
+                                    label="Back"
+                                    fullWidth
+                                />
                             </Grid>
                             <Grid item xs={6}>
-                                <Button
+                                <ReusableButton
                                     variant="contained"
                                     color="primary"
+                                    onClick={handleSubmit}
+                                    label="Submit"
                                     type="submit"
                                     fullWidth
-                                    sx={{
-                                        mt: 2,
-                                        backgroundImage: 'linear-gradient(to right, #FF5722, #FF9800)',
-                                        color: 'white',
-                                        '&:hover': {
-                                            backgroundImage: 'linear-gradient(to right, #FF9800, #FF5722)',
-                                        },
-                                    }}
-                                >
-                                    Submit
-                                </Button>
+                                />
                             </Grid>
                         </Grid>
-
                     </Grid>
                 </form>
             </Container>

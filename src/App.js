@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import Header from './components/Header'; 
 import Sidebar from './Sidebar';
 import HomePage from './pages/HomePage';
@@ -74,59 +75,61 @@ const App = () => {
     }, []);
 
     return (
-        <Router>
-            <div>
-                <Header toggleMenu={toggleMenu} />
-                <Sidebar
-                    isLoggedIn={isLoggedIn}
-                    isMenuOpen={isMenuOpen}
-                    activeUser={activeUser}
-                    handleLogin={handleLogin}
-                    handleLogout={handleLogout}
-                    toggleMenu={toggleMenu}
-                />
-                <Routes>
-                    {!isLoggedIn ? (
-                        <>
-                            <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
-                            <Route path="/signup" element={<SignupPage />} />
-                            <Route path="/" element={<Navigate to="/login" />} />
-                        </>
-                    ) : (
-                        <>
-                            <Route path="/home" element={<HomePage />} />
-                            <Route path="/userDetails" element={<UserDetails />} />
-                            <Route path="/upload/item/details" element={<UploadFile />} />
-                            <Route path="/item/create-inventory" element={<CreateInventory />} />
-                            <Route path="/item-details" element={<ItemInventory />} />
-                            <Route path="/invoice" element={<InvoiceForm />} />
-                            <Route path="/customer" element={<CustomerDetails />} />
-                            <Route path="/create-customer" element={<CustomerOnboard />} />
-                            <Route path="/ledger-transaction" element={<LedgerPage />} />
-                            <Route path="/create-item" element={<CreateItem />} />
-                            <Route path="/get/item" element={<ItemList />} />
-                            <Route path="/blog" element={<Blog />} />
-                            <Route path="/about" element={<About />} />
-                            <Route path="/services" element={<Services />} />
-                            <Route path="/contact" element={<Contact />} />
-                            <Route path="/get/customer_rate/list" element={<CustomerItemRate />} />
-                            <Route path="/get/order/form" element={<OrderForm />} />
-                            <Route path="/ops/get-category" element={<ItemCategory />} />
-                            <Route path="/create-item-category" element={<CreateCategory />} />
-                            <Route path="/ops/get-brand" element={<ItemBrand />} />
-                            <Route path="/create-item-brand" element={<CreateBrand />} />
-                            <Route path="/ops/get/product" element={<UserProduct />} />
-                            <Route path="/ops/access/management" element={<AccessManagementPage />} />
-                            <Route path="/ops/roles/management" element={<Roles />} />
-                            <Route path="/ops/pages/management" element={<Pages />} />
-                            <Route path="/ops/admin/card" element={<AdminPage />} />
-                            <Route path="/cart" element={<Cart />} />
-                            <Route path="*" element={<Navigate to="/home" />} />
-                        </>
-                    )}
-                </Routes>
-            </div>
-        </Router>
+        <AuthProvider>
+            <Router>
+                <div>
+                    <Header toggleMenu={toggleMenu} />
+                    <Sidebar
+                        isLoggedIn={isLoggedIn}
+                        isMenuOpen={isMenuOpen}
+                        activeUser={activeUser}
+                        handleLogin={handleLogin}
+                        handleLogout={handleLogout}
+                        toggleMenu={toggleMenu}
+                    />
+                    <Routes>
+                        {!isLoggedIn ? (
+                            <>
+                                <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+                                <Route path="/signup" element={<SignupPage />} />
+                                <Route path="/" element={<Navigate to="/login" />} />
+                            </>
+                        ) : (
+                            <>
+                                <Route path="/home" element={<HomePage />} />
+                                <Route path="/userDetails" element={<UserDetails />} />
+                                <Route path="/upload/item/details" element={<UploadFile />} />
+                                <Route path="/item/create-inventory" element={<CreateInventory />} />
+                                <Route path="/item-details" element={<ItemInventory />} />
+                                <Route path="/invoice" element={<InvoiceForm />} />
+                                <Route path="/customer" element={<CustomerDetails />} />
+                                <Route path="/create-customer" element={<CustomerOnboard />} />
+                                <Route path="/ledger-transaction" element={<LedgerPage />} />
+                                <Route path="/create-item" element={<CreateItem />} />
+                                <Route path="/get/item" element={<ItemList />} />
+                                <Route path="/blog" element={<Blog />} />
+                                <Route path="/about" element={<About />} />
+                                <Route path="/services" element={<Services />} />
+                                <Route path="/contact" element={<Contact />} />
+                                <Route path="/get/customer_rate/list" element={<CustomerItemRate />} />
+                                <Route path="/get/order/form" element={<OrderForm />} />
+                                <Route path="/ops/get-category" element={<ItemCategory />} />
+                                <Route path="/create-item-category" element={<CreateCategory />} />
+                                <Route path="/ops/get-brand" element={<ItemBrand />} />
+                                <Route path="/create-item-brand" element={<CreateBrand />} />
+                                <Route path="/ops/get/product" element={<UserProduct />} />
+                                <Route path="/ops/access/management" element={<AccessManagementPage />} />
+                                <Route path="/ops/roles/management" element={<Roles />} />
+                                <Route path="/ops/pages/management" element={<Pages />} />
+                                <Route path="/ops/admin/card" element={<AdminPage />} />
+                                <Route path="/cart" element={<Cart />} />
+                                <Route path="*" element={<Navigate to="/home" />} />
+                            </>
+                        )}
+                    </Routes>
+                </div>
+            </Router>
+        </AuthProvider>
     );
 };
 

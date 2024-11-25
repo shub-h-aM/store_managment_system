@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaSearch } from 'react-icons/fa';
-import { Typography, TextField, Button, Table, TableHead, TableRow, TableCell, TableBody, TablePagination } from '@mui/material';
-import Footer from '../components/Footer';
+import { TextField, Button, Table, TableHead, TableRow, TableCell, TableBody, TablePagination } from '@mui/material';
+import PageHeader from '../components/PageHeader';
 
 const columns = [
     { id: 'Name', label: 'Name', minWidth: 170 },
@@ -60,7 +60,7 @@ const UserDetails = () => {
     return (
         <div style={{ position: 'fixed', width: '80%', marginLeft: '10%', marginTop: '7%' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="h3" gutterBottom>User Details</Typography>
+                <PageHeader title="User Details" color="#FF5722" align="center" />
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <TextField
                         label="Search"
@@ -107,7 +107,6 @@ const UserDetails = () => {
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-            <Footer />
         </div>
     );
 };

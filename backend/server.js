@@ -74,9 +74,9 @@ app.post('/api/signup', (req, res) => {
 
 // Api endpoint for item page
 app.post('/api/items', (req, res) => {
-    const { itemCode, itemName, itemDescription, itemModel, brand, itemCategory, rate } = req.body;
-    const sql = 'INSERT INTO items ( item_name, item_description, item_model, brand, item_category, rate) VALUES (?, ?, ?, ?, ?,?)';
-    db.query(sql, [ itemName, itemDescription, itemModel, brand, itemCategory, rate], (err, result) => {
+    const { itemCode, itemName, itemDescription, itemModel,color, brand, itemCategory, rate } = req.body;
+    const sql = 'INSERT INTO items ( item_name, item_description, item_model, color, brand, item_category, rate) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    db.query(sql, [ itemName, itemDescription, itemModel,color, brand, itemCategory, rate], (err, result) => {
         if (err) {
             console.error('Error inserting item data:', err);
             return res.status(500).json({ error: 'Error submitting item' });
@@ -97,6 +97,29 @@ app.delete('/api/delete/items/:id', async (req, res) => {
         res.status(500).send({ message: 'Failed to delete item' });
     }
 });
+
+//API End point to update item rate
+
+// Update an item's rate
+app.put('/api/update/items/:id', (req, res) => {
+    const { id } = req.params;
+    const { rate } = req.body;
+    if (!rate) {
+        return res.status(400).json({ error: 'Rate is required' });
+    }
+    const query = 'UPDATE items SET rate = ? WHERE id = ?';
+    db.query(query, [rate, id], (err, result) => {
+        if (err) {
+            console.error('Error updating rate:', err);
+            return res.status(500).json({ error: 'Failed to update rate' });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Item not found' });
+        }
+        res.json({ message: 'Rate updated successfully' });
+    });
+});
+
 
 // API Endpoint to retrieve form data
 

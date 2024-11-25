@@ -4,7 +4,7 @@ import { Link } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Avatar, Box, Button, Container, CssBaseline, Grid, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Footer from '../components/Footer';
+
 
 const defaultTheme = createTheme();
 
@@ -120,20 +120,51 @@ const SignupPage = () => {
                             type="submit"
                             fullWidth
                             variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
+                            sx={{
+                                mt: 3,
+                                mb: 2,
+                                background: 'linear-gradient(45deg, #ff7e5f 30%, #feb47b 90%)',
+                                color: 'white',
+                                fontWeight: 'bold',
+                                textTransform: 'uppercase',
+                                boxShadow: '0 3px 5px 2px rgba(255, 140, 85, .3)',
+                                '&:hover': {
+                                    background: 'linear-gradient(45deg, #feb47b 30%, #ff7e5f 90%)',
+                                    boxShadow: '0 4px 6px 3px rgba(255, 140, 85, .4)',
+                                },
+                            }}
                         >
                             Sign Up
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
                                 <Link href="/login" variant="body2">
-                                    Already have an account? Sign in
+                                    Already have an account?
+                                    <Button
+                                        variant="contained"
+                                        sx={{
+                                            mt: 3,
+                                            mb: 2,
+                                            marginTop: '14px',
+                                            marginLeft:'6px',
+                                            background: 'linear-gradient(45deg, #6a11cb 30%, #2575fc 90%)',
+                                            color: 'white',
+                                            fontWeight: 'bold',
+                                            textTransform: 'uppercase',
+                                            boxShadow: '0 3px 5px 2px rgba(105, 135, 255, .3)',
+                                            '&:hover': {
+                                                background: 'linear-gradient(45deg, #2575fc 30%, #6a11cb 90%)',
+                                                boxShadow: '0 4px 6px 3px rgba(105, 135, 255, .4)',
+                                            },
+                                        }}
+                                    >
+                                        Sign In
+                                    </Button>
                                 </Link>
                             </Grid>
                         </Grid>
                     </Box>
                 </Box>
-                <Footer />
             </Container>
         </ThemeProvider>
     );

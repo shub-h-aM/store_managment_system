@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import CategoryIcon from '@mui/icons-material/Category';
 import DeleteIcon from '@mui/icons-material/Delete';
 import config from '../config';
+import PageHeader from '../components/PageHeader';
 
 const ItemCategoryPage = () => {
     const [categories, setCategories] = useState([]);
@@ -67,7 +68,7 @@ const ItemCategoryPage = () => {
                     marginBottom: '16px',
                 }}
             >
-                <Typography variant="h4">Item Category</Typography>
+                <PageHeader title="Item Category" color="#FF5722" align="center" />
                 <Button variant="contained" color="primary" onClick={handleCreateCategory}>
                     Create Item Category
                 </Button>
