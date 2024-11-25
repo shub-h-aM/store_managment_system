@@ -1,24 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { createOrder } from '../services/apiService';
-import {
-    Container, TextField, Button, Grid, Typography, Paper, IconButton, Dialog, DialogTitle, DialogContent, DialogActions
-} from '@mui/material';
+import {Container, TextField, Button, Grid, Typography, Paper, IconButton, Dialog, DialogTitle, DialogContent,
+    DialogActions } from '@mui/material';
 import { Add, Delete, ShoppingCart } from '@mui/icons-material';
 import axios from 'axios';
 import Cart from '../components/Cart';
 
 const OrderForm = () => {
-    const [items, setItems] = useState([{ productName: '', productType: '', quantity: 1, price: 0 }]);
+    const [items, setItems] = useState([{ productName: '', productBrand: '', quantity: 1, price: 0 }]);
     const [productList, setProductList] = useState([]);
     const [cartItems, setCartItems] = useState([]);
-    const [cartOpen, setCartOpen] = useState(false); // State to manage cart dialog visibility
+    const [cartOpen, setCartOpen] = useState(false);
     const token = localStorage.getItem('token');
 
     useEffect(() => {
         const fetchItems = async () => {
             try {
                 const BaseUrl = "http://localhost:5000";
-                const response = await axios.get(BaseUrl + '/api/get/items', {
+                const response = await axios.get(BaseUrl + '/api/get/get-items', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -27,7 +26,7 @@ const OrderForm = () => {
                 const formattedProductList = response.data.map(product => ({
                     itemId: product.id,
                     productName: product.item_description,
-                    productType: product.item_category,
+                    productBrand: product.brand,
                     price: product.rate,
                 }));
                 setProductList(formattedProductList);
@@ -44,15 +43,17 @@ const OrderForm = () => {
         alert('All items added to cart successfully!');
     };
 
-    const handleSubmit = async () => {
-        try {
-            await createOrder({ items: cartItems, totalAmount: calculateTotal(cartItems) }, token);
-            alert('Order placed successfully!');
-        } catch (error) {
-            console.error(error);
-            alert('Failed to place order.');
-        }
-    };
+    // const handleSubmit = async () => {
+    //     try {
+    //         await createOrder({ items: cartItems, totalAmount: calculateTotal(cartItems) }, token);
+    //         alert('Order placed successfully!');
+    //     } catch (error) {
+    //         console.error(error);
+    //         alert('Failed to place order.');
+    //     }
+    // };
+
+
 
     const calculateTotal = (itemList) =>
         itemList.reduce((sum, item) => sum + item.quantity * item.price, 0);
@@ -72,6 +73,35 @@ const OrderForm = () => {
     const removeFromCart = (index) => {
         setCartItems(cartItems.filter((_, idx) => idx !== index));
     };
+    const handleRateChange = (e, id) => {
+        const updatedValue = e.target.value;
+        // Update the state with the new value for the specific item
+        setItems((prevItems) =>
+            prevItems.map((item) =>
+                item.id === id ? { ...item, price: updatedValue } : item
+            )
+        );
+    };
+    const handleSubmit = async () => {
+        const orderData = {
+            items: cartItems,
+            totalAmount: calculateTotal(cartItems),
+        };
+
+        try {
+            const response = await axios.post('http://localhost:5000/api/create-order', orderData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            alert('Order placed successfully!');
+        } catch (error) {
+            console.error('Error placing order:', error.response?.data || error.message);
+            alert(`Failed to place order. ${error.response?.data?.message || ''}`);
+        }
+    };
+
+
 
     return (
         <Container maxWidth="md" sx={{ mt: 5 }}>
@@ -96,15 +126,15 @@ const OrderForm = () => {
                         <Grid item xs={12} key={index} container spacing={2} alignItems="center">
                             <Grid item xs={3}>
                                 <TextField
-                                    label="Product Type"
+                                    label="Product Company"
                                     select
                                     variant="outlined"
                                     fullWidth
-                                    value={item.productType}
+                                    value={item.productBrand}
                                     onChange={(e) =>
                                         setItems(items.map((i, idx) =>
                                             idx === index
-                                                ? { ...i, productType: e.target.value }
+                                                ? { ...i, productBrand: e.target.value }
                                                 : i
                                         ))
                                     }
@@ -115,14 +145,15 @@ const OrderForm = () => {
                                         shrink: true,
                                     }}
                                 >
-                                    <option value="">Select Product Type</option>
-                                    {[...new Set(productList.map(product => product.productType))].map((type, idx) => (
+                                    <option value="">Select Company Brand</option>
+                                    {[...new Set(productList.map(product => product.productBrand))].map((type, idx) => (
                                         <option key={idx} value={type}>
                                             {type}
                                         </option>
                                     ))}
                                 </TextField>
                             </Grid>
+
 
                             <Grid item xs={4}>
                                 <TextField
@@ -151,7 +182,7 @@ const OrderForm = () => {
                                 >
                                     <option value="">Select Product</option>
                                     {productList
-                                        .filter(product => product.productType === item.productType)
+                                        .filter(product => product.productBrand === item.productBrand)
                                         .map((product) => (
                                             <option key={product.itemId} value={product.productName}>
                                                 {product.productName}
@@ -184,12 +215,19 @@ const OrderForm = () => {
                                     type="number"
                                     variant="outlined"
                                     fullWidth
+                                    inputProps={{ min: 1 }}
                                     value={item.price}
-                                    InputProps={{
-                                        readOnly: true,
+                                    onChange={(e) => {
+                                        const updatedPrice = parseFloat(e.target.value);
+                                        setItems(items.map((i, idx) =>
+                                            idx === index
+                                                ? { ...i, price: updatedPrice }
+                                                : i
+                                        ));
                                     }}
                                 />
                             </Grid>
+
 
                             <Grid item xs={1}>
                                 <IconButton

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaSearch } from 'react-icons/fa';
 import {Button, Typography, TextField, Select, MenuItem, Checkbox, ListItemText, Table, TableHead, TableBody,
     TableRow, TableCell, TablePagination, CircularProgress,} from '@mui/material';
 import { LiaFileDownloadSolid } from 'react-icons/lia';
@@ -35,19 +34,19 @@ const CustomerItemRate = () => {
         }
     };
 
-    // Handle search functionality
-    const handleSearch = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.get('http://localhost:5000/api/get/items');
-            setFormData(response.data);
-        } catch (error) {
-            console.error('Error fetching item data:', error);
-            alert('Failed to get data. Please try again later.');
-        } finally {
-            setLoading(false);
-        }
-    };
+    // // Handle search functionality
+    // const handleSearch = async () => {
+    //     setLoading(true);
+    //     try {
+    //         const response = await axios.get('http://localhost:5000/api/get/items');
+    //         setFormData(response.data);
+    //     } catch (error) {
+    //         console.error('Error fetching item data:', error);
+    //         alert('Failed to get data. Please try again later.');
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
     // Handle pagination changes
     const handleChangePage = (event, newPage) => {
