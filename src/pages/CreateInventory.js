@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Typography, TextField, Button, Grid } from '@mui/material';
 import {Link} from "react-router-dom";
-import Footer from "../components/Footer";
+// import Footer from "../components/Footer";
 
-const CreateItemDetails = () => {
+const CreateInventory = () => {
     const initialFormData = {
         date_of_purchase: '',
         month_name: '',
@@ -123,9 +123,8 @@ const CreateItemDetails = () => {
             <div style={{textAlign: 'center'}}>
                 <Button variant="contained" color="primary" onClick={handleSubmit}>Submit</Button>
             </div>
-            <Footer />
         </div>
     );
 };
 
-export default CreateItemDetails;
+export default CreateInventory;

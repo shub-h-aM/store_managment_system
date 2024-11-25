@@ -69,11 +69,11 @@ const Sidebar = ({ isLoggedIn, isMenuOpen, activeUser, handleLogin, handleLogout
                                 </ListItemIcon>
                                 <ListItemText primary="User Details" />
                             </ListItem>
-                            <ListItem button component={Link} to="/item/create-item" onClick={toggleMenu}>
+                            <ListItem button component={Link} to="/item/create-inventory" onClick={toggleMenu}>
                                 <ListItemIcon>
                                     <FaUpload />
                                 </ListItemIcon>
-                                <ListItemText primary="Add Item" />
+                                <ListItemText primary="Add Inventory" />
                             </ListItem>
                             <ListItem button component={Link} to="/ops/get-category" onClick={toggleMenu}>
                                 <ListItemIcon>
@@ -81,11 +81,17 @@ const Sidebar = ({ isLoggedIn, isMenuOpen, activeUser, handleLogin, handleLogout
                                 </ListItemIcon>
                                 <ListItemText primary="Item Category" />
                             </ListItem>
+                            <ListItem button component={Link} to="/ops/get-brand" onClick={toggleMenu}>
+                                <ListItemIcon>
+                                    <FaUpload />
+                                </ListItemIcon>
+                                <ListItemText primary="Item Brand" />
+                            </ListItem>
                             <ListItem button component={Link} to="/item-details" onClick={toggleMenu}>
                                 <ListItemIcon>
                                     <FaWarehouse />
                                 </ListItemIcon>
-                                <ListItemText primary="Item Details" />
+                                <ListItemText primary="Item Inventory" />
                             </ListItem>
                             <ListItem button component={Link} to="/invoice" onClick={toggleMenu}>
                                 <ListItemIcon>
@@ -115,7 +121,7 @@ const Sidebar = ({ isLoggedIn, isMenuOpen, activeUser, handleLogin, handleLogout
                                 <ListItemIcon>
                                     <MdListAlt />
                                 </ListItemIcon>
-                                <ListItemText primary="Item Rate" />
+                                <ListItemText primary="Customer Item Rate" />
                             </ListItem>
                             <ListItem button component={Link} to="/blog" onClick={toggleMenu}>
                                 <ListItemIcon>

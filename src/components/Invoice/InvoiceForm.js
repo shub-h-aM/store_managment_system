@@ -43,6 +43,7 @@ class InvoiceForm extends React.Component {
                     id: 0,
                     sno: 1,
                     name: '',
+                    brand: 'Brand',
                     price: '0.00',
                     quantity: 0
                 }
@@ -69,7 +70,7 @@ class InvoiceForm extends React.Component {
                 alert('Failed to fetch last invoice number. Please try again later.');
             });
 
-        axios.get('http://localhost:5000/api/get/items')
+        axios.get('http://localhost:5000/api/get/get-items')
             .then(response => {
                 this.setState({ availableItems: response.data });
             })
@@ -93,6 +94,7 @@ class InvoiceForm extends React.Component {
             id: id,
             sno: 1,
             name: selectedItem.item_name,
+            brand: selectedItem.brand,
             price: selectedItem.rate,
             quantity: 1
         };

@@ -30,6 +30,7 @@ class InvoiceItem extends React.Component {
                     <tr>
                         <th>S.No.</th>
                         <th> &nbsp; &nbsp; &nbsp;ITEM DESCRIPTION</th>
+                        <th style={{paddingLeft:'15px'}}>BRAND</th>
                         <th>QUANTITY</th>
                         <th style={{paddingLeft:'15px'}}>PRICE/RATE</th>
                         <th style={{paddingLeft:'30px'}}>TOTAL</th>
@@ -61,7 +62,7 @@ class ItemRow extends React.Component {
         return (
             <tr>
                 <td>{index + 1}</td>
-                <td style={{ width: '100%' }}>
+                <td style={{width: '100%'}}>
                     <Form.Select
                         value={item.name}
                         onChange={(e) => {
@@ -74,42 +75,58 @@ class ItemRow extends React.Component {
                         <option>Select Item</option>
                         {availableItems.map(availableItem => (
                             <option key={availableItem.id} value={availableItem.item_name}>
-                                {availableItem.item_name}
+                                {availableItem.item_name + "  " + availableItem.brand}
                             </option>
                         ))}
                     </Form.Select>
                 </td>
-                <td style={{ minWidth: '70px' }}>
+                <td style={{minWidth: '130px'}}>
+                    <Form.Control
+                        type="text"
+                        name="brand"
+                        id={item.id}
+                        value={item.brand || ''}
+                        onChange={onItemizedItemEdit}
+                        style={{
+                            padding: '2px 6px', // Reduce padding for smaller height
+                            fontSize: '18px',   // Adjust font size for a compact look
+                            height: '39px',     // Explicitly set height
+                        }}
+                    />
+                </td>
+                <td style={{minWidth: '70px'}}>
                     <Form.Control
                         type="number"
                         name="quantity"
                         id={item.id}
+                        min={0}
                         value={item.quantity}
                         onChange={onItemizedItemEdit}
                     />
                 </td>
-                <td style={{ minWidth: '130px' }}>
+                <td style={{minWidth: '130px'}}>
                     <Form.Control
                         type="number"
                         name="price"
+                        min={0}
                         id={item.id}
                         value={item.price}
                         onChange={onItemizedItemEdit}
                     />
                 </td>
-                <td style={{ minWidth: '130px',paddingTop: '15px',paddingLeft: '25px'}}>
+                <td style={{minWidth: '130px', paddingTop: '15px', paddingLeft: '25px'}}>
                     {currency}{(item.price * item.quantity).toFixed(2)}
                 </td>
-                <td className="text-center" style={{ minWidth: '50px' }}>
+                <td className="text-center" style={{minWidth: '50px'}}>
                     <BiTrash
                         onClick={this.onDelEvent.bind(this)}
-                        style={{ height: '33px', width: '33px', padding: '7.5px' }}
+                        style={{height: '33px', width: '33px', padding: '7.5px'}}
                         className="text-white mt-1 btn btn-danger"
                     />
                 </td>
             </tr>
-        );
+    );
     }
-}
+    }
 
-export default InvoiceItem;
+    export default InvoiceItem;

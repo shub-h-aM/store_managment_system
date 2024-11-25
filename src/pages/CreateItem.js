@@ -4,11 +4,10 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import Footer from "../components/Footer";
+import { useNavigate } from 'react-router-dom';
 import { MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 
 function CreateItem() {
-    const [itemCode, setItemCode] = useState('');
     const [itemName, setItemName] = useState('');
     const [itemDescription, setItemDescription] = useState('');
     const [itemModel, setItemModel] = useState('');
@@ -16,6 +15,8 @@ function CreateItem() {
     const [itemCategory, setItemCategory] = useState('');
     const [rate, setRate] = useState('');
     const [categories, setCategories] = useState([]);
+    const [brands, setBrands] = useState([]);  // New state for brands
+    const navigate = useNavigate();
 
     // Fetch item categories when the component mounts
     useEffect(() => {
@@ -29,12 +30,26 @@ function CreateItem() {
             }
         };
 
+        const fetchBrands = async () => {  // New function to fetch brands
+            try {
+                const response = await axios.get('http://localhost:5000/api/get/item-brand');
+                setBrands(response.data.brand); // Use the correct structure for brand data
+            } catch (error) {
+                console.error('Error fetching brands:', error);
+                alert('Failed to load item brands.');
+            }
+        };
+
         fetchCategories();
+        fetchBrands();  // Call fetchBrands to load the brands
     }, []);
+
+    const handleBack = () => {
+        navigate('/get/item');
+    };
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-        if (name === 'itemCode') setItemCode(value);
         if (name === 'itemName') setItemName(value);
         if (name === 'itemDescription') setItemDescription(value);
         if (name === 'itemModel') setItemModel(value);
@@ -46,7 +61,6 @@ function CreateItem() {
         event.preventDefault();
         try {
             const response = await axios.post('http://localhost:5000/api/items', {
-                itemCode,
                 itemName,
                 itemDescription,
                 itemModel,
@@ -55,7 +69,6 @@ function CreateItem() {
                 rate
             });
             console.log(response.data);
-            setItemCode('');
             setItemName('');
             setItemDescription('');
             setItemModel('');
@@ -77,15 +90,6 @@ function CreateItem() {
             <Container maxWidth="sm">
                 <form onSubmit={handleSubmit}>
                     <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <TextField
-                                fullWidth
-                                label="Item Code"
-                                name="itemCode"
-                                value={itemCode}
-                                onChange={handleInputChange}
-                            />
-                        </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
@@ -114,13 +118,21 @@ function CreateItem() {
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField
-                                fullWidth
-                                label="Brand"
-                                name="brand"
-                                value={brand}
-                                onChange={handleInputChange}
-                            />
+                            <FormControl fullWidth>
+                                <InputLabel id="brand-label">Brand</InputLabel>
+                                <Select
+                                    labelId="brand-label"
+                                    name="brand"
+                                    value={brand}
+                                    onChange={handleInputChange}
+                                >
+                                    {brands.map((brand) => (
+                                        <MenuItem key={brand.brand_id} value={brand.brand_name}>
+                                            {brand.brand_name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
                         </Grid>
                         <Grid item xs={12}>
                             <FormControl fullWidth>
@@ -132,7 +144,7 @@ function CreateItem() {
                                     onChange={(e) => setItemCategory(e.target.value)}
                                 >
                                     {categories.map((category) => (
-                                        <MenuItem key={category.category_id} value={category.category_id}>
+                                        <MenuItem key={category.category_id} value={category.category_name}>
                                             {category.category_name}
                                         </MenuItem>
                                     ))}
@@ -149,15 +161,49 @@ function CreateItem() {
                                 onChange={handleInputChange}
                             />
                         </Grid>
-                        <Grid item xs={12}>
-                            <Button variant="contained" color="primary" type="submit" fullWidth>
-                                Submit
-                            </Button>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6}>
+                                <Button
+                                    variant="outlined"
+                                    color="secondary"
+                                    onClick={handleBack}
+                                    sx={{
+                                        mt: 2,
+                                        ml: 2,
+                                        border: '2px solid #4CAF50',
+                                        backgroundImage: 'linear-gradient(to right, #4CAF50, #81C784)',
+                                        color: 'white',
+                                        '&:hover': {
+                                            backgroundImage: 'linear-gradient(to right, #81C784, #4CAF50)',
+                                        },
+                                    }}
+                                >
+                                    Back
+                                </Button>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    type="submit"
+                                    fullWidth
+                                    sx={{
+                                        mt: 2,
+                                        backgroundImage: 'linear-gradient(to right, #FF5722, #FF9800)',
+                                        color: 'white',
+                                        '&:hover': {
+                                            backgroundImage: 'linear-gradient(to right, #FF9800, #FF5722)',
+                                        },
+                                    }}
+                                >
+                                    Submit
+                                </Button>
+                            </Grid>
                         </Grid>
+
                     </Grid>
                 </form>
             </Container>
-            <Footer />
         </div>
     );
 }

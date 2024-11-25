@@ -29,21 +29,21 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // MySQL Connection
-// const db = mysql.createConnection({
-//     host: 'localhost',
-//     user: 'root',
-//     password: 'Shubham@21',
-//     database: 'store'
-// });
-
-
 const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT || 3306,
+    host: 'localhost',
+    user: 'root',
+    password: 'Shubham@21',
+    database: 'store'
 });
+
+
+// const db = mysql.createConnection({
+//     host: process.env.DB_HOST,
+//     user: process.env.DB_USER,
+//     password: process.env.DB_PASSWORD,
+//     database: process.env.DB_NAME,
+//     port: process.env.DB_PORT || 3306,
+// });
 
 db.connect((err) => {
     if (err) {
@@ -75,8 +75,8 @@ app.post('/api/signup', (req, res) => {
 // Api endpoint for item page
 app.post('/api/items', (req, res) => {
     const { itemCode, itemName, itemDescription, itemModel, brand, itemCategory, rate } = req.body;
-    const sql = 'INSERT INTO items (item_code, item_name, item_description, item_model, brand, item_category, rate) VALUES (?, ?, ?, ?, ?, ?,?)';
-    db.query(sql, [itemCode, itemName, itemDescription, itemModel, brand, itemCategory, rate], (err, result) => {
+    const sql = 'INSERT INTO items ( item_name, item_description, item_model, brand, item_category, rate) VALUES (?, ?, ?, ?, ?,?)';
+    db.query(sql, [ itemName, itemDescription, itemModel, brand, itemCategory, rate], (err, result) => {
         if (err) {
             console.error('Error inserting item data:', err);
             return res.status(500).json({ error: 'Error submitting item' });
@@ -86,9 +86,21 @@ app.post('/api/items', (req, res) => {
     });
 });
 
+// api to delete items
+app.delete('/api/delete/items/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await db.query('DELETE FROM items WHERE id = ?', [id]);
+        res.status(200).send({ message: 'Item deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting Item:', error);
+        res.status(500).send({ message: 'Failed to delete item' });
+    }
+});
+
 // API Endpoint to retrieve form data
 
-app.get('/api/get/items', (req, res) => {
+app.get('/api/get/get-items', (req, res) => {
     const sql = 'SELECT * FROM items';
     db.query(sql, (err, result) => {
         if (err) {
@@ -103,7 +115,7 @@ app.get('/api/get/items', (req, res) => {
 app.get('/api/generate-excel', async (req, res) => {
     try {
         // Fetch data from your API endpoint
-        const response = await get('http://localhost:5000/api/get/items');
+        const response = await get('http://localhost:5000/api/get/get-items');
         const formData = response.data;
 
         // Prepare data for Excel
@@ -137,7 +149,7 @@ app.get('/api/generate-excel', async (req, res) => {
 app.post('/api/item/details', (req, res) => {
     const { date_of_purchase,month_name, item,item_description, item_type,invoice_number, brand, item_category, qty, total_amount, total_gst, supplier, location } = req.body;
     const sql =
-        'INSERT INTO item_details (date_of_purchase,month_name, item, item_description, item_type,invoice_number, brand, item_category, qty, total_amount, total_gst, supplier, location) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?)';
+        'INSERT INTO item_inventory (date_of_purchase,month_name, item, item_description, item_type,invoice_number, brand, item_category, qty, total_amount, total_gst, supplier, location) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?)';
     db.query(sql, [date_of_purchase,month_name, item, item_description, item_type,invoice_number, brand, item_category, qty, total_amount, total_gst,supplier, location], (err, result) => {
         if (err) {
             console.error('Error inserting form data:', err);
@@ -215,7 +227,7 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
         console.log('Data Rows:', dataRows);
 
         // Insert rows into MySQL database
-        const query = 'INSERT INTO item_details (date_of_purchase, item, item_type, brand, item_category, qty, total_amount, total_gst, location, supplier) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        const query = 'INSERT INTO item_inventory (date_of_purchase, item, item_type, brand, item_category, qty, total_amount, total_gst, location, supplier) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
         const promises = dataRows.map(row => {
             return new Promise((resolve, reject) => {
                 db.query(query, row, (error, results) => {
@@ -242,8 +254,8 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
 
 
 // API Endpoint to retrieve item data
-app.get('/api/itemDetails', (req, res) => {
-    const sql = 'SELECT * FROM item_details';
+app.get('/api/get/item-inventory', (req, res) => {
+    const sql = 'SELECT * FROM item_inventory';
     db.query(sql, (err, result) => {
         if (err) {
             console.error('Error retrieving form data:', err);
@@ -258,13 +270,13 @@ app.get('/api/itemDetails', (req, res) => {
 app.post('/api/invoices', (req, res) => {
     const { customer_name,customer_number, invoice_number, items } = req.body;
 
-    const sql = 'INSERT INTO invoices (customer_name,customer_number, invoice_number, item_name, rate, quantity, amount) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    const sql = 'INSERT INTO invoices (customer_name,customer_number, invoice_number, item_name,brand, rate, quantity, amount) VALUES (?,?, ?, ?, ?, ?, ?, ?)';
 
     const promises = [];
 
     items.forEach(item => {
         const promise = new Promise((resolve, reject) => {
-            db.query(sql, [customer_name, customer_number, invoice_number, item.itemName, item.rate, item.quantity, item.amount], (err, result) => {
+            db.query(sql, [customer_name, customer_number, invoice_number, item.itemName,item.brand, item.rate, item.quantity, item.amount], (err, result) => {
                 if (err) {
                     console.error('Error inserting invoice data:', err);
                     reject(err);
@@ -427,6 +439,65 @@ app.get('/api/get/item-categories', async (req, res) => {
         res.status(500).json({ error: 'Error retrieving Category data' });
     }
 });
+//delete item category
+app.delete('/api/delete/item-category/:categoryId', async (req, res) => {
+    const { categoryId } = req.params;
+    try {
+        await db.query('DELETE FROM ItemCategory WHERE category_id = ?', [categoryId]);
+        res.status(200).send({ message: 'Category deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting Category:', error);
+        res.status(500).send({ message: 'Failed to delete category' });
+    }
+});
+
+// API endpoint to create a new item Brand
+
+app.post('/api/create/item-brand', (req, res) => {
+    const { brand_name } = req.body;
+    const sql = `INSERT INTO Brand (brand_name) VALUES (?)`;
+    db.query(sql, [brand_name], (err, result) => {
+        if (err) {
+            console.error('Error inserting brand data:', err);
+            res.status(500).json({ error: 'Error creating Brand' });
+            return;
+        }
+        console.log('Item Brand created successfully');
+        res.status(200).json({ message: 'Item Brand created successfully' });
+    });
+});
+//get item Brand
+
+app.get('/api/get/item-brand', async (req, res) => {
+    try {
+        const query = 'SELECT * FROM Brand';
+        db.query(query, (err, result) => {
+            if (err) {
+                console.error('Error retrieving item Brand data:', err);
+                return res.status(500).json({ error: 'Error retrieving Brand data' });
+            }
+            console.log('Item Brand data retrieved successfully');
+            res.status(200).json({ brand: result });
+        });
+    } catch (error) {
+        console.error('Error retrieving Brand data:', error);
+        res.status(500).json({ error: 'Error retrieving Brand data' });
+    }
+});
+
+//delete item brand
+app.delete('/api/delete/item-brand/:brandId', async (req, res) => {
+    const { brandId } = req.params;
+    try {
+        await db.query('DELETE FROM Brand WHERE brand_id = ?', [brandId]);
+        res.status(200).send({ message: 'Brand deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting brand:', error);
+        res.status(500).send({ message: 'Failed to delete brand' });
+    }
+});
+
+
 // API Endpoint to Add an Image on admin page
 app.post('/api/ops/admin/images', (req, res) => {
     const { name, about, mrp, image_url } = req.body;
@@ -436,7 +507,7 @@ app.post('/api/ops/admin/images', (req, res) => {
     const query = 'INSERT INTO admin_card_page (name, about, mrp, image_url) VALUES (?, ?, ?, ?)';
     db.query(query, [name, about, mrp, image_url], (err, result) => {
         if (err) {
-            console.error('Error inserting image:', err);  
+            console.error('Error inserting image:', err);
             return res.status(500).json({ error: 'Database error', details: err });
         }
         res.status(201).json({ id: result.insertId, name, about, mrp, image_url });

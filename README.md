@@ -83,3 +83,24 @@ material ui common link{
 2. npm install markdown-to-jsx
 3. 
 }
+{
+to deploy backend on render.yaml file
+
+{  
+  services:
+- type: web
+  name: backend-service
+  env: node
+  buildCommand: cd backend && npm install  # Navigate to the backend directory and install dependencies
+  startCommand: cd backend && node index.js 
+}
+{
+- services:
+    - type: web
+      name: react-app
+      env: node
+      buildCommand: npm install && npm run build
+      startCommand: npm run start
+      plan: free
+  }
+}
