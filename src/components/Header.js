@@ -4,7 +4,7 @@ import {
     Container, Button, Box
 } from '@mui/material';
 import { FaBars } from 'react-icons/fa';
-import '../components/card/ImageCard'
+import '../components/card/ImageCard';
 import '../pages/RolesPage';
 import '../pages/AccessManagementPage';
 

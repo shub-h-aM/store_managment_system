@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaSearch } from 'react-icons/fa';
 import { Typography, TextField, Button, Table, TableHead, TableRow, TableCell, TableBody, TablePagination } from '@mui/material';
-import Footer from "../components/Footer";
+import Footer from '../components/Footer';
 
 const columns = [
     { id: 'Name', label: 'Name', minWidth: 170 },
@@ -29,7 +29,7 @@ const UserDetails = () => {
             setFormData(response.data);
         } catch (error) {
             console.error('Error fetching form data:', error);
-            alert("Failed to get data.");
+            alert('Failed to get data.');
         } finally {
             setLoading(false);
         }

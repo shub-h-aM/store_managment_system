@@ -1,10 +1,10 @@
-import { toPng } from "html-to-image";
-import { jsPDF } from "jspdf";
+import { toPng } from 'html-to-image';
+import { jsPDF } from 'jspdf';
 
 export const GenerateRateList = () => {
     const dom = document.getElementById('print');
     if (!dom) {
-        console.error("Element with ID 'print' not found");
+        console.error('Element with ID \'print\' not found');
         return;
     }
     toPng(dom, { quality: 0.5 })
@@ -65,6 +65,6 @@ export const GenerateRateList = () => {
         })
         .catch((error) => {
             console.error('Oops, something went wrong!', error);
-            alert("Not Able to Download File!");
+            alert('Not Able to Download File!');
         });
 };

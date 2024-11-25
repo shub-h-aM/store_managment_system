@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import Footer from "../Footer";
+import Footer from '../Footer';
 
 function CustomerOnboard() {
     const [customerName, setCustomerName] = useState('');
@@ -34,7 +34,7 @@ function CustomerOnboard() {
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert("Failed to Create Customer Data.");
+                alert('Failed to Create Customer Data.');
             });
     };
 

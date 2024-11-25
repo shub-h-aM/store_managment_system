@@ -4,7 +4,7 @@ import BuildIcon from '@mui/icons-material/Build';
 import StoreIcon from '@mui/icons-material/Store';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import HandymanIcon from '@mui/icons-material/Handyman';
-import Footer from "../Footer";
+import Footer from '../Footer';
 
 const Services = () => {
     return (

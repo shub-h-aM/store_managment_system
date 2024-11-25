@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Typography, TextField, Button, Grid } from '@mui/material';
-import {Link} from "react-router-dom";
+import {Link} from 'react-router-dom';
 // import Footer from "../components/Footer";
 
 const CreateInventory = () => {
@@ -28,11 +28,11 @@ const CreateInventory = () => {
             .then((response) => {
                 console.log(response.data.message);
                 setFormData(initialFormData);
-                alert("Item Details Added Successfully!")
+                alert('Item Details Added Successfully!');
             })
             .catch((error) => {
                 console.error(error);
-                alert("Failed To Submit Data!")
+                alert('Failed To Submit Data!');
             });
     };
 

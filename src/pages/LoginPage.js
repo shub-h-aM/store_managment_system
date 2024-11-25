@@ -12,8 +12,8 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import axios from "axios";
-import {useState} from "react";
+import axios from 'axios';
+import {useState} from 'react';
 
 const defaultTheme = createTheme();
 
@@ -24,7 +24,7 @@ const LoginPage = ({ onLogin }) => {
 
     const handleLogin = async (username, password) => {
         try {
-            const BaseUrl ="http://localhost:5000";
+            const BaseUrl ='http://localhost:5000';
             const response = await axios.post(BaseUrl +'/api/login', {username, email: username, password});
             if (response.status === 200) {
                 const { token, user } = response.data;
@@ -125,7 +125,7 @@ const LoginPage = ({ onLogin }) => {
                                 </Grid>
                                 <Grid item>
                                     <Link href="/signup" variant="body2">
-                                        {"Don't have an account? Sign Up"}
+                                        {'Don\'t have an account? Sign Up'}
                                     </Link>
                                 </Grid>
                             </Grid>

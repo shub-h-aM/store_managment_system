@@ -24,9 +24,9 @@ const AccessManagementPage = () => {
                 setRoles(data.roles || []);
                 setPages(data.pages || []);
 
-                console.log("Users:", data.users);
-                console.log("Roles:", data.roles);
-                console.log("Pages:", data.pages);
+                console.log('Users:', data.users);
+                console.log('Roles:', data.roles);
+                console.log('Pages:', data.pages);
             } catch (error) {
                 console.error('Error fetching data:', error);
             } finally {

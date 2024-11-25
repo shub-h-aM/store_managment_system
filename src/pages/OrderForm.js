@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { createOrder } from '../services/apiService';
 import {Container, TextField, Button, Grid, Typography, Paper, IconButton, Dialog, DialogTitle, DialogContent,
     DialogActions } from '@mui/material';
 import { Add, Delete, ShoppingCart } from '@mui/icons-material';
@@ -16,7 +15,7 @@ const OrderForm = () => {
     useEffect(() => {
         const fetchItems = async () => {
             try {
-                const BaseUrl = "http://localhost:5000";
+                const BaseUrl = 'http://localhost:5000';
                 const response = await axios.get(BaseUrl + '/api/get/get-items', {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -73,15 +72,15 @@ const OrderForm = () => {
     const removeFromCart = (index) => {
         setCartItems(cartItems.filter((_, idx) => idx !== index));
     };
-    const handleRateChange = (e, id) => {
-        const updatedValue = e.target.value;
-        // Update the state with the new value for the specific item
-        setItems((prevItems) =>
-            prevItems.map((item) =>
-                item.id === id ? { ...item, price: updatedValue } : item
-            )
-        );
-    };
+    // const handleRateChange = (e, id) => {
+    //     const updatedValue = e.target.value;
+    //     // Update the state with the new value for the specific item
+    //     setItems((prevItems) =>
+    //         prevItems.map((item) =>
+    //             item.id === id ? { ...item, price: updatedValue } : item
+    //         )
+    //     );
+    // };
     const handleSubmit = async () => {
         const orderData = {
             items: cartItems,
@@ -95,6 +94,7 @@ const OrderForm = () => {
                 },
             });
             alert('Order placed successfully!');
+            console.log('Res', response);
         } catch (error) {
             console.error('Error placing order:', error.response?.data || error.message);
             alert(`Failed to place order. ${error.response?.data?.message || ''}`);

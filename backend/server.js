@@ -4,10 +4,10 @@ const exceljs = require('exceljs');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const cors = require('cors');
-const path = require("path");
+const path = require('path');
 const fs = require('fs');
-const {get} = require("axios");
-const {utils, write} = require("xlsx");
+const {get} = require('axios');
+const {utils, write} = require('xlsx');
 
 const app = express();
 const port = 5000;
@@ -339,7 +339,7 @@ app.get('/api/invoice/transactions', (req, res) => {
         if (err) {
             console.error('Error retrieving form data:', err);
             res.status(500).json({ error: 'Error retrieving form data' });
-            alert("Failed to Get Transaction Details!")
+            alert('Failed to Get Transaction Details!');
             return;
         }
         console.log('Form data retrieved successfully');
@@ -370,7 +370,7 @@ app.post('/api/invoice/transactions/update', (req, res) => {
 // Endpoint to insert customer data
 app.post('/api/customer', (req, res) => {
     const { customerName, customerAddress, contactNumber } = req.body;
-    const sql = `INSERT INTO customers (customerName, customerAddress, contactNumber) VALUES (?, ?, ?)`;
+    const sql = 'INSERT INTO customers (customerName, customerAddress, contactNumber) VALUES (?, ?, ?)';
     db.query(sql, [customerName, customerAddress, contactNumber], (err, result) => {
         if (err) {
             console.error('Error inserting invoice data:', err);
@@ -410,7 +410,7 @@ app.get('/api/customers', async (req, res) => {
 
 app.post('/api/create/item-category', (req, res) => {
     const { category_name } = req.body;
-    const sql = `INSERT INTO ItemCategory (category_name) VALUES (?)`;
+    const sql = 'INSERT INTO ItemCategory (category_name) VALUES (?)';
     db.query(sql, [category_name], (err, result) => {
         if (err) {
             console.error('Error inserting category data:', err);
@@ -455,7 +455,7 @@ app.delete('/api/delete/item-category/:categoryId', async (req, res) => {
 
 app.post('/api/create/item-brand', (req, res) => {
     const { brand_name } = req.body;
-    const sql = `INSERT INTO Brand (brand_name) VALUES (?)`;
+    const sql = 'INSERT INTO Brand (brand_name) VALUES (?)';
     db.query(sql, [brand_name], (err, result) => {
         if (err) {
             console.error('Error inserting brand data:', err);
@@ -578,7 +578,7 @@ app.get('/api/ops/roles', (req, res) => {
         if (err) {
             console.error('Error retrieving form data:', err);
             res.status(500).json({ error: 'Error retrieving form data' });
-            alert("Failed to Get Roles Details!")
+            alert('Failed to Get Roles Details!');
             return;
         }
         console.log('Form data retrieved successfully');
@@ -628,7 +628,7 @@ app.get('/api/get/pages', (req, res) => {
         if (err) {
             console.error('Error retrieving form data:', err);
             res.status(500).json({ error: 'Error retrieving form data' });
-            alert("Failed to Get Page Details!")
+            alert('Failed to Get Page Details!');
             return;
         }
         console.log('Form data retrieved successfully');
