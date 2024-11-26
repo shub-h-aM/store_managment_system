@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography } from '@mui/material';
+import { TextField, Button } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-//import config from '../config';
+import PageHeader from '../components/PageHeader';
 
 const CreateItemCategory = () => {
     const [categoryName, setCategoryName] = useState('');
@@ -31,7 +31,7 @@ const CreateItemCategory = () => {
 
     return (
         <div style={{ maxWidth: 600, margin: '0 auto' }}>
-            <Typography variant="h4" gutterBottom>Create Item Category</Typography>
+            <PageHeader title="Create Item Category" color="#FF5722" align="center" />
             <form onSubmit={handleSubmit}>
                 <TextField
                     fullWidth

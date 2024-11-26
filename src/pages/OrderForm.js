@@ -4,6 +4,7 @@ import {Container, TextField, Button, Grid, Typography, Paper, IconButton, Dialo
 import { Add, Delete, ShoppingCart } from '@mui/icons-material';
 import axios from 'axios';
 import Cart from '../components/Cart';
+import PageHeader from '../components/PageHeader';
 
 const OrderForm = () => {
     const [items, setItems] = useState([{ productName: '', productBrand: '', quantity: 1, price: 0 }]);
@@ -107,9 +108,7 @@ const OrderForm = () => {
         <Container maxWidth="md" sx={{ mt: 5 }}>
             <Grid container spacing={2} sx={{ mt: 2 }}>
                 <Grid item xs={6}>
-                    <Typography variant="h4" gutterBottom>
-                        Order
-                    </Typography>
+                    <PageHeader title="Order" color="#FF5722" align="center" />
                 </Grid>
                 <Grid item xs={6} container justifyContent="flex-end" alignItems="center">
                     <IconButton color="primary" onClick={toggleCart}>

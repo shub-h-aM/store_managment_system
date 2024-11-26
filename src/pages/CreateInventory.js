@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Typography, TextField, Button, Grid } from '@mui/material';
+import { TextField, Button, Grid } from '@mui/material';
+import PageHeader from '../components/PageHeader';
 import {Link} from 'react-router-dom';
-// import Footer from "../components/Footer";
 
 const CreateInventory = () => {
     const initialFormData = {
@@ -59,7 +59,7 @@ const CreateInventory = () => {
             marginTop: '20px'
         }}>
             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px'}}>
-                <Typography variant="h5" gutterBottom>Create Item Details</Typography>
+                <PageHeader title="Create Inventory" color="#FF5722" align="center" />
                 <Button component={Link} to="/upload/item/details" variant="contained" color="primary">Upload Item
                     File</Button>
             </div>

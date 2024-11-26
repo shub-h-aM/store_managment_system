@@ -21,7 +21,7 @@ const Header = ({ toggleMenu }) => {
             <Toolbar disableGutters>
                 <Container
                     maxWidth="lg"
-                    sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                    sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}
                 >
                     {/* Menu Icon */}
                     <IconButton
@@ -29,52 +29,54 @@ const Header = ({ toggleMenu }) => {
                         color="inherit"
                         aria-label="menu"
                         onClick={toggleMenu}
-                        sx={{ mr: 2 }}
+                        sx={{mr: 2}}
                     >
-                        <FaBars />
+                        <FaBars/>
                     </IconButton>
 
-                    {/* Website Title */}
-                    <Typography
-                        variant="h6"
-                        component="div"
-                        sx={{
-                            fontWeight: 'bold',
-                            flexGrow: 1,
-                            display: { xs: 'none', sm: 'block' }
-                        }}
-                    >
-                        {/*Shubham Electronics & Enterprises*/}
-                    </Typography>
+                    {/* Logo and Title */}
+                    <Box sx={{display: 'flex', alignItems: 'center', flexGrow: 1}}>
+                        <img
+                            src="/WhatsApp Image 2024-11-14 at 10.04.19.jpeg"
+                            alt="Logo"
+                            style={{
+                                height: '40px',
+                                width: '40px', // Ensures the image is a perfect square
+                                marginRight: '10px',
+                                borderRadius: '50%', // Makes the image circular
+                                border: '2px solid white', // Optional border
+                            }}
+                        />
+                        <Typography
+                            variant="h6"
+                            component="div"
+                            sx={{
+                                fontWeight: 'bold',
+                                display: {xs: 'none', sm: 'block'},
+                            }}
+                        >
+                            Shubham Electronics & Electrical
+                        </Typography>
+                    </Box>
 
                     {/* Navigation Buttons */}
-                    <Box component="nav" sx={{ display: 'flex', gap: 2 }}>
+                    <Box component="nav" sx={{display: 'flex', gap: 2}}>
                         <Button
                             color="inherit"
                             href="/ops/admin/card"
                             sx={{
                                 fontWeight: 'bold',
-                                '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.2)' }
+                                '&:hover': {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
                             }}
                         >
                             Card
                         </Button>
-                        {/*<Button*/}
-                        {/*    color="inherit"*/}
-                        {/*    href="/get/order/form"*/}
-                        {/*    sx={{*/}
-                        {/*        fontWeight: 'bold',*/}
-                        {/*        '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.2)' }*/}
-                        {/*    }}*/}
-                        {/*>*/}
-                        {/*    Order*/}
-                        {/*</Button>*/}
                         <Button
                             color="inherit"
                             href="/ops/get/product"
                             sx={{
                                 fontWeight: 'bold',
-                                '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.2)' }
+                                '&:hover': {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
                             }}
                         >
                             Product
@@ -84,7 +86,7 @@ const Header = ({ toggleMenu }) => {
                             href="/ops/access/management"
                             sx={{
                                 fontWeight: 'bold',
-                                '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.2)' }
+                                '&:hover': {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
                             }}
                         >
                             Access
@@ -94,7 +96,7 @@ const Header = ({ toggleMenu }) => {
                             href="/ops/roles/management"
                             sx={{
                                 fontWeight: 'bold',
-                                '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.2)' }
+                                '&:hover': {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
                             }}
                         >
                             User Role
@@ -104,7 +106,7 @@ const Header = ({ toggleMenu }) => {
                             href="/ops/pages/management"
                             sx={{
                                 fontWeight: 'bold',
-                                '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.2)' }
+                                '&:hover': {backgroundColor: 'rgba(255, 255, 255, 0.2)'},
                             }}
                         >
                             Page

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Typography, TextField, Button } from '@mui/material';
 import TablePagination from '@mui/material/TablePagination';
+import PageHeader from '../components/PageHeader';
 
 const ItemInventory = () => {
     const [formData, setFormData] = useState([]);
@@ -71,7 +72,7 @@ const ItemInventory = () => {
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="h3" gutterBottom>Item Inventory</Typography>
+                <PageHeader title="Item Inventory" color="#FF5722" align="center" />
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <TextField
                         label="Search"

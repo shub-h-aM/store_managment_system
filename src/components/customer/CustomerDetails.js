@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
-import { Typography, TextField, InputAdornment, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
+import PageHeader from '../PageHeader';
+import { TextField, InputAdornment, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
-import Footer from '../Footer';
+
 
 function CustomerDetails() {
     const [customers, setCustomers] = useState([]);
@@ -53,9 +54,7 @@ function CustomerDetails() {
     return (
         <div style={{position:'fixed',width:'90%',marginLeft:'5%',marginTop:'5%'}}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                <Typography variant="h3" gutterBottom>
-                    Customer
-                </Typography>
+                <PageHeader title="Customer" color="#FF5722" align="center" />
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <TextField
                         label="Search"
@@ -101,7 +100,6 @@ function CustomerDetails() {
                     color="primary"
                 />
             </div>
-            <Footer />
         </div>
     );
 }

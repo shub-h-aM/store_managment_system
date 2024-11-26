@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Typography, TextField, Button, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
+import {  TextField, Button, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 import Pagination from '@mui/material/Pagination';
 import { styled } from '@mui/system';
 import { FaSearch } from "react-icons/fa";
+import PageHeader from '../components/PageHeader';
 
 const StyledTableContainer = styled('div')({
     marginBottom: '20px',
@@ -78,9 +79,7 @@ const LedgerPage = () => {
         <>
             <div style={{position:'fixed',width:'90%',marginLeft:'5%'}}>
                 <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px'}}>
-                    <Typography variant="h3" gutterBottom>
-                        Ledger
-                    </Typography>
+                    <PageHeader title="Ledger" color="#FF5722" align="center" />
                     <div style={{display: 'flex', alignItems: 'center'}}>
                         <label style={{marginRight: '10px', border:'1px solid #ccc', borderRadius:'5px',padding:'10px',marginTop:'9px'}}>
                             <input type="checkbox" checked={dueAmountFilter} onChange={handleDueAmountFilterChange}/>

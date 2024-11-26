@@ -34,21 +34,7 @@ const CustomerItemRate = () => {
         }
     };
 
-    // // Handle search functionality
-    // const handleSearch = async () => {
-    //     setLoading(true);
-    //     try {
-    //         const response = await axios.get('http://localhost:5000/api/get/items');
-    //         setFormData(response.data);
-    //     } catch (error) {
-    //         console.error('Error fetching item data:', error);
-    //         alert('Failed to get data. Please try again later.');
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
 
-    // Handle pagination changes
     const handleChangePage = (event, newPage) => {
         setCurrentPage(newPage);
     };
@@ -145,7 +131,7 @@ const CustomerItemRate = () => {
                                 marginBottom: '10px', borderBottom: '2px solid #ddd', paddingBottom: '10px',}}>
                             <Typography variant="h5" gutterBottom style={{textAlign: 'left'}}>
                                 Shubham Electronics & Electrical<br/>
-                                Kundi, Varanasi, 9990909000
+                                Kundi, Varanasi, 221204
                             </Typography>
                             <Typography variant="h5" gutterBottom style={{textAlign: 'right'}}>
                                 Item Rate List
