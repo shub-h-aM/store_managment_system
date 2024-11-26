@@ -198,6 +198,17 @@ app.get('/api/userDetails', (req, res) => {
     });
 });
 
+// api end point to delete user
+app.delete('/api/delete/userDetails/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await db.query('DELETE FROM user WHERE userId = ?', [id]);
+        res.status(200).send({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting User:', error);
+        res.status(500).send({ message: 'Failed to delete User' });
+    }
+});
 // Login endpoint
 app.post('/api/login', (req, res) => {
     const { username, email, password } = req.body;

@@ -44,7 +44,7 @@ const Header = ({ toggleMenu }) => {
                             display: { xs: 'none', sm: 'block' }
                         }}
                     >
-                        {/*Shubham Electronics & Enterprises*/}
+                        Shubham Electronics & Electrical
                     </Typography>
 
                     {/* Navigation Buttons */}

@@ -5,7 +5,6 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Avatar, Box, Button, Container, CssBaseline, Grid, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
-
 const defaultTheme = createTheme();
 
 const SignupPage = () => {
@@ -17,19 +16,81 @@ const SignupPage = () => {
         contactNumber: ''
     });
 
+    const [errors, setErrors] = useState({});
+
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+
+        // Real-time validation
+        switch (name) {
+            case 'name':
+                setErrors({
+                    ...errors,
+                    name: !/^[a-zA-Z\s]+$/.test(value) ? 'Full Name must contain only letters' : '',
+                });
+                break;
+            case 'email':
+                setErrors({
+                    ...errors,
+                    email: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? 'Invalid email address' : '',
+                });
+                break;
+            case 'password':
+                setErrors({
+                    ...errors,
+                    password: value.length < 6 ? 'Password must be at least 6 characters long' : '',
+                });
+                break;
+            case 'contactNumber':
+                setErrors({
+                    ...errors,
+                    contactNumber: !/^\d{10}$/.test(value) ? 'Contact number must be exactly 10 digits' : '',
+                });
+                break;
+            case 'username':
+                setErrors({
+                    ...errors,
+                    username: value.trim() === '' ? 'This field is required' : '',
+                });
+                break;
+            default:
+                break;
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            await axios.post('http://localhost:5000/api/signup', formData);
-            alert('Form submitted successfully!');
-            setFormData({ name: '', username: '', password: '', email: '', contactNumber: '' });
-        } catch (error) {
-            console.error('Error submitting form:', error);
-            alert('Error submitting form. Please try again later.');
+
+        // Final validation before submission
+        const newErrors = {};
+        if (formData.name.trim() === '' || !/^[a-zA-Z\s]+$/.test(formData.name)) {
+            newErrors.name = 'Full Name must contain only letters and cannot be empty';
+        }
+        if (formData.username.trim() === '') {
+            newErrors.username = 'Username is required';
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+            newErrors.email = 'Invalid email address';
+        }
+        if (formData.password.length < 6) {
+            newErrors.password = 'Password must be at least 6 characters long';
+        }
+        if (!/^\d{10}$/.test(formData.contactNumber)) {
+            newErrors.contactNumber = 'Contact number must be exactly 10 digits.';
+        }
+
+        setErrors(newErrors);
+
+        if (Object.keys(newErrors).length === 0) {
+            try {
+                await axios.post('http://localhost:5000/api/signup', formData);
+                alert('Form submitted successfully!');
+                setFormData({ name: '', username: '', password: '', email: '', contactNumber: '' });
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                alert('Error submitting form. Please try again later.');
+            }
         }
     };
 
@@ -64,6 +125,8 @@ const SignupPage = () => {
                                     autoFocus
                                     value={formData.name}
                                     onChange={handleChange}
+                                    error={!!errors.name}
+                                    helperText={errors.name}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -76,6 +139,8 @@ const SignupPage = () => {
                                     autoComplete="username"
                                     value={formData.username}
                                     onChange={handleChange}
+                                    error={!!errors.username}
+                                    helperText={errors.username}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -85,9 +150,12 @@ const SignupPage = () => {
                                     id="email"
                                     label="Email Address"
                                     name="email"
+                                    type="email"
                                     autoComplete="email"
                                     value={formData.email}
                                     onChange={handleChange}
+                                    error={!!errors.email}
+                                    helperText={errors.email}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -101,6 +169,8 @@ const SignupPage = () => {
                                     autoComplete="new-password"
                                     value={formData.password}
                                     onChange={handleChange}
+                                    error={!!errors.password}
+                                    helperText={errors.password}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -113,6 +183,8 @@ const SignupPage = () => {
                                     autoComplete="contact-number"
                                     value={formData.contactNumber}
                                     onChange={handleChange}
+                                    error={!!errors.contactNumber}
+                                    helperText={errors.contactNumber}
                                 />
                             </Grid>
                         </Grid>
@@ -133,33 +205,21 @@ const SignupPage = () => {
                                     boxShadow: '0 4px 6px 3px rgba(255, 140, 85, .4)',
                                 },
                             }}
+                            disabled={
+                                !formData.name ||
+                                !formData.username ||
+                                !formData.email ||
+                                !formData.password ||
+                                !formData.contactNumber ||
+                                Object.values(errors).some((error) => error !== '')
+                            }
                         >
                             Sign Up
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
                                 <Link href="/login" variant="body2">
-                                    Already have an account?
-                                    <Button
-                                        variant="contained"
-                                        sx={{
-                                            mt: 3,
-                                            mb: 2,
-                                            marginTop: '14px',
-                                            marginLeft:'6px',
-                                            background: 'linear-gradient(45deg, #6a11cb 30%, #2575fc 90%)',
-                                            color: 'white',
-                                            fontWeight: 'bold',
-                                            textTransform: 'uppercase',
-                                            boxShadow: '0 3px 5px 2px rgba(105, 135, 255, .3)',
-                                            '&:hover': {
-                                                background: 'linear-gradient(45deg, #2575fc 30%, #6a11cb 90%)',
-                                                boxShadow: '0 4px 6px 3px rgba(105, 135, 255, .4)',
-                                            },
-                                        }}
-                                    >
-                                        Sign In
-                                    </Button>
+                                    Already have an account? Sign in
                                 </Link>
                             </Grid>
                         </Grid>

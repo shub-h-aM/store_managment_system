@@ -131,7 +131,7 @@ const CustomerItemRate = () => {
                                 marginBottom: '10px', borderBottom: '2px solid #ddd', paddingBottom: '10px',}}>
                             <Typography variant="h5" gutterBottom style={{textAlign: 'left'}}>
                                 Shubham Electronics & Electrical<br/>
-                                Kundi, Varanasi, 9990909000
+                                Kundi, Varanasi, 221204
                             </Typography>
                             <Typography variant="h5" gutterBottom style={{textAlign: 'right'}}>
                                 Item Rate List
