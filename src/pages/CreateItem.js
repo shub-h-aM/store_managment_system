@@ -12,26 +12,17 @@ function CreateItem() {
     const [itemName, setItemName] = useState('');
     const [itemDescription, setItemDescription] = useState('');
     const [itemModel, setItemModel] = useState('');
+    const [warranty, setWarranty] = useState('');
     const [color, setColor] = useState('');
     const [brand, setBrand] = useState('');
     const [itemCategory, setItemCategory] = useState('');
     const [rate, setRate] = useState('');
     const [categories, setCategories] = useState([]);
     const [brands, setBrands] = useState([]);
-    const [colors] = useState(['Red', 'Blue', 'Silver','Green', 'Yellow', 'Black', 'White', 'Orange', 'Purple', 'Pink', 'Brown','Others']); // Predefined colors
+    const [colors] = useState(['White','Silver','Grey','Red', 'Blue','Green', 'Yellow', 'Black', 'Orange', 'Purple', 'Pink', 'Brown','Others','All']); // Predefined colors
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const response = await axios.get('http://localhost:5000/api/get/item-categories');
-                setCategories(response.data.categories);
-            } catch (error) {
-                console.error('Error fetching categories:', error);
-                alert('Failed to load item categories.');
-            }
-        };
-
         const fetchBrands = async () => {
             try {
                 const response = await axios.get('http://localhost:5000/api/get/item-brand');
@@ -42,7 +33,6 @@ function CreateItem() {
             }
         };
 
-        fetchCategories();
         fetchBrands();
     }, []);
 
@@ -51,42 +41,148 @@ function CreateItem() {
         console.log('Back clicked');
     };
 
+
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         if (name === 'itemName') setItemName(value);
         if (name === 'itemDescription') setItemDescription(value);
         if (name === 'itemModel') setItemModel(value);
+        if (name === 'warranty') setWarranty(value);
         if (name === 'brand') setBrand(value);
         if (name === 'rate') setRate(value);
     };
 
+    // const handleSubmit = async (event) => {
+    //     event.preventDefault();
+    //
+    //     // Check if the item already exists
+    //     try {
+    //         const checkResponse = await axios.get('http://localhost:5000/api/items/check', {
+    //             params: {
+    //                 item_name: itemName,
+    //                 brand,
+    //             },
+    //         });
+    //
+    //         if (checkResponse.data.exists) {
+    //             alert('Item with this name and brand already exists!');
+    //             return; // Stop submission if the item exists
+    //         }
+    //     } catch (error) {
+    //         console.error('Error checking item existence:', error);
+    //         alert('Failed to validate item. Please try again.');
+    //         return;
+    //     }
+    //
+    //     // Proceed with item creation if it does not exist
+    //     try {
+    //         const response = await axios.post('http://localhost:5000/api/items', {
+    //             itemName,
+    //             itemDescription,
+    //             itemModel,
+    //             warranty,
+    //             color,
+    //             brand,
+    //             itemCategory,
+    //             rate,
+    //         });
+    //
+    //         console.log(response.data);
+    //         setItemName('');
+    //         setItemDescription('');
+    //         setItemModel('');
+    //         setWarranty('');
+    //         setColor('');
+    //         setBrand('');
+    //         setItemCategory('');
+    //         setRate('');
+    //         alert('Item added successfully!');
+    //         console.log('Submit clicked');
+    //     } catch (error) {
+    //         console.error('Error creating item:', error);
+    //         alert('Failed to create item.');
+    //     }
+    // };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        // Map the brand_id to its corresponding brand_name
+        const selectedBrand = brands.find((b) => b.brand_id === brand);
+        const brandName = selectedBrand ? selectedBrand.brand_name : '';
+
+        if (!brandName) {
+            alert('Invalid brand selection.');
+            return;
+        }
+
+        // Check if the item already exists
+        try {
+            const checkResponse = await axios.get('http://localhost:5000/api/items/check', {
+                params: {
+                    item_name: itemName,
+                    brand: brandName, // Pass brand name for validation
+                },
+            });
+
+            if (checkResponse.data.exists) {
+                alert('Item with this name and brand already exists!');
+                return; // Stop submission if the item exists
+            }
+        } catch (error) {
+            console.error('Error checking item existence:', error);
+            alert('Failed to validate item. Please try again.');
+            return;
+        }
+
+        // Proceed with item creation if it does not exist
         try {
             const response = await axios.post('http://localhost:5000/api/items', {
                 itemName,
                 itemDescription,
                 itemModel,
+                warranty,
                 color,
-                brand,
+                brand: brandName, // Send brand name instead of brand_id
                 itemCategory,
                 rate,
             });
+
             console.log(response.data);
+            // Clear the form fields
             setItemName('');
             setItemDescription('');
             setItemModel('');
+            setWarranty('');
             setColor('');
             setBrand('');
             setItemCategory('');
             setRate('');
             alert('Item added successfully!');
-            console.log('Submit clicked');
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error creating item:', error);
             alert('Failed to create item.');
         }
     };
+
+
+    const handleBrandChange = async (event) => {
+        const selectedBrand = event.target.value;
+        setBrand(selectedBrand);
+
+        // Fetch categories for the selected brand
+        try {
+            const response = await axios.get('http://localhost:5000/api/get/categories-by-brand', {
+                params: { brand_id: selectedBrand },
+            });
+            setCategories(response.data.categories);
+        } catch (error) {
+            console.error('Error fetching categories for the selected brand:', error);
+            alert('Failed to load categories for the selected brand.');
+        }
+    };
+
+
 
     return (
         <div>
@@ -124,6 +220,15 @@ function CreateItem() {
                             />
                         </Grid>
                         <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                label="Warranty"
+                                name="warranty"
+                                value={warranty}
+                                onChange={handleInputChange}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
                             <FormControl fullWidth>
                                 <InputLabel id="color-label">Color</InputLabel>
                                 <Select
@@ -147,10 +252,10 @@ function CreateItem() {
                                     labelId="brand-label"
                                     name="brand"
                                     value={brand}
-                                    onChange={handleInputChange}
+                                    onChange={handleBrandChange} // Use the updated handler
                                 >
                                     {brands.map((brand) => (
-                                        <MenuItem key={brand.brand_id} value={brand.brand_name}>
+                                        <MenuItem key={brand.brand_id} value={brand.brand_id}>
                                             {brand.brand_name}
                                         </MenuItem>
                                     ))}

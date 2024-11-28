@@ -172,6 +172,7 @@ function ItemList() {
                         <TableCell>Item Name</TableCell>
                         <TableCell>Item Description</TableCell>
                         <TableCell>Item Model</TableCell>
+                        <TableCell>Warranty</TableCell>
                         <TableCell>Color</TableCell>
                         <TableCell>Brand</TableCell>
                         <TableCell>Item Category</TableCell>
@@ -185,6 +186,7 @@ function ItemList() {
                             <TableCell>{item.item_name}</TableCell>
                             <TableCell>{item.item_description}</TableCell>
                             <TableCell>{item.item_model}</TableCell>
+                            <TableCell>{item.warranty}</TableCell>
                             <TableCell>{item.color}</TableCell>
                             <TableCell>{item.brand}</TableCell>
                             <TableCell>{item.item_category}</TableCell>
