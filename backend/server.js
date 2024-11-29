@@ -72,11 +72,33 @@ app.post('/api/signup', (req, res) => {
     });
 });
 
+// Login endpoint
+app.post('/api/login', (req, res) => {
+    const { username, email, password } = req.body;
+    const sql = 'SELECT * FROM user WHERE (username = ? OR email = ?) AND password = ?';
+    db.query(sql, [username, email, password], (err, result) => {
+        if (err) {
+            console.error('Error executing query:', err);
+            res.status(500).json({ error: 'Error logging in' });
+            return;
+        }
+        if (result.length > 0) {
+            // User found, login successful
+            const loggedInUser = result[0];
+            res.status(200).json({ message: 'Login successful', username: loggedInUser.username });
+        } else {
+            // User not found or invalid credentials
+            res.status(401).json({ error: 'Invalid username or email or password' });
+        }
+    });
+});
+
+
 // Api endpoint for item page
 app.post('/api/items', (req, res) => {
-    const { itemCode, itemName, itemDescription, itemModel,color, brand, itemCategory, rate } = req.body;
-    const sql = 'INSERT INTO items ( item_name, item_description, item_model, color, brand, item_category, rate) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    db.query(sql, [ itemName, itemDescription, itemModel,color, brand, itemCategory, rate], (err, result) => {
+    const { itemCode, itemName, itemDescription, itemModel,warranty,color, brand, itemCategory, rate } = req.body;
+    const sql = 'INSERT INTO items ( item_name, item_description, item_model,warranty, color, brand, item_category, rate) VALUES (?, ?,?, ?, ?, ?, ?, ?)';
+    db.query(sql, [ itemName, itemDescription, itemModel,warranty,color, brand, itemCategory, rate], (err, result) => {
         if (err) {
             console.error('Error inserting item data:', err);
             return res.status(500).json({ error: 'Error submitting item' });
@@ -132,6 +154,27 @@ app.get('/api/get/get-items', (req, res) => {
         }
         console.log('Item data retrieved successfully');
         res.status(200).json(result);
+    });
+});
+
+// api to check is item already exist
+// Endpoint to check item existence
+app.get('/api/items/check', (req, res) => {
+    const { item_name, brand } = req.query;
+
+    if (!item_name || !brand) {
+        return res.status(400).json({ error: 'item_name and brand are required' });
+    }
+
+    const query = `SELECT COUNT(*) AS count FROM items WHERE item_name = ? AND brand = ?`;
+    db.query(query, [item_name, brand], (err, results) => {
+        if (err) {
+            console.error('Error checking item existence:', err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+
+        const exists = results[0].count > 0;
+        res.json({ exists });
     });
 });
 
@@ -209,27 +252,6 @@ app.delete('/api/delete/userDetails/:id', async (req, res) => {
         res.status(500).send({ message: 'Failed to delete User' });
     }
 });
-// Login endpoint
-app.post('/api/login', (req, res) => {
-    const { username, email, password } = req.body;
-    const sql = 'SELECT * FROM user WHERE (username = ? OR email = ?) AND password = ?';
-    db.query(sql, [username, email, password], (err, result) => {
-        if (err) {
-            console.error('Error executing query:', err);
-            res.status(500).json({ error: 'Error logging in' });
-            return;
-        }
-        if (result.length > 0) {
-            // User found, login successful
-            const loggedInUser = result[0];
-            res.status(200).json({ message: 'Login successful', username: loggedInUser.username });
-        } else {
-            // User not found or invalid credentials
-            res.status(401).json({ error: 'Invalid username or email or password' });
-        }
-    });
-});
-
 
 
 // API endpoint for uploading Excel file
@@ -443,23 +465,27 @@ app.get('/api/customers', async (req, res) => {
 // API endpoint to create a new item category
 
 app.post('/api/create/item-category', (req, res) => {
-    const { category_name } = req.body;
-    const sql = 'INSERT INTO ItemCategory (category_name) VALUES (?)';
-    db.query(sql, [category_name], (err, result) => {
+    const { category_name, brand_id } = req.body;
+
+    if (!category_name || !brand_id) {
+        return res.status(400).json({ message: 'Category name and brand are required.' });
+    }
+
+    const query = 'INSERT INTO categories (category_name, brand_id) VALUES (?, ?)';
+    db.query(query, [category_name, brand_id], (err, result) => {
         if (err) {
-            console.error('Error inserting category data:', err);
-            res.status(500).json({ error: 'Error creating Category' });
-            return;
+            console.error('Error creating category:', err);
+            return res.status(500).json({ message: 'Failed to create category.' });
         }
-        console.log('Item Category created successfully');
-        res.status(200).json({ message: 'Item categorry created successfully' });
+        res.status(201).json({ message: 'Category created successfully.' });
     });
 });
+
 //get item category
 
 app.get('/api/get/item-categories', async (req, res) => {
     try {
-        const query = 'SELECT * FROM ItemCategory'; // Use correct table name (ItemCategory)
+        const query = 'SELECT * FROM categories'; // Use correct table name (categories)
         db.query(query, (err, result) => {
             if (err) {
                 console.error('Error retrieving item category data:', err);
@@ -477,7 +503,7 @@ app.get('/api/get/item-categories', async (req, res) => {
 app.delete('/api/delete/item-category/:categoryId', async (req, res) => {
     const { categoryId } = req.params;
     try {
-        await db.query('DELETE FROM ItemCategory WHERE category_id = ?', [categoryId]);
+        await db.query('DELETE FROM categories WHERE category_id = ?', [categoryId]);
         res.status(200).send({ message: 'Category deleted successfully' });
     } catch (error) {
         console.error('Error deleting Category:', error);
@@ -489,7 +515,7 @@ app.delete('/api/delete/item-category/:categoryId', async (req, res) => {
 
 app.post('/api/create/item-brand', (req, res) => {
     const { brand_name } = req.body;
-    const sql = 'INSERT INTO Brand (brand_name) VALUES (?)';
+    const sql = 'INSERT INTO brands (brand_name) VALUES (?)';
     db.query(sql, [brand_name], (err, result) => {
         if (err) {
             console.error('Error inserting brand data:', err);
@@ -504,7 +530,7 @@ app.post('/api/create/item-brand', (req, res) => {
 
 app.get('/api/get/item-brand', async (req, res) => {
     try {
-        const query = 'SELECT * FROM Brand';
+        const query = 'SELECT * FROM brands';
         db.query(query, (err, result) => {
             if (err) {
                 console.error('Error retrieving item Brand data:', err);
@@ -518,12 +544,36 @@ app.get('/api/get/item-brand', async (req, res) => {
         res.status(500).json({ error: 'Error retrieving Brand data' });
     }
 });
+// get the category of selected brands
+app.get('/api/get/categories-by-brand', async (req, res) => {
+    const brandId = req.query.brand_id; // Get the brand ID from query params
+
+    if (!brandId) {
+        return res.status(400).json({ error: 'Brand ID is required' });
+    }
+
+    try {
+        const query = 'SELECT * FROM categories WHERE brand_id = ?';
+        db.query(query, [brandId], (err, result) => {
+            if (err) {
+                console.error('Error retrieving categories by brand:', err);
+                return res.status(500).json({ error: 'Error retrieving categories' });
+            }
+            res.status(200).json({ categories: result });
+        });
+    } catch (error) {
+        console.error('Error retrieving categories:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 
 //delete item brand
 app.delete('/api/delete/item-brand/:brandId', async (req, res) => {
     const { brandId } = req.params;
     try {
-        await db.query('DELETE FROM Brand WHERE brand_id = ?', [brandId]);
+        await db.query('DELETE FROM brands WHERE brand_id = ?', [brandId]);
         res.status(200).send({ message: 'Brand deleted successfully' });
     } catch (error) {
         console.error('Error deleting brand:', error);
